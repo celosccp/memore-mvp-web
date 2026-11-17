@@ -664,11 +664,11 @@ function pkCard(k){
   return `<button class="pk ${cur ? 'cur' : ''} ${locked ? 'lock' : ''}" data-a="go:pacote">
     <div class="row">${plast(k)}<div class="g"><div class="b" style="font-size:16px;margin-bottom:4px">${cardName(k)}</div>${tag}</div><span class="chev mut" style="font-size:20px">›</span></div>
     ${sub ? `<div class="xs mut" style="margin-top:8px">${sub}</div>` : ''}
+    ${foot}
     <div class="pcs">
       ${col('Investback', ibA ? pct(ib.rate) : k === 'one' ? `Até ${pct(ibMax)}` : '1%', '', ibA ? (ib.rate >= ibMax ? 'com fichas' : `até ${pct(ibMax)} com fichas`) : k === 'one' ? 'com fichas' : `até ${pct(ibMax)} com fichas`)}
       ${col('Salas VIP', sl.main.replace(' acessos por ano', ' acessos/ano'), '', sl.up)}
-    </div>
-    ${foot}</button>`;
+    </div></button>`;
 }
 function home(){
   const c = activeCard(), act = Object.keys(S.active);
