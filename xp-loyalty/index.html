@@ -239,6 +239,12 @@ h3.sec button{color:var(--y);font-size:13px;font-weight:600}
 .wel .logo{width:58px;height:50px;border-radius:9px;background:#fff;color:#111;font-weight:900;font-size:22px;letter-spacing:-.04em;display:grid;place-items:center;margin:14px auto 96px}
 .wel h2{font-size:25px;line-height:1.18;letter-spacing:-.02em;margin:0}
 .wel .num{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.1);display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+.pks{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:2px 16px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.pks::-webkit-scrollbar{display:none}
+.pk{flex:0 0 86%;scroll-snap-align:center;background:var(--s1);border:1.5px solid rgba(255,255,255,.06);border-radius:22px;padding:14px;display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch}
+.pk.cur{border-color:rgba(255,199,9,.6);background:rgba(255,199,9,.06)}
+.dots{display:flex;gap:6px;justify-content:center;margin-top:10px}
+.dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.22)} .dots i.on{background:#fff;width:16px;border-radius:3px}
 </style>
 </head>
 <body>
@@ -272,7 +278,7 @@ const P = {
   aucBloco: 5000, aucMax: 10,
   ciclo: 'mensal',
   salaOne: 'Condições a confirmar',
-  salaInf: 'Até 4 acessos por ano, mediante gastos (a confirmar)',
+  salaInf: '4 acessos por ano, com gasto mínimo no cartão (a confirmar)',
   corrCob: 'Cobertura a confirmar (ex.: ações, FIIs e ETFs pelo app)',
   cofBase: 100, legRate: 110, legAte: '30/04/2027',
 };
@@ -313,7 +319,7 @@ function loadProfile(id){
   const p = PROFILES[id];
   Object.assign(S, { prof:id, auc:p.auc, gasto:p.gasto, done:{}, active:{}, inf:p.inf,
     infVia: p.inf==='active' ? 'patrimonio' : null, goal: p.goal ? {...p.goal} : null,
-    screen:'home', param:null, sel:null, sheet:null, released:0, ibNotice:null, seen:{}, cond:false });
+    screen:'home', pk:null, param:null, sel:null, sheet:null, released:0, ibNotice:null, seen:{}, cond:false });
 }
 
 // ---------- Regras ----------
@@ -512,32 +518,42 @@ function welcome(){
 }
 
 // ---------- Telas ----------
-function home(){
-  const c = activeCard(), ib = investbackNow();
-  const act = Object.keys(S.active);
-  let evo = '';
-  if (c === 'one' && S.inf === 'none' && !elig()){
-    evo = `<div style="border-top:1px solid var(--line);margin-top:12px;padding-top:12px">
-      <div class="sm"><b>Próximo pacote: XP Infinite</b></div>
-      <div class="prog"><i style="width:${S.auc / P.corte * 100}%"></i></div>
-      <div class="xs mut">Faltam ${brl(P.corte - S.auc)} investidos para poder pedir${S.scen === 'B' ? `, ou use ${pt(P.infPts)}` : ''}.</div></div>`;
+function pkCard(k){
+  const c = activeCard(), cur = c === k, ib = investbackNow();
+  const kv = (a, b) => `<div class="kv"><span>${a}</span><span>${b}</span></div>`;
+  let tag, foot = '';
+  if (k === 'one'){
+    tag = cur ? chip('Seu pacote', 'y') : chip('Pacote inicial', 'ghost');
+    foot = cur ? kv('Seu mês até aqui', ib.applies ? `≈ ${brl(ib.valor)} de volta` : `faltam ${brl(P.oneMin - S.gasto)} em compras`) : '';
+  } else {
+    const near = S.auc >= P.corte * 0.6;
+    tag = cur ? chip('Seu pacote', 'y') : S.inf === 'requested' ? chip('<i class="spin"></i> Em análise', 'y') : elig() ? chip('Você já pode pedir', 'av') : chip(`A partir de ${brl(P.corte)}`, 'ghost');
+    if (cur) foot = kv('Seu mês até aqui', `≈ ${brl(ib.valor)} de volta`) + (infByPoints() ? `<div class="xs mut" style="margin-top:8px">Acesso por fichas: ${P.infPts} em uso até você ter ${brl(P.corte)} investidos.</div>` : '');
+    else if (S.inf === 'requested') foot = `<div class="xs mut" style="margin-top:8px">Você segue com o XP One até o novo cartão ser ativado.</div>`;
+    else if (elig()) foot = `<div class="xs mut" style="margin-top:8px">Você tem ${brl(S.auc)} investidos. O pedido não usa fichas.</div>`;
+    else foot = (near ? `<div class="prog"><i style="width:${S.auc / P.corte * 100}%"></i></div><div class="xs mut">Faltam ${brl(P.corte - S.auc)} investidos para pedir sem usar fichas.</div>`
+        : `<div class="xs mut" style="margin-top:8px">Com ${brl(P.corte)} investidos, você pede sem usar fichas. Sem pressa: seu pacote atual já vale hoje.</div>`)
+      + (S.scen === 'B' ? `<div class="xs" style="margin-top:6px;color:var(--y);font-weight:600">${available() >= P.infPts ? `Ou peça agora com ${pt(P.infPts)}` : `Ou com ${pt(P.infPts)} (faltam ${P.infPts - available()})`}</div>` : '');
   }
-  const status = S.inf === 'requested' ? chip('Ativo · Infinite em análise') : chip('✓ Ativo', 'ok');
+  return `<button class="pk ${cur ? 'cur' : ''}" data-a="go:pacote">
+    <div class="row">${plast(k)}<div class="g"><div class="b" style="font-size:16px">${cardName(k)}</div><div class="xs mut">${k === 'one' ? `Até ${brl(P.corte)} investidos` : `A partir de ${brl(P.corte)} investidos`}</div></div></div>
+    <div style="margin:10px 0 2px">${tag}</div>
+    ${kv('Investback', k === 'one' ? `0,8% <span class="mut" style="font-weight:400">a partir de ${brl(P.oneMin)}/mês</span>` : (cur ? pct(ib.rate) : '1%'))}
+    ${kv('Salas VIP', k === 'one' ? P.salaOne : P.salaInf)}
+    ${foot}
+    <div class="sm b" style="color:var(--y);margin-top:12px">${cur ? 'Ver meu cartão ›' : 'Ver detalhes ›'}</div></button>`;
+}
+function home(){
+  const c = activeCard(), act = Object.keys(S.active);
+  const idx = S.pk ?? (c === 'infinite' ? 1 : 0);
   return `
     ${banners()}
-    <h3 class="sec">Seu cartão</h3>
-    <button class="card" style="display:block;width:100%" data-a="go:pacote">
-      <div class="row">${plast(c)}<div class="g"><div class="b" style="font-size:16px">${cardName(c)}</div><div class="xs mut">${infByPoints() && S.inf==='active' ? `Acesso por fichas · ${P.infPts} em uso` : 'Seu pacote atual, sem usar fichas'}</div></div>${status}</div>
-      <div style="margin-top:12px">
-        <div class="kv"><span>Investback</span><span>${pct(ib.rate)}${c === 'one' ? ` <span class="mut" style="font-weight:400">a partir de ${brl(P.oneMin)}/mês</span>` : ''}</span></div>
-        <div class="kv"><span>Seu mês até aqui</span><span>${ib.applies ? `≈ ${brl(ib.valor)} de volta` : `faltam ${brl(P.oneMin - S.gasto)} em compras`}</span></div>
-        <div class="kv"><span>Salas VIP</span><span>${c === 'one' ? P.salaOne : P.salaInf}</span></div>
-      </div>
-      ${evo}
-      <div class="sm b" style="color:var(--y);margin-top:12px">Ver meu cartão ›</div>
-    </button>
+    <h3 class="sec">Pacotes de cartão<span class="xs" style="font-weight:400">arraste para comparar</span></h3>
+    <div class="pks" data-idx="${idx}">${pkCard('one')}${pkCard('infinite')}</div>
+    <div class="dots"><i class="${idx === 0 ? 'on' : ''}"></i><i class="${idx === 1 ? 'on' : ''}"></i></div>
+    <div class="xs mut" style="margin-top:8px">Seu pacote depende de quanto você tem investido. Ele não usa fichas.</div>
 
-    <h3 class="sec">Benefícios em uso</h3>
+    <h3 class="sec">Benefícios extras em uso</h3>
     ${act.length ? `<div class="card">${act.map(fid => { const f = fam(fid), o = optOf(fid, S.active[fid].opt);
         return `<button class="li" data-a="openfam:${fid}"><div class="ico">${I[fid]}</div><div class="g"><b>${f.nome}</b><span>${o.label} · ${pt(o.price)} em uso</span></div>${optState(f, o)}</button>`; }).join('')}</div>`
       : `<button class="card sm mut" style="display:block;width:100%" data-a="go:shelf">${total() ? 'Nenhum benefício extra ativo. Suas fichas estão disponíveis.' : 'Benefícios extras aparecem aqui quando você ativar com fichas.'} <span style="color:var(--y);font-weight:600">Ver benefícios ›</span></button>`}
@@ -862,12 +878,20 @@ function renderPhone(){
     ${S.screen === 'fam' ? famFoot() : ''}
     ${sheet()}`;
   app.querySelector('.scr').scrollTop = st; lastKey = key;
+  const pks = app.querySelector('.pks');
+  if (pks){
+    const w = () => pks.firstElementChild.offsetWidth + 10;
+    pks.scrollLeft = +pks.dataset.idx * w();
+    pks.addEventListener('scroll', () => { const i = Math.round(pks.scrollLeft / w()); S.pk = i;
+      app.querySelectorAll('.dots i').forEach((d, k) => d.classList.toggle('on', k === i)); }, { passive: true });
+  }
   if (hadSheet && S.sheet){ const ov = app.querySelector('.ov'); ov.style.animation = 'none'; ov.firstElementChild.style.animation = 'none'; }
 }
 
 const HIPOTESES = [
   ['Pacotes', 'Dois pacotes, XP One e XP Infinite, sem nomes de nível ou segmento. O cliente vê "Seu pacote atual" e "Próximo pacote".'],
   ['Pacotes', 'One: 0,8% de Investback a partir de R$ 2.500 de gasto no mês. Infinite: 1%, sem gasto mínimo. Configuração de fevereiro de 2027.'],
+  ['Pacotes', 'Os dois pacotes aparecem lado a lado em um carrossel no Resumo, com o do cliente marcado como "Seu pacote". Quem está longe do corte (abaixo de 60%) não vê barra de "faltam R$": só a regra, sem cobrança.'],
   ['Pacotes', 'Atingir o corte libera o pedido do Infinite. O cartão só muda depois de pedido, análise e ativação: três estados separados na tela.'],
   ['Fichas', 'Cartão: 1 ficha a cada R$ 500 de gasto no mês, até 15. Patrimônio: 0 ficha até R$ 30 mil e 1 ficha a cada R$ 5 mil completos acima disso, até 10.'],
   ['Fichas', 'Demais comportamentos com pontuação ilustrativa: Open Finance 3, aporte recorrente 3, previdência 3, pagamentos 2, salário 5, câmbio 1, crédito 2, consórcio 2, seguros 2, Seguro Conta e Cartão 1.'],
@@ -890,6 +914,7 @@ const HIPOTESES = [
 ];
 const DECISOES = [
   ['Acesso ao Infinite', 'Cenário A ou B. No B, com 15 fichas, quem pega o Infinite fica com 5 e não alcança nenhum adicional (o menor custa 10). Vale rever o preço do cartão ou o piso do Investback Infinite.'],
+  ['Acesso ao Infinite', 'Mostrar os dois pacotes para todos (adotado) ou segmentar, com cada cliente vendo só o seu. Risco de mostrar: frustrar quem não tem como chegar a R$ 30 mil.'],
   ['Acesso ao Infinite', 'Jornada operacional ao atingir o corte: pedido novo, migração do One, análise de crédito, prazo e o que acontece com o cartão antigo.'],
   ['Acesso ao Infinite', 'No B: confirmar a liberação automática das fichas no corte e se o cliente pode devolver o Infinite para reaver as fichas.'],
   ['Elegibilidade', 'Política de perda por queda de fichas: carência, ordem de desativação quando o cliente não escolhe, e comunicação.'],
@@ -963,7 +988,7 @@ function activate(famId, optId, hold){
   S.active[famId] = { opt: optId, status: 'processing' };
   if (!hold) timers.push(setTimeout(() => { const a = S.active[famId]; if (a && a.opt === optId){ a.status = 'active'; render(); } }, 2600));
 }
-function setInfActive(){ S.inf = 'active'; S.seen.req = true; reconcile(); S.sheet = S.released ? {t:'transB'} : {t:'infOn'}; }
+function setInfActive(){ S.inf = 'active'; S.pk = null; S.seen.req = true; reconcile(); S.sheet = S.released ? {t:'transB'} : {t:'infOn'}; }
 
 const PRESETS = {
   welcome(){ loadProfile(S.prof); S.screen = 'welcome'; },
