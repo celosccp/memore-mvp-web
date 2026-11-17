@@ -342,6 +342,16 @@ h3.sec button{color:var(--y);font-size:13px;font-weight:600}
 .mk{width:22px;height:22px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:12px;font-weight:800;font-style:normal}
 .mk.on{background:var(--y);color:#000} .mk.off{border:1.5px solid var(--dim)} .mk.part{border:1.5px solid var(--y);color:var(--y)}
 .rv{font-size:13px;font-weight:700;color:var(--dim);white-space:nowrap} .rv.on{color:var(--y)}
+.st{display:flex;gap:8px;align-items:flex-end;margin-top:10px}
+.stp{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;text-align:left;min-height:calc(88px + var(--h)*13px);padding:9px 9px 8px;border-radius:14px;border:1.5px solid var(--line);background:rgba(255,255,255,.045);transition:transform .14s ease}
+.stp:active{transform:scale(.97)}
+.stp b{font-size:19px;letter-spacing:-.02em;line-height:1.1}
+.stp .t{font-size:11px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stp .p{font-size:12px;margin-top:5px}
+.stp .s{font-size:11px;font-weight:700;margin-top:2px;color:var(--ok)}
+.stp.no b,.stp.no .p{color:var(--mut)} .stp.no .s{color:var(--dim)}
+.stp.on{border-color:var(--y);background:rgba(255,199,9,.12)} .stp.on .s{color:var(--y)}
+.stp.sel{border-color:var(--y);box-shadow:0 0 0 3px rgba(255,199,9,.18)}
 </style>
 </head>
 <body>
@@ -609,6 +619,15 @@ function legacyCopy(){
     muda:[`No novo programa, o Cofrinho só fica ativo com fichas em uso.`, `Para manter ${P.legRate}% do CDI, ative o Cofrinho Turbo com ${pt(P.cofre[0])}.`, need ? `Hoje faltam ${pt(need)}.` : `Você já tem fichas para ativar.`], acao: need ? 'Ver como ganhar fichas' : `Ativar com ${pt(P.cofre[0])}` };
 }
 
+// opções em faixas viram uma escadinha horizontal
+function stairs(f, sel, act){
+  const a = S.active[f.id];
+  return `<div class="st">${f.opts.map((o, i) => { const isA = a && a.opt === o.id, m = missing(f.id, o.id);
+    const has = f.id === 'cofrinho' && S.legacy && !a && o.id === 'c110' && S.legRule !== 'migrar';
+    const st = isA ? (a.status === 'processing' ? 'Ativando…' : '● Em uso') : has ? 'Você já tem' : m ? `Faltam ${m}` : a ? 'Trocar' : 'Disponível';
+    const [h, ...r] = o.label.split(' ');
+    return `<button class="stp ${isA ? 'on' : has ? 'av' : m ? 'no' : 'av'} ${sel === o.id ? 'sel' : ''}" style="--h:${i}" data-a="${act}:${o.id}"><b>${h}</b><span class="t">${r.join(' ')}</span><span class="p">${pt(o.price)}</span><span class="s">${st}</span></button>`; }).join('')}</div>`;
+}
 function optState(f, o){
   const a = S.active[f.id];
   if (a && a.opt === o.id) return a.status === 'processing' ? chip('<i class="spin"></i> Ativando', 'y') : chip('Em uso', 'use');
@@ -763,7 +782,7 @@ function shelf(){
     ${families().map(f => `<div class="card">
       <button class="row" style="width:100%" data-a="openfam:${f.id}"><div class="ico">${I[f.id]}</div><div class="g"><div class="b" style="font-size:16px">${f.nome}</div><div class="xs mut">${f.desc}</div></div><span class="chev mut">›</span></button>
       ${f.id === 'cofrinho' && S.legacy && !S.active.cofrinho ? `<button class="note" style="display:block;width:100%" data-a="sheet:legacy"><b style="color:var(--tx)">${legacyCopy().status}</b> · ${legacyCopy().short} <span style="color:var(--y)">Entender ›</span></button>` : ''}
-      ${f.opts.map(o => `<button class="opt" data-a="openfam:${f.id}:${o.id}"><div class="g"><b>${o.label}</b><span>${pt(o.price)}</span></div>${optState(f, o)}</button>`).join('')}
+      ${f.opts.length > 1 ? stairs(f, null, 'openfam:' + f.id) : f.opts.map(o => `<button class="opt" data-a="openfam:${f.id}:${o.id}"><div class="g"><b>${o.label}</b><span>${pt(o.price)}</span></div>${optState(f, o)}</button>`).join('')}
     </div>`).join('')}
     <div class="xs mut" style="margin:10px 2px">Você pode ter uma opção ativa em cada benefício. As fichas ficam em uso enquanto ela estiver ativa e voltam quando você desativa.</div>
 
@@ -792,7 +811,7 @@ function famScreen(){
     ${f.id === 'investback' ? `<div class="note">Seu cartão é o <b style="color:var(--tx)">${cardName(c)}</b>${baseRate(c) ? `, que já vem com ${pct(baseRate(c))} de Investback` : ''}. As opções abaixo são as do seu cartão.</div>` : ''}
 
     <h3 class="sec">${a ? 'Trocar por outra opção' : 'Escolha uma opção'}</h3>
-    ${f.opts.map(o => { const isA = a && a.opt === o.id;
+    ${f.opts.length > 1 ? stairs(f, sel, 'sel') + (f.id === 'investback' && sel && S.gasto ? `<div class="xs mut" style="margin-top:8px">Com seu gasto de ${brl(S.gasto)} no mês, ${pct(f.opts.find(o => o.id === sel).rate)} dão ≈ ${brl(S.gasto * f.opts.find(o => o.id === sel).rate / 100)} de volta.</div>` : '') : f.opts.map(o => { const isA = a && a.opt === o.id;
       return `<button class="opt ${sel === o.id ? 'sel' : ''}" data-a="sel:${o.id}"><div class="rd"></div><div class="g"><b>${o.label}</b><span>${pt(o.price)}${f.id === 'investback' && S.gasto ? ` · ≈ ${brl(S.gasto * o.rate / 100)} de volta por mês com seu gasto` : ''}</span></div>${optState(f, o)}</button>`; }).join('')}
 
     ${accHead('rule', 'Regra do benefício')}
