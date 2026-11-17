@@ -524,6 +524,10 @@ h3.sec2 span{display:block;font-size:14.5px;color:var(--mut);font-weight:400;mar
 .hubv .ttabs{margin-top:6px} .hubv .ttabs button{padding:8px 0 7px}
 .stack{margin-top:8px}
 .peek{padding:7px 14px 26px}
+.rg.off .nd b,.rg.off .nd span{color:var(--dim)}
+.rg.off .nd i,.light .rg.off .nd i{border-color:var(--s3);background:var(--nb)}
+.rg.off .rt{opacity:.6}
+.pk2.lock .rh b{color:var(--mut)}
 </style>
 </head>
 <body>
@@ -604,7 +608,7 @@ function loadProfile(id){
 // ---------- Regras ----------
 const brl = v => 'R$ ' + Math.round(v).toLocaleString('pt-BR');
 const pt  = n => n + (Math.abs(n) === 1 ? ' ficha' : ' fichas');
-const cardName = c => c === 'infinite' ? 'XP Infinite' : 'XP One';
+const cardName = c => c === 'infinite' ? 'Cartão XP Infinite' : 'Cartão XP One';
 const activeCard = () => S.inf === 'active' ? 'infinite' : 'one';
 const elig = () => S.auc >= P.corte;
 
@@ -904,7 +908,7 @@ function pacote(){
   const cmpCur = k => c === k ? 'class="cur"' : '';
   const tile = (t, d, g) => `<div class="sel" style="background:${g}"><b>${t}</b><span>${d}</span></div>`;
   return `
-    <h2 class="big">Benefícios ${cardName(c)}</h2>
+    <h2 class="big">Benefícios do ${cardName(c)}</h2>
     <div class="card hub">
       <button class="row" style="width:100%" data-a="openfam:investback"><div class="ico">${I.investback}</div><div class="g"><div class="sm mut">Investback deste mês</div><div style="font-size:19px">${ib.applies ? `≈ ${brl(ib.valor)} de volta` : 'Ainda não ativo'}</div></div><span class="chev mut" style="font-size:20px">›</span></button>
       <button class="pillb" data-a="go:shelf">Turbinar com fichas</button>
@@ -927,7 +931,7 @@ function pacote(){
     ${routes}
     ${cta}
 
-    <h3 class="sec2">Seleção ${cardName(c)}<span>Curadoria de vantagens exclusivas</span></h3>
+    <h3 class="sec2">Seleção do cartão<span>Curadoria de vantagens exclusivas</span></h3>
     <div class="sels">${tile('Mobilidade', 'Benefício exclusivo para clientes XP', 'linear-gradient(170deg,#8fa6bd,#3d5066 60%,#0f141b)')}${tile('Tecnologia', 'Benefício exclusivo para clientes XP', 'linear-gradient(170deg,#4a4560,#2a2738 60%,#0d0c12)')}${tile('Viagens', 'Benefício exclusivo para clientes XP', 'linear-gradient(170deg,#9fc0c4,#2f6b73 60%,#0b1a1c)')}</div>
 
     <h3 class="sec2">Destaques da semana</h3>
@@ -975,7 +979,7 @@ function shelf(){
   const c = activeCard(), fs = families(), F = id => fs.find(f => f.id === id), solo = c === 'infinite', idx = solo ? 0 : (S.pk ?? 0);
   // linha recolhível dentro do cartão: resumo sempre visível, régua ao tocar
   const row = (f, t) => `<div class="rs"><div class="rh"><b>${t}</b></div>${regua(f)}</div>`;
-  const lrow = (f, t) => `<div class="rs"><div class="rr"><b>${t}</b><span class="rv2">${rgState(f, 'infinite', true)}</span></div></div>`;
+  const lrow = (f, t) => `<div class="rs"><div class="rh"><b>${t}</b></div>${regua(f, 'infinite', S.inf !== 'active')}</div>`;
   const solocard = (f, t, unit) => `<div class="card"><div class="rh"><div class="row" style="gap:10px"><div class="ico" style="width:32px;height:32px;border-radius:10px">${I[f.id]}</div><b>${t}</b>${unit ? `<em class="xs mut" style="font-style:normal">${unit}</em>` : ''}</div></div>${regua(f)}</div>`;
   const mine = `<div class="pk2 cur">
       <button class="row" style="width:100%" data-a="go:pacote">${plast(c)}<div class="b g" style="font-size:16px">${cardName(c)}</div>${infByPoints() && S.inf === 'active' ? chip(`${pt(P.infPts)} em uso`, 'use') : chip('Incluído', 'y')}<span class="chev mut" style="font-size:20px">›</span></button>
@@ -985,15 +989,15 @@ function shelf(){
     const fi = families('infinite'), Fi = id => fi.find(f => f.id === id), can = S.scen === 'B' && S.inf === 'none' && !elig() && available() >= P.infPts;
     const tag = S.inf === 'requested' ? chip('<i class="spin"></i> Em análise', 'y') : elig() ? chip('Desbloqueado · você já pode pedir', 'av') : chip(I.lock + ' Bloqueado', 'ghost');
     const foot = S.inf === 'requested' ? '' : elig() ? `<span class="tb" style="display:inline-block;margin-top:12px">Pedir o XP Infinite ›</span>`
-      : `<div class="prog" style="margin:12px 0 5px;height:5px"><i style="width:${S.auc / P.corte * 100}%"></i></div><div class="xs mut">Faltam ${brl(P.corte - S.auc)} investidos${S.scen === 'B' && !can ? ` · ou ${pt(P.infPts)}` : ''}</div>${can ? `<span class="tb" style="display:inline-block;margin-top:8px" data-a="sheet:infPts">Pedir com ${pt(P.infPts)} ›</span>` : ''}`;
+      : `<div class="prog" style="margin:9px 0 4px;height:4px"><i style="width:${S.auc / P.corte * 100}%"></i></div><div class="xs mut">Faltam ${brl(P.corte - S.auc)} investidos${S.scen === 'B' && !can ? ` · ou ${pt(P.infPts)}` : ''}</div>${can ? `<span class="tb" style="display:inline-block;margin-top:8px" data-a="sheet:infPts">Pedir com ${pt(P.infPts)} ›</span>` : ''}`;
     inf = `<div class="pk2 ${S.inf === 'none' && !elig() ? 'lock' : ''}" role="button" tabindex="0" data-a="go:pacote">
-      <div class="row">${plast('infinite')}<div class="g"><div class="b" style="font-size:17px;margin-bottom:4px">XP Infinite</div>${tag}</div></div>
-      ${foot}<div class="rs xs mut">Investback <b style="color:var(--tx)">${rgBase(Fi('investback'), 'infinite')}</b>${rgBase(Fi('salavip'), 'infinite') ? ` · Salas VIP <b style="color:var(--tx)">${rgBase(Fi('salavip'), 'infinite')}</b>` : ''} · mais com fichas</div></div>`;
+      <div class="row">${plast('infinite')}<div class="g"><div class="b" style="font-size:16px">Cartão XP Infinite</div></div>${tag}</div>
+      ${foot}${lrow(Fi('investback'), 'Investback')}${lrow(Fi('salavip'), 'Salas VIP')}</div>`;
   }
   const infState = S.inf === 'requested' ? 'Em análise' : elig() ? 'Você já pode pedir' : `Faltam ${brl(P.corte - S.auc)}`;
   const peek = solo ? '' : idx === 0
-    ? `<button class="peek infinite" data-a="pk:1"><i class="pp" style="width:${S.inf === 'none' && !elig() ? Math.min(100, S.auc / P.corte * 100) : 100}%"></i><b>XP INFINITE</b><span class="pt">${S.inf === 'none' && !elig() ? I.lock : ''}${infState}</span></button>`
-    : `<button class="peek one" data-a="pk:0"><b>XP ONE</b><span class="pt">Seu cartão</span></button>`;
+    ? `<button class="peek infinite" data-a="pk:1"><i class="pp" style="width:${S.inf === 'none' && !elig() ? Math.min(100, S.auc / P.corte * 100) : 100}%"></i><b>CARTÃO XP INFINITE</b><span class="pt">${S.inf === 'none' && !elig() ? I.lock : ''}${infState}</span></button>`
+    : `<button class="peek one" data-a="pk:0"><b>CARTÃO XP ONE</b><span class="pt">Seu cartão</span></button>`;
   return `<div class="stack">${peek}${solo || idx === 0 ? mine : inf}</div>
     ${solocard(F('cofrinho'), 'Cofre XP', '% do CDI')}
     ${solocard(F('corretagem'), 'Corretagem zero', 'por mês')}`;
@@ -1046,9 +1050,9 @@ function juntar(){
     const right = b.dyn ? `<span class="rv ${p ? 'on' : ''}">${p} de ${max}</span>` : full ? `<span class="rv on">${pt(p)}</span>` : b.need ? '' : `<span class="rv">+${b.pts}</span>`;
     return `<button class="li" data-a="beh:${b.id}">${mark}<div class="g"><b>${b.nome}</b><span>${sub}</span></div>${right}<span class="chev">›</span></button>`; };
   return `
-    ${t === 0 ? `<div class="note" style="margin-top:14px">Fichas vêm do que você faz na XP: guardar, usar o cartão, pagar contas. Comece por um dos desafios abaixo.</div>` : ''}
+    ${t === 0 ? `<div class="note" style="margin-top:14px">Fichas vêm do que você faz na XP: guardar, usar o cartão, pagar contas. Comece por um dos passos abaixo.</div>` : ''}
 
-    <h3 class="sec" style="margin-top:14px">Seu avanço em cada desafio</h3>
+    <h3 class="sec" style="margin-top:14px">Sua jornada financeira</h3>
     ${CTX.map((cx, i) => { const bs = list.filter(b => b.ctx === i), earned = bs.reduce((a, b) => a + behPts(b), 0), tot = bs.reduce((a, b) => a + mx(b), 0);
       const def = i === defCtx || earned > 0, op = isOpen('ctx' + i, def);
       return `<div class="card"><button class="row" style="width:100%" data-a="tog:ctx${i}:${def ? 1 : 0}">${ring(earned / tot, `<span>${earned}</span>`)}<div class="g"><div class="b" style="font-size:16px">${cx}</div>
@@ -1147,7 +1151,7 @@ function sheet(){
   }
   else if (s.t === 'behDone'){
     const b = beh(s.id), g = S.goal && fam(S.goal.fam) ? { f: fam(S.goal.fam), o: optOf(S.goal.fam, S.goal.opt), m: missing(S.goal.fam, S.goal.opt) } : null;
-    h = `${burst()}<div class="ctr"><div class="okc">✓</div><h2>+${pt(b.pts)}</h2><p>Desafio concluído: ${b.nome}.</p></div>
+    h = `${burst()}<div class="ctr"><div class="okc">✓</div><h2>+${pt(b.pts)}</h2><p>Passo concluído: ${b.nome}.</p></div>
       ${g && g.m ? `<div class="card"><div class="row">${ring((g.o.price - g.m) / g.o.price, `<span>${Math.round((g.o.price - g.m) / g.o.price * 100)}%</span>`)}<div class="g"><div class="xs mut b">SUA TRILHA</div><div class="b">${g.f.nome} · ${g.o.label}</div><div class="xs mut">Faltam ${pt(g.m)}.</div></div></div></div>` : ''}
       <button class="btn" data-a="close">Continuar</button>`;
   }
@@ -1292,8 +1296,9 @@ const HIPOTESES = [
   ['Elegibilidade', 'Queda de patrimônio com Infinite ativo: o cartão segue ativo, com aviso prévio antes de qualquer mudança. No B, pode manter com fichas.'],
   ['Cofre XP', 'Quem já tinha Cofre XP antes do Loyalty entra com 110% do CDI. Três alternativas de transição: preservar sem fichas, carência até 30/04/2027, ou migração imediata para fichas.'],
   ['Recomendação', 'A ordem das sugestões é definida por perfil. Crédito e consórcio nunca aparecem como sugestão: só no catálogo, com a necessidade antes e as condições à vista.'],
-  ['Trilha', 'O cliente pode seguir a trilha de um benefício e acompanhar no resumo quanto falta e quais desafios sugeridos levam até lá.'],
-  ['Vocabulário', 'Das telas de Design: fichas (evita confusão com os pontos do cartão), Em uso e Disponíveis, Juntar e Usar, desafios, trilha para desbloquear.'],
+  ['Vocabulário', 'Na aba Juntar, os quatro grupos são momentos da jornada financeira e cada item é um passo. "Desafio" saiu; "trilha" fica reservada ao caminho até um benefício.'],
+  ['Trilha', 'O cliente pode seguir a trilha de um benefício e acompanhar no resumo quanto falta e quais passos sugeridos levam até lá.'],
+  ['Vocabulário', 'Das telas de Design: fichas (evita confusão com os pontos do cartão), Em uso e Disponíveis, Juntar e Usar, trilha para desbloquear.'],
   ['Vocabulário', 'Mantidos do briefing e diferentes das telas: taxas 110/115/125% e preços 10/15/30 (telas: 110% por 5 e 120% por 15), Infinite por 10 fichas (telas: 15), quatro contextos de earn (telas: seis).'],
 ];
 const DECISOES = [
