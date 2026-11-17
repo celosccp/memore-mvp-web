@@ -58,8 +58,8 @@ input[type=range]{width:100%;accent-color:var(--ink);height:28px}
 #panelToggle{display:none;position:fixed;left:12px;bottom:12px;z-index:40;background:var(--ink);color:#fff;border-radius:999px;padding:10px 16px;font-weight:700;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.3)}
 
 /* ---------- Telefone ---------- */
-#phoneWrap{flex:1;display:flex;align-items:center;justify-content:center;min-width:0;padding:14px}
-#phone{width:390px;height:min(844px,calc(100dvh - 28px));background:var(--bk);color:var(--tx);border-radius:46px;border:9px solid #000;box-shadow:0 24px 60px rgba(0,0,0,.28);overflow:hidden;display:flex;flex-direction:column;position:relative}
+#phoneWrap{flex:1;display:flex;align-items:center;justify-content:center;min-width:0;padding:8px}
+#phone{width:390px;height:min(844px,calc(100dvh - 16px));background:var(--bk);color:var(--tx);border-radius:46px;border:9px solid #000;box-shadow:0 24px 60px rgba(0,0,0,.28);overflow:hidden;display:flex;flex-direction:column;position:relative}
 .status{flex:none;height:40px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 26px 6px;font-size:13px;font-weight:600}
 .status i{font-style:normal;letter-spacing:1px;font-size:11px;color:var(--mut)}
 #app{flex:1;display:flex;flex-direction:column;min-height:0;position:relative}
@@ -489,6 +489,41 @@ h3.sec2 span{display:block;font-size:14.5px;color:var(--mut);font-weight:400;mar
 .light .stack .pk2{background:#F1F1F4;box-shadow:0 -5px 14px rgba(0,0,0,.07)}
 @keyframes pkin{from{transform:translateY(10px);opacity:.6}}
 .s-shelf .stack+.card{margin-top:8px}
+
+/* pontos disponíveis: contorno amarelo (uma cor só para "dá para ativar"); cinza para o que ainda não cabe */
+.nd.av i,.light .nd.av i{border-color:var(--y)}
+.nd.av span{color:var(--mut);font-weight:600}
+.light .nd.av span{color:#3A3A42}
+.s-shelf .rs{margin-top:8px;padding-top:8px}
+.s-shelf .rs .rh{margin-bottom:7px} .s-shelf .rh b{font-size:14px}
+/* cartão de trás: a ponta do plástico aparecendo, com o progresso na borda */
+.peek{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:8px;width:calc(100% - 44px);margin:0 22px -20px;padding:9px 14px 28px;border-radius:14px 14px 0 0;font-size:12px;text-align:left;box-shadow:0 -2px 10px rgba(0,0,0,.18)}
+.peek b{flex:none;font-size:10.5px;letter-spacing:.09em;font-weight:800;color:inherit}
+.peek .pt{display:inline-flex;align-items:center;gap:5px;font-weight:650;font-size:12px;padding:3px 9px;border-radius:999px;background:rgba(0,0,0,.22);color:inherit}
+.peek.infinite,.light .peek.infinite{background:linear-gradient(120deg,#c9c9cb,#8a8a8d 55%,#b3b3b6);color:#111}
+.peek.infinite .pt{background:rgba(255,255,255,.55)}
+.peek.one,.light .peek.one{background:linear-gradient(135deg,#3a3a3e,#151516);color:#e6e6e8}
+.peek .pp{position:absolute;left:0;top:0;height:3px;background:var(--y);border-radius:0 2px 2px 0}
+.peek::after{content:"";position:absolute;inset:0 -60%;background:linear-gradient(112deg,transparent 44%,rgba(255,255,255,.45) 50%,transparent 56%);transform:translateX(-70%);animation:sheen 5s ease-in-out infinite;pointer-events:none}
+.stack .pk2{border-radius:22px;box-shadow:0 -8px 20px rgba(0,0,0,.28)}
+.light .stack .pk2{box-shadow:0 -6px 16px rgba(0,0,0,.12)}
+.s-shelf .pk2 .plast{width:50px;height:32px;font-size:7px;padding:4px 5px;border-radius:6px}
+.s-shelf .pk2 .plast::after{width:9px;height:6px}
+.s-shelf .rs{margin-top:7px;padding-top:7px}
+.s-shelf .rs .rh,.s-shelf .card .rh{margin-bottom:5px}
+.s-shelf .rh b{font-size:13.5px}
+.s-shelf .rh .ico{width:24px!important;height:24px!important;border-radius:8px!important}
+.s-shelf .rh .ico svg{width:15px;height:15px}
+.s-shelf .card{padding:9px 13px 8px}
+.s-shelf .nd b{font-size:12px} .s-shelf .nd span{font-size:10px}
+.s-shelf .nd i{width:16px;height:16px;margin-bottom:3px;border-width:2.5px}
+.s-shelf .rt{top:6px}
+.s-shelf .nd.org i{width:9px;height:9px;margin:3.5px 0 6.5px}
+.hubv .bal .btop .n{font-size:32px}
+.hubv .hb{margin:6px 0 6px}
+.hubv .ttabs{margin-top:6px} .hubv .ttabs button{padding:8px 0 7px}
+.stack{margin-top:8px}
+.peek{padding:7px 14px 26px}
 </style>
 </head>
 <body>
@@ -513,7 +548,7 @@ h3.sec2 span{display:block;font-size:14.5px;color:var(--mut);font-weight:400;mar
 const P = {
   corte: 30000,          // corte patrimonial do Infinite
   infPts: 10,            // Infinite por fichas (cenário B)
-  corr: [5, 10],         // Corretagem zero: 3 ordens incluídas; 6 / 9 ordens com fichas
+  corr: [5, 10, 15],     // Corretagem zero: 3 / 6 / 9 ordens por mês, todas com fichas
   cofBase: 100,          // Cofre XP sem fichas
   cofre: [10, 15, 30],   // Cofre XP Turbo 110/115/125
   ibOne: [5, 10, 15],    // Investback One 0,8 / 1,0 / 1,1 (tudo com fichas)
@@ -597,7 +632,7 @@ function families(card = activeCard()){
       opts:[ {id:'c110', label:'110% do CDI', price:P.cofre[0]}, {id:'c115', label:'115% do CDI', price:P.cofre[1]}, {id:'c125', label:'125% do CDI', price:P.cofre[2]} ] },
     { id:'investback', nome:'Investback turbinado', desc:'Mais dinheiro de volta nas compras.', card, opts: IB[card]() },
     { id:'corretagem', nome:'Corretagem zero', desc:'Invista na bolsa sem pagar corretagem.',
-      opts:[6, 9].map((n, i) => ({ id:'cz' + n, n, label:`${n} ordens por mês`, price:P.corr[i] })) },
+      opts:[3, 6, 9].map((n, i) => ({ id:'cz' + n, n, label:`${n} ordens por mês`, price:P.corr[i] })) },
     { id:'salavip', nome:'Sala VIP', desc: salaBase(card) ? `Mais acessos a salas VIP, além dos ${salaBase(card)} do seu cartão.` : 'Acessos a salas VIP em aeroportos.', card, opts: SV(card) },
   ];
 }
@@ -726,7 +761,7 @@ function bal(){
   return `<div class="bal"><div class="btop"><div class="n"><span class="cnt">${t}</span></div><div class="blab"><b>${t === 1 ? 'ficha' : 'fichas'}</b><span>de ${mx} possíveis</span></div></div>
     <div class="hb"><i class="bu" style="width:${(al / mx * 100).toFixed(1)}%"></i><i class="ba" style="width:${(av / mx * 100).toFixed(1)}%"></i></div>
     <div class="leg"><span><i class="d y"></i>Em uso <b>${al}</b></span><span><i class="d g"></i>Disponíveis <b>${av}</b></span><button data-a="go:juntar"><i class="d o"></i>A conquistar <b>${mx - Math.max(t, al)}</b></button></div>
-    ${t === 0 && al === 0 ? '<button class="xs mut" style="margin-top:6px;display:block" data-a="go:juntar">Você ainda não tem fichas. <b style="color:var(--tx)">Veja em Juntar por onde começar ›</b></button>' : ''}</div>`;
+    ${t === 0 && al === 0 ? '<button class="xs" style="margin-top:5px;display:block;font-weight:650" data-a="go:juntar">Veja em Juntar como conseguir fichas ›</button>' : ''}</div>`;
 }
 const strip = () => '';
 const canActivate = () => families().some(f => !S.active[f.id] && missing(f.id, f.opts[0].id) === 0)
@@ -915,16 +950,17 @@ const rgShort = (f, o) => f.id === 'salavip' ? `${o.n} acessos` : f.id === 'corr
 function rgBase(f, card){   // o que o cliente já tem sem usar fichas
   return f.id === 'investback' ? (baseRate(card) ? pct(baseRate(card)).replace(',0', '') : null)
     : f.id === 'salavip' ? (salaBase(card) ? `${salaBase(card)} acessos` : null)
-    : f.id === 'cofrinho' ? `${P.cofBase}%` : f.id === 'corretagem' ? '3 ordens' : null;
+    : f.id === 'cofrinho' ? `${P.cofBase}%` : null;
 }
 function regua(f, card = activeCard(), locked = false){
-  const a = locked ? null : S.active[f.id], base = rgBase(f, card);
+  const a = locked ? null : S.active[f.id], base = rgBase(f, card), org = f.id !== 'corretagem';   // corretagem começa direto na 1ª faixa
   const has = !locked && f.id === 'cofrinho' && S.legacy && !a && S.legRule !== 'migrar';
-  const cur = a ? f.opts.findIndex(o => o.id === a.opt) + 1 : has ? 1 : 0, n = f.opts.length + 1;
-  return `<div class="rg ${locked ? 'off' : ''}" style="--n:${n}"><div class="rt"><i style="width:${locked ? 0 : cur / (n - 1) * 100}%"></i></div><div class="rn">
-    <button class="nd ${locked ? 'no' : cur ? 'past' : base ? 'cur' : 'org'}" ${a ? `data-a="sheet:deact:${f.id}"` : ''}><i></i><b>${base || (f.id === 'salavip' ? 'Sem acesso' : 'Sem')}</b><span>${base ? 'Incluído' : '&nbsp;'}</span></button>
+  const pos = a ? f.opts.findIndex(o => o.id === a.opt) + 1 : has ? 1 : 0;      // 0 = nada com fichas
+  const n = f.opts.length + (org ? 1 : 0), fill = org ? pos / (n - 1) : Math.max(0, pos - 1) / (n - 1);
+  return `<div class="rg ${locked ? 'off' : ''}" style="--n:${n}"><div class="rt"><i style="width:${locked ? 0 : fill * 100}%"></i></div><div class="rn">
+    ${org ? `<button class="nd ${locked ? 'no' : pos ? 'past' : base ? 'cur' : 'org'}" ${a ? `data-a="sheet:deact:${f.id}"` : ''}><i></i><b>${base || (f.id === 'salavip' ? 'Sem acesso' : 'Sem')}</b><span>${base ? 'Incluído' : '&nbsp;'}</span></button>` : ''}
     ${f.opts.map((o, k) => { const i = k + 1, isA = a && a.opt === o.id, m = missing(f.id, o.id);
-      const cls = locked ? 'no' : i < cur ? 'past' : i === cur ? 'cur' + (a && a.status === 'processing' ? ' proc' : '') : m ? 'no' : 'av';
+      const cls = locked ? 'no' : i < pos ? 'past' : i === pos ? 'cur' + (a && a.status === 'processing' ? ' proc' : '') : m ? 'no' : 'av';
       const sub = isA ? (a.status === 'processing' ? 'Ativando…' : 'Em uso') : has && i === 1 ? 'Você já tem' : pt(o.price);
       return `<button class="nd ${cls}" ${locked ? '' : `data-a="${isA ? `sheet:deact:${f.id}` : `sheet:confirm:${f.id}:${o.id}`}"`}><i></i><b>${rgShort(f, o)}</b><span>${sub}</span></button>`; }).join('')}
   </div></div>`;
@@ -938,12 +974,11 @@ function rgState(f, card, locked){
 function shelf(){
   const c = activeCard(), fs = families(), F = id => fs.find(f => f.id === id), solo = c === 'infinite', idx = solo ? 0 : (S.pk ?? 0);
   // linha recolhível dentro do cartão: resumo sempre visível, régua ao tocar
-  const row = (f, t) => { const k = 'rg_' + f.id, op = isOpen(k);
-    return `<div class="rs"><button class="rr" data-a="tog:${k}:0"><b>${t}</b><span class="rv2">${rgState(f, c)}</span><span class="pm mut">${op ? '−' : '+'}</span></button>${op ? `<div style="margin-top:14px">${regua(f)}</div>` : ''}</div>`; };
+  const row = (f, t) => `<div class="rs"><div class="rh"><b>${t}</b></div>${regua(f)}</div>`;
   const lrow = (f, t) => `<div class="rs"><div class="rr"><b>${t}</b><span class="rv2">${rgState(f, 'infinite', true)}</span></div></div>`;
   const solocard = (f, t, unit) => `<div class="card"><div class="rh"><div class="row" style="gap:10px"><div class="ico" style="width:32px;height:32px;border-radius:10px">${I[f.id]}</div><b>${t}</b>${unit ? `<em class="xs mut" style="font-style:normal">${unit}</em>` : ''}</div></div>${regua(f)}</div>`;
   const mine = `<div class="pk2 cur">
-      <button class="row" style="width:100%" data-a="go:pacote">${plast(c)}<div class="g"><div class="b" style="font-size:17px;margin-bottom:4px">${cardName(c)}</div>${infByPoints() && S.inf === 'active' ? chip(`${pt(P.infPts)} em uso`, 'use') : chip('Incluído · não usa fichas', 'y')}</div><span class="chev mut" style="font-size:20px">›</span></button>
+      <button class="row" style="width:100%" data-a="go:pacote">${plast(c)}<div class="b g" style="font-size:16px">${cardName(c)}</div>${infByPoints() && S.inf === 'active' ? chip(`${pt(P.infPts)} em uso`, 'use') : chip('Incluído', 'y')}<span class="chev mut" style="font-size:20px">›</span></button>
       ${row(F('investback'), 'Investback')}${row(F('salavip'), 'Salas VIP')}</div>`;
   let inf = '';
   if (!solo){
@@ -957,8 +992,8 @@ function shelf(){
   }
   const infState = S.inf === 'requested' ? 'Em análise' : elig() ? 'Você já pode pedir' : `Faltam ${brl(P.corte - S.auc)}`;
   const peek = solo ? '' : idx === 0
-    ? `<button class="peek" data-a="pk:1">${S.inf === 'none' && !elig() ? I.lock : ''}<b>XP Infinite</b><span>${infState}</span><span>›</span></button>`
-    : `<button class="peek" data-a="pk:0"><b>${cardName(c)}</b><span>Seu cartão</span><span>›</span></button>`;
+    ? `<button class="peek infinite" data-a="pk:1"><i class="pp" style="width:${S.inf === 'none' && !elig() ? Math.min(100, S.auc / P.corte * 100) : 100}%"></i><b>XP INFINITE</b><span class="pt">${S.inf === 'none' && !elig() ? I.lock : ''}${infState}</span></button>`
+    : `<button class="peek one" data-a="pk:0"><b>XP ONE</b><span class="pt">Seu cartão</span></button>`;
   return `<div class="stack">${peek}${solo || idx === 0 ? mine : inf}</div>
     ${solocard(F('cofrinho'), 'Cofre XP', '% do CDI')}
     ${solocard(F('corretagem'), 'Corretagem zero', 'por mês')}`;
@@ -968,7 +1003,7 @@ const FAMINFO = {
   cofrinho: () => [`Vale para o dinheiro guardado no Cofre XP.`, `Sem fichas, o Cofre XP rende ${P.cofBase}% do CDI. Com fichas, rende mais.`],
   investback: () => { const c = activeCard(); return [c === 'one' ? `No XP One, o Investback é ativado com fichas. A taxa escolhida vale para todas as compras.` : `A taxa escolhida é o total do cartão, não um extra. Ex.: 1,2% substitui o 1% de hoje.`, `Vale para as compras no ${cardName(c)}.`, `O valor volta como investimento.`]; },
   salavip: () => [salaBase(activeCard()) ? `O número escolhido é o total do ano, já contando os ${salaBase(activeCard())} acessos do seu cartão.` : `O número escolhido é o total de acessos no ano.`, `Os acessos valem enquanto o benefício estiver em uso.`],
-  corretagem: () => [`3 ordens por mês sem corretagem já estão incluídas. O número escolhido é o total do mês.`, P.corrCob + '.', `Vale enquanto o benefício estiver ativo.`],
+  corretagem: () => [`O número escolhido é quantas ordens por mês saem sem corretagem.`, P.corrCob + '.', `Vale enquanto o benefício estiver ativo.`],
 };
 
 function famScreen(){
@@ -1247,7 +1282,7 @@ const HIPOTESES = [
   ['Saldo', 'Na troca dentro da família, as fichas da opção atual são liberadas e as da nova entram em uso, em um só passo.'],
   ['Prateleira', 'Cofre XP Turbo 110/115/125% do CDI por 10/15/30 fichas. Sem fichas, o Cofre XP rende 100% do CDI, já incluído.'],
   ['Prateleira', 'Investback turbinado é a taxa total do cartão. One: 0,8%, 1,0% ou 1,1% por 5, 10 ou 15 (os preços de 1,0% e 1,1% subiram 5 fichas para abrir espaço ao 0,8%). Infinite: 1,2% ou 1,5% por 10 ou 15.'],
-  ['Prateleira', 'Corretagem zero: 3 ordens por mês já incluídas; 6 ou 9 ordens por 5 ou 10 fichas (ilustrativo).'],
+  ['Prateleira', 'Corretagem zero em três faixas, todas com fichas: 3, 6 ou 9 ordens por mês por 5, 10 ou 15 fichas (ilustrativo). Nenhuma ordem é incluída.'],
   ['Prateleira', 'Na aba Usar, cada benefício é uma régua: o cliente toca no ponto que quer e vai direto para a confirmação. Investback e Salas VIP ficam dentro do card do cartão.'],
   ['Sala VIP', 'No One, a régua vai de sem acesso a 2 ou 4 acessos por ano (10 ou 15 fichas).'],
   ['Prateleira', 'Investback turbinado pertence ao cartão. Se o cartão muda, a opção é encerrada e as fichas voltam ao saldo.'],
@@ -1317,7 +1352,7 @@ function renderPanel(){
       <h2><button class="h2b" data-a="tog:prem:0">Premissas editáveis <span>${isOpen('prem') ? '−' : '+'}</span></button></h2><div ${isOpen('prem') ? '' : 'hidden'}>
       <label class="fld">Infinite por fichas (B) <input type="number" data-p="infPts" value="${P.infPts}"></label>
       <label class="fld">Corte patrimonial (R$) <input type="number" data-p="corte" step="1000" value="${P.corte}"></label>
-      <label class="fld">Corretagem 6 / 9 ordens <span><input type="number" data-p="corr.0" value="${P.corr[0]}" style="width:46px"> <input type="number" data-p="corr.1" value="${P.corr[1]}" style="width:46px"></span></label>
+      <label class="fld">Corretagem 3 / 6 / 9 ordens <span><input type="number" data-p="corr.0" value="${P.corr[0]}" style="width:42px"> <input type="number" data-p="corr.1" value="${P.corr[1]}" style="width:42px"> <input type="number" data-p="corr.2" value="${P.corr[2]}" style="width:42px"></span></label>
       <label class="fld">Cofre XP 110 / 115 / 125 <span><input type="number" data-p="cofre.0" value="${P.cofre[0]}" style="width:46px"> <input type="number" data-p="cofre.1" value="${P.cofre[1]}" style="width:46px"> <input type="number" data-p="cofre.2" value="${P.cofre[2]}" style="width:46px"></span></label>
       <label class="fld">Investback One 0,8 / 1,0 / 1,1 <span><input type="number" data-p="ibOne.0" value="${P.ibOne[0]}" style="width:42px"> <input type="number" data-p="ibOne.1" value="${P.ibOne[1]}" style="width:42px"> <input type="number" data-p="ibOne.2" value="${P.ibOne[2]}" style="width:42px"></span></label>
       <label class="fld">Investback Infinite 1,2 / 1,5 <span><input type="number" data-p="ibInf.0" value="${P.ibInf[0]}" style="width:46px"> <input type="number" data-p="ibInf.1" value="${P.ibInf[1]}" style="width:46px"></span></label>
