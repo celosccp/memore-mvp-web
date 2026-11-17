@@ -657,7 +657,7 @@ function pkCard(k){
   }
   const locked = k === 'infinite' && !cur && S.inf === 'none' && !elig();
   return `<button class="pk ${cur ? 'cur' : ''} ${locked ? 'lock' : ''}" data-a="go:pacote">
-    <div class="row">${plast(k)}<div class="g"><div class="b" style="font-size:16px">${cardName(k)}</div><div class="xs mut">${k === 'one' ? 'Seu cartão de cliente XP Digital' : cur ? (infByPoints() ? 'É seu enquanto as fichas estiverem em uso' : `É seu por ter ${brl(P.corte)} ou mais investidos`) : S.inf === 'requested' ? 'Seu próximo cartão' : elig() ? `Liberado pelos seus ${brl(S.auc)} investidos` : 'O próximo cartão'}</div></div></div>
+    <div class="row">${plast(k)}<div class="g"><div class="b" style="font-size:16px">${cardName(k)}</div><div class="xs mut">${k === 'one' ? '' : cur ? (infByPoints() ? 'É seu enquanto as fichas estiverem em uso' : `É seu por ter ${brl(P.corte)} ou mais investidos`) : S.inf !== 'requested' && elig() ? `Liberado pelos seus ${brl(S.auc)} investidos` : ''}</div></div></div>
     <div style="margin:10px 0 2px">${tag}</div>
     ${kv('Investback', (ibA ? pct(ib.rate) : k === 'one' ? '0,8%' : '1%') + (k === 'one' ? ` <span class="mut" style="font-weight:400">a partir de ${brl(P.oneMin)}/mês</span>` : ''), ibA ? (ib.rate >= ibMax ? 'turbinado com fichas' : `turbinado · até ${pct(ibMax)} com fichas`) : `até ${pct(ibMax)} com fichas`)}
     ${kv('Salas VIP', sl.main, sl.up)}
