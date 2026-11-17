@@ -353,6 +353,9 @@ h3.sec button{color:var(--y);font-size:13px;font-weight:600}
 .stp.on{border-color:var(--y);background:rgba(255,199,9,.12)} .stp.on .s{color:var(--y)}
 .stp.sel{border-color:var(--y);box-shadow:0 0 0 3px rgba(255,199,9,.18)}
 .pc .nil{color:var(--mut);font-weight:500}
+.tb{align-self:flex-start;margin-top:auto;font-size:12px;font-weight:700;color:#000;background:var(--y);border-radius:999px;padding:4px 11px;transition:transform .14s ease}
+.pc .up{margin-bottom:7px}
+.tb:active{transform:scale(.95)}
 </style>
 </head>
 <body>
@@ -668,7 +671,7 @@ function welcome(){
 // ---------- Telas ----------
 function pkCard(k){
   const c = activeCard(), cur = c === k, ib = investbackNow();
-  const col = (lab, val, cond, up) => `<div class="pc"><span class="pl">${lab}</span><b>${val}</b>${cond ? `<span class="pcnd">${cond}</span>` : ''}${up ? `<em class="up">${up}</em>` : ''}</div>`;
+  const col = (lab, val, cond, up, go, max) => `<div class="pc"><span class="pl">${lab}</span><b>${val}</b>${cond ? `<span class="pcnd">${cond}</span>` : ''}${up ? `<em class="up">${up}</em>` : ''}${cur && go ? `<span class="tb" data-a="openfam:${go}">${max ? 'Ver opções' : 'Turbinar'} ›</span>` : ''}</div>`;
   const ibA = cur && S.active.investback && S.active.investback.status === 'active', ibMax = IB[k]().slice(-1)[0].rate, sl = salaNow(k, cur);
   const locked = k === 'infinite' && !cur && S.inf === 'none' && !elig();
   const nil = '<span class="nil">Ainda não ativo</span>';
@@ -691,8 +694,8 @@ function pkCard(k){
     ${sub ? `<div class="xs mut" style="margin-top:8px">${sub}</div>` : ''}
     ${foot}
     <div class="pcs">
-      ${col('Investback', ibA ? pct(ib.rate) : k === 'one' ? nil : '1%', '', ibA && ib.rate >= ibMax ? 'com fichas' : `até ${pct(ibMax)} com fichas`)}
-      ${col('Salas VIP', sl.n ? `${sl.n} acessos/ano` : nil, '', sl.n ? sl.up : `até ${sl.max} acessos/ano com fichas`)}
+      ${col('Investback', ibA ? pct(ib.rate) : k === 'one' ? nil : '1%', '', ibA && ib.rate >= ibMax ? 'com fichas' : `até ${pct(ibMax)} com fichas`, 'investback', ibA && ib.rate >= ibMax)}
+      ${col('Salas VIP', sl.n ? `${sl.n} acessos/ano` : nil, '', sl.n ? sl.up : `até ${sl.max} acessos/ano com fichas`, 'salavip', sl.n >= sl.max)}
     </div>
     <span class="pkl">Ver todos os benefícios do cartão ›</span></button>`;
 }
