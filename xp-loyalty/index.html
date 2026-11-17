@@ -381,7 +381,7 @@ const P = {
   corte: 30000,          // corte patrimonial do Infinite
   infPts: 10,            // Infinite por fichas (cenário B)
   corrPts: 15,           // Corretagem zero, corte único
-  cofre: [10, 15, 30],   // Cofrinho Turbo 110/115/125
+  cofre: [10, 15, 30],   // Cofre XP Turbo 110/115/125
   ibOne: [5, 10, 15],    // Investback One 0,8 / 1,0 / 1,1 (tudo com fichas)
   ibInf: [10, 15],       // Investback Infinite 1,2 / 1,5
   cartaoPor: 500, cartaoMax: 15,
@@ -459,7 +459,7 @@ function salaNow(card, mine){
 }
 function families(card = activeCard()){
   return [
-    { id:'cofrinho', nome:'Cofrinho Turbo', desc:'O dinheiro guardado no Cofrinho rende mais.',
+    { id:'cofrinho', nome:'Cofre XP Turbo', desc:'O dinheiro guardado no Cofre XP rende mais.',
       opts:[ {id:'c110', label:'110% do CDI', price:P.cofre[0]}, {id:'c115', label:'115% do CDI', price:P.cofre[1]}, {id:'c125', label:'125% do CDI', price:P.cofre[2]} ] },
     { id:'investback', nome:'Investback turbinado', desc:`Mais dinheiro de volta nas compras do ${cardName(card)}.`, card, opts: IB[card]() },
     { id:'corretagem', nome:'Corretagem zero', desc:'Invista na bolsa sem pagar corretagem.',
@@ -592,7 +592,7 @@ function bal(){
   return `<div class="bal"><div class="btop"><div class="n"><span class="cnt">${t}</span></div><div class="blab"><b>${t === 1 ? 'ficha' : 'fichas'}</b><span>de ${mx} possíveis</span></div></div>
     <div class="hb"><i class="bu" style="width:${(al / mx * 100).toFixed(1)}%"></i><i class="ba" style="width:${(av / mx * 100).toFixed(1)}%"></i></div>
     <div class="leg"><span><i class="d y"></i>Em uso <b>${al}</b></span><span><i class="d g"></i>Disponíveis <b>${av}</b></span><button data-a="go:juntar"><i class="d o"></i>A conquistar <b>${mx - Math.max(t, al)}</b></button></div>
-    ${t === 0 && al === 0 ? '<div class="xs mut" style="margin-top:10px">Você ainda não tem fichas. Com elas você ativa Investback, Cofrinho Turbo e outros benefícios. Veja em Juntar por onde começar.</div>' : ''}</div>`;
+    ${t === 0 && al === 0 ? '<div class="xs mut" style="margin-top:10px">Você ainda não tem fichas. Com elas você ativa Investback, Cofre XP Turbo e outros benefícios. Veja em Juntar por onde começar.</div>' : ''}</div>`;
 }
 const strip = () => '';
 const canActivate = () => families().some(f => !S.active[f.id] && missing(f.id, f.opts[0].id) === 0)
@@ -609,7 +609,7 @@ function banners(){
   if (elig() && S.inf === 'none') B('y', '★', 'Você já pode pedir o XP Infinite', `Você chegou a ${brl(P.corte)} investidos. O pedido é feito por você, quando quiser.`, 'go:pacote', 'Ver o cartão e pedir');
   if (S.inf === 'requested') B('', '…', 'XP Infinite em análise', 'Você continua com o XP One até o novo cartão ser ativado.', 'go:pacote', 'Acompanhar');
   if (S.ibNotice) B('', 'i', `${pt(S.ibNotice.price)} voltaram para o seu saldo`, `Seu cartão mudou. ${S.ibNotice.sv ? 'A opção de Sala VIP' : 'O Investback turbinado de ' + S.ibNotice.label.split(' ')[0]} era do cartão anterior e foi encerrado.`, 'ibnotice', 'Escolher a opção do novo cartão');
-  if (S.legacy && !S.active.cofrinho) B('', 'i', 'Seu Cofrinho no novo programa', legacyCopy().short, 'sheet:legacy', 'Entender');
+  if (S.legacy && !S.active.cofrinho) B('', 'i', 'Seu Cofre XP no novo programa', legacyCopy().short, 'sheet:legacy', 'Entender');
   return out.join('');
 }
 
@@ -619,8 +619,8 @@ function legacyCopy(){
     muda:[`Nada muda na sua condição: ${P.legRate}% do CDI, sem usar fichas.`, `Para render mais (${fam('cofrinho').opts[1].label} ou ${fam('cofrinho').opts[2].label}), você pode usar fichas.`], acao:'Ver opções para render mais' };
   if (r === 'carencia') return { short:`Seus ${P.legRate}% do CDI estão garantidos até ${P.legAte}.`, status:`${P.legRate}% do CDI até ${P.legAte}`, k:'warn',
     muda:[`Até ${P.legAte}, tudo fica como está: ${P.legRate}% do CDI, sem usar fichas.`, `Depois dessa data, manter ${P.legRate}% do CDI passa a usar ${pt(P.cofre[0])}.`, need ? `Hoje faltam ${pt(need)} para você manter. Dá tempo de chegar lá.` : `Você já tem fichas para manter. Pode garantir agora ou esperar a data.`], acao: need ? 'Ver como ganhar fichas' : `Garantir com ${pt(P.cofre[0])}` };
-  return { short:`O Cofrinho Turbo agora é ativado com fichas.`, status:`Precisa de ${pt(P.cofre[0])} para continuar`, k:'warn',
-    muda:[`No novo programa, o Cofrinho só fica ativo com fichas em uso.`, `Para manter ${P.legRate}% do CDI, ative o Cofrinho Turbo com ${pt(P.cofre[0])}.`, need ? `Hoje faltam ${pt(need)}.` : `Você já tem fichas para ativar.`], acao: need ? 'Ver como ganhar fichas' : `Ativar com ${pt(P.cofre[0])}` };
+  return { short:`O Cofre XP Turbo agora é ativado com fichas.`, status:`Precisa de ${pt(P.cofre[0])} para continuar`, k:'warn',
+    muda:[`No novo programa, o Cofre XP só fica ativo com fichas em uso.`, `Para manter ${P.legRate}% do CDI, ative o Cofre XP Turbo com ${pt(P.cofre[0])}.`, need ? `Hoje faltam ${pt(need)}.` : `Você já tem fichas para ativar.`], acao: need ? 'Ver como ganhar fichas' : `Ativar com ${pt(P.cofre[0])}` };
 }
 
 // opções em faixas viram uma escadinha horizontal
@@ -798,7 +798,7 @@ function shelf(){
 }
 
 const FAMINFO = {
-  cofrinho: () => [`Vale para o dinheiro guardado no Cofrinho.`, `O Cofrinho só existe com fichas em uso. Não há versão sem Turbo.`],
+  cofrinho: () => [`Vale para o dinheiro guardado no Cofre XP.`, `O Cofre XP só existe com fichas em uso. Não há versão sem Turbo.`],
   investback: () => { const c = activeCard(); return [c === 'one' ? `No XP One, o Investback é ativado com fichas. A taxa escolhida vale para todas as compras.` : `A taxa escolhida é o total do cartão, não um extra. Ex.: 1,2% substitui o 1% de hoje.`, `Vale para as compras no ${cardName(c)}.`, `O valor volta como investimento.`]; },
   salavip: () => [salaBase(activeCard()) ? `O número escolhido é o total do ano, já contando os ${salaBase(activeCard())} acessos do seu cartão.` : `O número escolhido é o total de acessos no ano.`, `Os acessos valem enquanto o benefício estiver em uso.`],
   corretagem: () => [P.corrCob + '.', `Vale enquanto o benefício estiver ativo.`],
@@ -812,7 +812,7 @@ function famScreen(){
     <div class="row"><div class="ico" style="width:46px;height:46px">${I[f.id]}</div><div class="g"><div class="sm mut">${f.desc}</div></div></div>
     <div class="split" style="margin-top:12px"><div><span>${sel ? 'Custo' : 'A partir de'}</span><b>${pt(sel ? f.opts.find(o => o.id === sel).price : f.opts[0].price)}</b></div><div><span><i class="d g"></i>Disponíveis</span><b>${pt(available())}</b></div></div>
     ${a ? `<div class="card" style="margin-top:12px"><div class="row"><div class="g"><div class="xs mut b">EM USO AGORA</div><div class="b" style="font-size:17px">${optOf(f.id, a.opt).label}</div><div class="xs mut">${pt(optOf(f.id, a.opt).price)} em uso</div></div>${optState(f, optOf(f.id, a.opt))}</div></div>` : ''}
-    ${f.id === 'cofrinho' && S.legacy && !a ? `<button class="ban ${legacyCopy().k === 'ok' ? 'ok' : ''}" data-a="sheet:legacy"><div class="ic">i</div><div><b>${legacyCopy().status}</b><span>${legacyCopy().short}</span><em>Seu Cofrinho no novo programa ›</em></div></button>` : ''}
+    ${f.id === 'cofrinho' && S.legacy && !a ? `<button class="ban ${legacyCopy().k === 'ok' ? 'ok' : ''}" data-a="sheet:legacy"><div class="ic">i</div><div><b>${legacyCopy().status}</b><span>${legacyCopy().short}</span><em>Seu Cofre XP no novo programa ›</em></div></button>` : ''}
     ${f.id === 'investback' ? `<div class="note">Seu cartão é o <b style="color:var(--tx)">${cardName(c)}</b>${baseRate(c) ? `, que já vem com ${pct(baseRate(c))} de Investback` : ''}. As opções abaixo são as do seu cartão.</div>` : ''}
 
     <h3 class="sec">${a ? 'Trocar por outra opção' : 'Escolha uma opção'}</h3>
@@ -1009,7 +1009,7 @@ function sheet(){
   }
   else if (s.t === 'legacy'){
     const c = legacyCopy(), need = P.cofre[0] - available() > 0;
-    h = `<h2>Seu Cofrinho no novo programa</h2><p>Você já tinha o Cofrinho com ${P.legRate}% do CDI antes do programa de fichas. Veja como fica.</p>
+    h = `<h2>Seu Cofre XP no novo programa</h2><p>Você já tinha o Cofre XP com ${P.legRate}% do CDI antes do programa de fichas. Veja como fica.</p>
       <div class="hero"><small>Sua condição</small><b>${c.status}</b></div>
       <div class="card">${c.muda.map(t => `<div class="kv" style="font-size:13.5px"><span style="color:var(--tx)">${t}</span></div>`).join('')}
         <div class="kv" style="font-size:13.5px"><span style="color:var(--tx)">O dinheiro guardado não muda e continua disponível para você.</span></div></div>
@@ -1078,7 +1078,7 @@ const HIPOTESES = [
   ['Saldo', 'O medidor mostra as fichas do cliente contra o total possível (48 na régua ilustrativa): em uso, disponíveis e a conquistar. O total é a soma dos tetos de todos os desafios e muda com a calibração.'],
   ['Saldo', 'Fichas travadas: ficam em uso enquanto o benefício está ativo e voltam ao desativar. Uma opção ativa por família.'],
   ['Saldo', 'Na troca dentro da família, as fichas da opção atual são liberadas e as da nova entram em uso, em um só passo.'],
-  ['Prateleira', 'Cofrinho Turbo 110/115/125% do CDI por 10/15/30 fichas. Não existe Cofrinho sem Turbo.'],
+  ['Prateleira', 'Cofre XP Turbo 110/115/125% do CDI por 10/15/30 fichas. Não existe Cofre XP sem Turbo.'],
   ['Prateleira', 'Investback turbinado é a taxa total do cartão. One: 0,8%, 1,0% ou 1,1% por 5, 10 ou 15 (os preços de 1,0% e 1,1% subiram 5 fichas para abrir espaço ao 0,8%). Infinite: 1,2% ou 1,5% por 10 ou 15.'],
   ['Prateleira', 'Corretagem zero em corte único por 15 fichas, com cobertura parametrizável.'],
   ['Prateleira', 'Investback turbinado pertence ao cartão. Se o cartão muda, a opção é encerrada e as fichas voltam ao saldo.'],
@@ -1086,11 +1086,11 @@ const HIPOTESES = [
   ['Cenário B', 'Ao atingir R$ 30 mil, as fichas do cartão são liberadas automaticamente e o acesso passa a ser por patrimônio.'],
   ['Elegibilidade', 'Queda de fichas: nada muda até o fim do ciclo. O cliente recupera as fichas ou escolhe o que manter.'],
   ['Elegibilidade', 'Queda de patrimônio com Infinite ativo: o cartão segue ativo, com aviso prévio antes de qualquer mudança. No B, pode manter com fichas.'],
-  ['Cofrinho', 'Quem já tinha Cofrinho antes do Loyalty entra com 110% do CDI. Três alternativas de transição: preservar sem fichas, carência até 30/04/2027, ou migração imediata para fichas.'],
+  ['Cofre XP', 'Quem já tinha Cofre XP antes do Loyalty entra com 110% do CDI. Três alternativas de transição: preservar sem fichas, carência até 30/04/2027, ou migração imediata para fichas.'],
   ['Recomendação', 'A ordem das sugestões é definida por perfil. Crédito e consórcio nunca aparecem como sugestão: só no catálogo, com a necessidade antes e as condições à vista.'],
   ['Trilha', 'O cliente pode seguir a trilha de um benefício e acompanhar no resumo quanto falta e quais desafios sugeridos levam até lá.'],
   ['Vocabulário', 'Das telas de Design: fichas (evita confusão com os pontos do cartão), Em uso e Disponíveis, Juntar e Usar, desafios, trilha para desbloquear.'],
-  ['Vocabulário', 'Mantidos do briefing e diferentes das telas: nome Cofrinho (telas: Cofre XP), taxas 110/115/125% e preços 10/15/30 (telas: 110% por 5 e 120% por 15), Infinite por 10 fichas (telas: 15), quatro contextos de earn (telas: seis).'],
+  ['Vocabulário', 'Mantidos do briefing e diferentes das telas: taxas 110/115/125% e preços 10/15/30 (telas: 110% por 5 e 120% por 15), Infinite por 10 fichas (telas: 15), quatro contextos de earn (telas: seis).'],
 ];
 const DECISOES = [
   ['Acesso ao Infinite', 'Cenário A ou B. No B, com 15 fichas, quem pega o Infinite fica com 5 e não alcança nenhum adicional (o menor custa 10). Vale rever o preço do cartão ou o piso do Investback Infinite.'],
@@ -1104,12 +1104,12 @@ const DECISOES = [
   ['Régua', 'Pontuação dos comportamentos fora de cartão e patrimônio. Inclusão e fichas do Seguro Conta e Cartão.'],
   ['Régua', 'Nesta régua, o cliente de R$ 40 mil com pouco uso tem 2 fichas e fica a 8 do benefício mais barato. Avaliar se há algo alcançável mais cedo.'],
   ['Prateleira', 'Corretagem zero: corte único ou franquias de 3, 6 e 10 ordens. Cobertura por mercado e canal.'],
-  ['Prateleira', 'Cofrinho: limite de saldo, duração e renovação. Como não há versão sem Turbo, definir o que acontece com o dinheiro guardado quando o benefício é desativado ou perdido.'],
+  ['Prateleira', 'Cofre XP: limite de saldo, duração e renovação. Como não há versão sem Turbo, definir o que acontece com o dinheiro guardado quando o benefício é desativado ou perdido.'],
   ['Prateleira', 'Investback do One abaixo de R$ 2.500 de gasto: o turbinado pode ser vendido a quem não atinge o mínimo? O protótipo permite e informa a condição.'],
   ['Prateleira', 'Troca de cartão com Investback turbinado ativo: encerrar e devolver fichas (adotado) ou converter para a opção equivalente.'],
   ['Sala VIP', 'Mínimo incluído no cartão ou tudo por fichas. Quantidade de acessos por opção, preço em fichas, gasto mínimo, e se o One pode ter sala VIP com fichas.'],
   ['Pacotes', 'Lista completa de benefícios de cada cartão.'],
-  ['Cofrinho', 'Regra de transição para quem ativar o Cofrinho entre janeiro e o início do Loyalty, e preço de upgrade para quem tem condição preservada.'],
+  ['Cofre XP', 'Regra de transição para quem ativar o Cofre XP entre janeiro e o início do Loyalty, e preço de upgrade para quem tem condição preservada.'],
   ['Recomendação', 'Critérios de adequação: quais sinais de capacidade e necessidade definem o que sugerir a cada cliente.'],
 ];
 
@@ -1134,20 +1134,20 @@ function renderPanel(){
         `<label class="tog" style="padding:4px 0">${b.sub || b.nome} <span class="hint" style="margin:0 6px 0 auto">+${b.pts}</span><input type="checkbox" data-d="${b.id}" ${S.done[b.id] ? 'checked' : ''}></label>`).join('') : ''; }).join('')}
       <h2>Ir direto a um estado</h2>
       ${[['Saldo', [['welcome','Boas-vindas'],['zero','Zero ficha'],['insuf','Fichas insuficientes']]],
-        ['Benefício', [['disp','Disponível'],['proc','Em processamento'],['ativo','Ativo'],['troca','Troca'],['perda','Perda de elegibilidade'],['legado','Cofrinho já ativo']]],
+        ['Benefício', [['disp','Disponível'],['proc','Em processamento'],['ativo','Ativo'],['troca','Troca'],['perda','Perda de elegibilidade'],['legado','Cofre XP já ativo']]],
         ['Cartão', [['infB','B · Infinite por fichas'],['transA','A · chegou a 30 mil'],['transB','B · chegou a 30 mil'],['perdaCard','Patrimônio caiu']]]]
         .map(([g, items]) => `<div class="glab">${g}</div><div class="grid2">${items.map(([k, t]) => `<button class="pbtn" data-a="preset:${k}">${t}</button>`).join('')}</div>`).join('')}
       <h2>Salas VIP</h2>
       <div class="seg"><button class="${S.salaMode === 'incluida' ? 'on' : ''}" data-a="sala:incluida">Mínimo no cartão</button><button class="${S.salaMode === 'fichas' ? 'on' : ''}" data-a="sala:fichas">Tudo por fichas</button></div>
       <p class="hint">${S.salaMode === 'incluida' ? `O Infinite já vem com ${P.salaIncl} acessos por ano; mais acessos com fichas.` : 'Nenhum cartão inclui sala VIP; todos os acessos vêm de fichas.'}</p>
-      <h2>Cofrinho antes do Loyalty</h2>
-      <label class="tog">Cliente já tinha Cofrinho ativo <input type="checkbox" data-c="legacy" ${S.legacy ? 'checked' : ''}></label>
-      ${S.legacy ? `<div class="seg">${[['preservar','Preservar'],['carencia','Carência'],['migrar','Migrar já']].map(([k, t]) => `<button class="${S.legRule === k ? 'on' : ''}" data-a="leg:${k}">${t}</button>`).join('')}</div><p class="hint">Três hipóteses de transição. Abra o Cofrinho Turbo para ver o texto do cliente.</p>` : ''}
+      <h2>Cofre XP antes do Loyalty</h2>
+      <label class="tog">Cliente já tinha Cofre XP ativo <input type="checkbox" data-c="legacy" ${S.legacy ? 'checked' : ''}></label>
+      ${S.legacy ? `<div class="seg">${[['preservar','Preservar'],['carencia','Carência'],['migrar','Migrar já']].map(([k, t]) => `<button class="${S.legRule === k ? 'on' : ''}" data-a="leg:${k}">${t}</button>`).join('')}</div><p class="hint">Três hipóteses de transição. Abra o Cofre XP Turbo para ver o texto do cliente.</p>` : ''}
       <h2><button class="h2b" data-a="tog:prem:0">Premissas editáveis <span>${isOpen('prem') ? '−' : '+'}</span></button></h2><div ${isOpen('prem') ? '' : 'hidden'}>
       <label class="fld">Infinite por fichas (B) <input type="number" data-p="infPts" value="${P.infPts}"></label>
       <label class="fld">Corte patrimonial (R$) <input type="number" data-p="corte" step="1000" value="${P.corte}"></label>
       <label class="fld">Corretagem zero (fichas) <input type="number" data-p="corrPts" value="${P.corrPts}"></label>
-      <label class="fld">Cofrinho 110 / 115 / 125 <span><input type="number" data-p="cofre.0" value="${P.cofre[0]}" style="width:46px"> <input type="number" data-p="cofre.1" value="${P.cofre[1]}" style="width:46px"> <input type="number" data-p="cofre.2" value="${P.cofre[2]}" style="width:46px"></span></label>
+      <label class="fld">Cofre XP 110 / 115 / 125 <span><input type="number" data-p="cofre.0" value="${P.cofre[0]}" style="width:46px"> <input type="number" data-p="cofre.1" value="${P.cofre[1]}" style="width:46px"> <input type="number" data-p="cofre.2" value="${P.cofre[2]}" style="width:46px"></span></label>
       <label class="fld">Investback One 0,8 / 1,0 / 1,1 <span><input type="number" data-p="ibOne.0" value="${P.ibOne[0]}" style="width:42px"> <input type="number" data-p="ibOne.1" value="${P.ibOne[1]}" style="width:42px"> <input type="number" data-p="ibOne.2" value="${P.ibOne[2]}" style="width:42px"></span></label>
       <label class="fld">Investback Infinite 1,2 / 1,5 <span><input type="number" data-p="ibInf.0" value="${P.ibInf[0]}" style="width:46px"> <input type="number" data-p="ibInf.1" value="${P.ibInf[1]}" style="width:46px"></span></label>
       <label class="fld">Acessos incluídos no Infinite <input type="number" data-p="salaIncl" value="${P.salaIncl}"></label>

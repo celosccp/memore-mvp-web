@@ -28,8 +28,8 @@ confirmação, troca, perda de elegibilidade e transição dos R$ 30 mil ganhara
 - **Perfis:** Marina (R$ 25 mil, R$ 7.500/mês no cartão, 15 fichas), Rafael (R$ 40 mil, 2 fichas), Jô (R$ 8 mil, zero ficha).
 - **Simular comportamento:** patrimônio, gasto no cartão e cada desafio (Open Finance, aporte, salário...) recalculam fichas, elegibilidade e alertas na hora.
 - **Ir direto a um estado:** boas-vindas, zero ficha, fichas insuficientes, disponível, em processamento, ativo, troca,
-  perda de elegibilidade, queda de patrimônio, Infinite por fichas, chegada a R$ 30 mil em A e em B, Cofrinho já ativo.
-- **Cofrinho antes do Loyalty:** três hipóteses de transição (preservar, carência, migrar já).
+  perda de elegibilidade, queda de patrimônio, Infinite por fichas, chegada a R$ 30 mil em A e em B, Cofre XP já ativo.
+- **Cofre XP antes do Loyalty:** três hipóteses de transição (preservar, carência, migrar já).
 - **Premissas editáveis:** preços em fichas, corte patrimonial, textos de sala VIP e de cobertura da corretagem.
 
 Dentro do app, o botão tracejado "Demo · simular ação concluída" marca um comportamento como feito.
@@ -42,7 +42,7 @@ acima de R$ 30 mil, até 10), preços da prateleira e Infinite por 10 fichas.
 
 Ilustrativos, criados para o protótipo: Open Finance 3, aporte recorrente 3, previdência 3, pagamentos 2,
 portabilidade de salário 5, câmbio 1, crédito 2, consórcio 2, seguros 2, Seguro Conta e Cartão 1;
-condição de lançamento do Cofrinho a 110% do CDI; carência até 30/04/2027.
+condição de lançamento do Cofre XP a 110% do CDI; carência até 30/04/2027.
 
 ## Hipóteses adotadas
 
@@ -60,7 +60,7 @@ condição de lançamento do Cofrinho a 110% do CDI; carência até 30/04/2027.
 - **Saldo.** O medidor mostra as fichas do cliente contra o total possível (48 na régua ilustrativa): em uso, disponíveis e a conquistar. O total é a soma dos tetos de todos os desafios e muda com a calibração.
 - **Saldo.** Fichas travadas: ficam em uso enquanto o benefício está ativo e voltam ao desativar. Uma opção ativa por família.
 - **Saldo.** Na troca dentro da família, as fichas da opção atual são liberadas e as da nova entram em uso, em um só passo.
-- **Prateleira.** Cofrinho Turbo 110/115/125% do CDI por 10/15/30 fichas. Não existe Cofrinho sem Turbo.
+- **Prateleira.** Cofre XP Turbo 110/115/125% do CDI por 10/15/30 fichas. Não existe Cofre XP sem Turbo.
 - **Prateleira.** Investback turbinado é a taxa total do cartão. One: 0,8%, 1,0% ou 1,1% por 5, 10 ou 15 (os preços de 1,0% e 1,1% subiram 5 fichas para abrir espaço ao 0,8%). Infinite: 1,2% ou 1,5% por 10 ou 15.
 - **Prateleira.** Corretagem zero em corte único por 15 fichas, com cobertura parametrizável.
 - **Prateleira.** Investback turbinado pertence ao cartão. Se o cartão muda, a opção é encerrada e as fichas voltam ao saldo.
@@ -68,11 +68,11 @@ condição de lançamento do Cofrinho a 110% do CDI; carência até 30/04/2027.
 - **Cenário B.** Ao atingir R$ 30 mil, as fichas do cartão são liberadas automaticamente e o acesso passa a ser por patrimônio.
 - **Elegibilidade.** Queda de fichas: nada muda até o fim do ciclo. O cliente recupera as fichas ou escolhe o que manter.
 - **Elegibilidade.** Queda de patrimônio com Infinite ativo: o cartão segue ativo, com aviso prévio antes de qualquer mudança. No B, pode manter com fichas.
-- **Cofrinho.** Quem já tinha Cofrinho antes do Loyalty entra com 110% do CDI. Três alternativas de transição: preservar sem fichas, carência até 30/04/2027, ou migração imediata para fichas.
+- **Cofre XP.** Quem já tinha Cofre XP antes do Loyalty entra com 110% do CDI. Três alternativas de transição: preservar sem fichas, carência até 30/04/2027, ou migração imediata para fichas.
 - **Recomendação.** A ordem das sugestões é definida por perfil. Crédito e consórcio nunca aparecem como sugestão: só no catálogo, com a necessidade antes e as condições à vista.
 - **Trilha.** O cliente pode seguir a trilha de um benefício e acompanhar no resumo quanto falta e quais desafios sugeridos levam até lá.
 - **Vocabulário.** Das telas de Design: fichas (evita confusão com os pontos do cartão), Em uso e Disponíveis, Juntar e Usar, desafios, trilha para desbloquear.
-- **Vocabulário.** Mantidos do briefing e diferentes das telas: nome Cofrinho (telas: Cofre XP), taxas 110/115/125% e preços 10/15/30 (telas: 110% por 5 e 120% por 15), Infinite por 10 fichas (telas: 15), quatro contextos de earn (telas: seis).
+- **Vocabulário.** Mantidos do briefing e diferentes das telas: taxas 110/115/125% e preços 10/15/30 (telas: 110% por 5 e 120% por 15), Infinite por 10 fichas (telas: 15), quatro contextos de earn (telas: seis).
 
 ## Decisões de produto em aberto
 
@@ -87,10 +87,10 @@ condição de lançamento do Cofrinho a 110% do CDI; carência até 30/04/2027.
 - **Régua.** Pontuação dos comportamentos fora de cartão e patrimônio. Inclusão e fichas do Seguro Conta e Cartão.
 - **Régua.** Nesta régua, o cliente de R$ 40 mil com pouco uso tem 2 fichas e fica a 8 do benefício mais barato. Avaliar se há algo alcançável mais cedo.
 - **Prateleira.** Corretagem zero: corte único ou franquias de 3, 6 e 10 ordens. Cobertura por mercado e canal.
-- **Prateleira.** Cofrinho: limite de saldo, duração e renovação. Como não há versão sem Turbo, definir o que acontece com o dinheiro guardado quando o benefício é desativado ou perdido.
+- **Prateleira.** Cofre XP: limite de saldo, duração e renovação. Como não há versão sem Turbo, definir o que acontece com o dinheiro guardado quando o benefício é desativado ou perdido.
 - **Prateleira.** Investback do One abaixo de R$ 2.500 de gasto: o turbinado pode ser vendido a quem não atinge o mínimo? O protótipo permite e informa a condição.
 - **Prateleira.** Troca de cartão com Investback turbinado ativo: encerrar e devolver fichas (adotado) ou converter para a opção equivalente.
 - **Sala VIP.** Mínimo incluído no cartão ou tudo por fichas. Quantidade de acessos por opção, preço em fichas, gasto mínimo, e se o One pode ter sala VIP com fichas.
 - **Pacotes.** Lista completa de benefícios de cada cartão.
-- **Cofrinho.** Regra de transição para quem ativar o Cofrinho entre janeiro e o início do Loyalty, e preço de upgrade para quem tem condição preservada.
+- **Cofre XP.** Regra de transição para quem ativar o Cofre XP entre janeiro e o início do Loyalty, e preço de upgrade para quem tem condição preservada.
 - **Recomendação.** Critérios de adequação: quais sinais de capacidade e necessidade definem o que sugerir a cada cliente.
