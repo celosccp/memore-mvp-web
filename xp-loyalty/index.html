@@ -364,9 +364,8 @@ const P = {
   infPts: 10,            // Infinite por fichas (cenário B)
   corrPts: 15,           // Corretagem zero, corte único
   cofre: [10, 15, 30],   // Cofrinho Turbo 110/115/125
-  ibOne: [5, 10],        // Investback One 1,0 / 1,1
+  ibOne: [5, 10, 15],    // Investback One 0,8 / 1,0 / 1,1 (tudo com fichas)
   ibInf: [10, 15],       // Investback Infinite 1,2 / 1,5
-  oneMin: 2500,          // gasto mínimo p/ Investback do One
   cartaoPor: 500, cartaoMax: 15,
   aucBloco: 5000, aucMax: 10,
   ciclo: 'mensal',
@@ -428,7 +427,7 @@ function behPts(b){ return b.id==='cartao' ? ptsCartao() : b.id==='auc' ? ptsAuc
 const visibleBeh = () => BEH.filter(b => !b.optional || S.segcc);
 const total = () => visibleBeh().reduce((s,b) => s + behPts(b), 0);
 
-const IB = { one: () => [ {id:'o10', label:'1,0% de Investback', rate:1.0, price:P.ibOne[0]}, {id:'o11', label:'1,1% de Investback', rate:1.1, price:P.ibOne[1]} ],
+const IB = { one: () => [ {id:'o08', label:'0,8% de Investback', rate:0.8, price:P.ibOne[0]}, {id:'o10', label:'1,0% de Investback', rate:1.0, price:P.ibOne[1]}, {id:'o11', label:'1,1% de Investback', rate:1.1, price:P.ibOne[2]} ],
              infinite: () => [ {id:'i12', label:'1,2% de Investback', rate:1.2, price:P.ibInf[0]}, {id:'i15', label:'1,5% de Investback', rate:1.5, price:P.ibInf[1]} ] };
 // Sala VIP: incluída no Infinite (mínimo de largada) ou só por fichas. O número da opção é o total de acessos por ano.
 const salaBase = card => card === 'infinite' && S.salaMode === 'incluida' ? P.salaIncl : 0;
@@ -470,11 +469,11 @@ function missing(famId, optId){
   const back = cur ? optOf(famId, cur.opt).price : 0;
   return Math.max(0, optOf(famId, optId).price - (total() - allocated()) - back);
 }
-const baseRate = c => c === 'infinite' ? 1.0 : 0.8;
+const baseRate = c => c === 'infinite' ? 1.0 : 0;   // no One, o Investback vem só de fichas
 function investbackNow(){
   const c = activeCard(), a = S.active.investback;
   const rate = a && a.status === 'active' ? optOf('investback', a.opt).rate : baseRate(c);
-  const applies = c === 'infinite' || S.gasto >= P.oneMin;
+  const applies = rate > 0;
   return { rate, applies, valor: applies ? S.gasto * rate / 100 : 0 };
 }
 const pct = r => r.toFixed(1).replace('.', ',') + '%';
@@ -575,7 +574,7 @@ function bal(){
   return `<div class="bal"><div class="btop"><div class="n"><span class="cnt">${t}</span></div><div class="blab"><b>${t === 1 ? 'ficha' : 'fichas'}</b><span>de ${mx} possíveis</span></div></div>
     <div class="hb"><i class="bu" style="width:${(al / mx * 100).toFixed(1)}%"></i><i class="ba" style="width:${(av / mx * 100).toFixed(1)}%"></i></div>
     <div class="leg"><span><i class="d y"></i>Em uso <b>${al}</b></span><span><i class="d g"></i>Disponíveis <b>${av}</b></span><button data-a="go:juntar"><i class="d o"></i>A conquistar <b>${mx - Math.max(t, al)}</b></button></div>
-    ${t === 0 && al === 0 ? '<div class="xs mut" style="margin-top:10px">Você ainda não tem fichas, e tudo bem: seu cartão já tem benefícios valendo. Fichas servem para ativar benefícios extras.</div>' : ''}</div>`;
+    ${t === 0 && al === 0 ? '<div class="xs mut" style="margin-top:10px">Você ainda não tem fichas. Com elas você ativa Investback, Cofrinho Turbo e outros benefícios. Veja em Juntar por onde começar.</div>' : ''}</div>`;
 }
 const strip = () => '';
 const canActivate = () => families().some(f => !S.active[f.id] && missing(f.id, f.opts[0].id) === 0)
@@ -635,7 +634,7 @@ function welcome(){
     <div class="logo">XP</div>
     <h2>Seu cartão já vem com benefícios. Com fichas, você escolhe mais.</h2>
     <p class="mut" style="margin:8px 0 0">Veja o que já é seu e o que dá para ativar a seguir.</p>
-    ${step(1, 'Seu cartão já está valendo', 'Investback e os demais benefícios do seu cartão não usam fichas.')}
+    ${step(1, 'Seu cartão não usa fichas', 'Ele vem do que você tem investido na XP.')}
     ${step(2, 'Junte fichas com o que você já faz', 'Usar o cartão, guardar dinheiro, pagar contas. Suas fichas são recalculadas todo mês.')}
     ${step(3, 'Use fichas para ativar benefícios', 'Elas ficam em uso enquanto o benefício estiver ativo e voltam quando você desativa.')}
     <div style="flex:1;min-height:18px"></div>
@@ -646,7 +645,7 @@ function welcome(){
 function pkCard(k){
   const c = activeCard(), cur = c === k, ib = investbackNow();
   const col = (lab, val, cond, up) => `<div class="pc"><span class="pl">${lab}</span><b>${val}</b>${cond ? `<span class="pcnd">${cond}</span>` : ''}${up ? `<em class="up">${up}</em>` : ''}</div>`;
-  const ibA = cur && S.active.investback && S.active.investback.status === 'active', ibMax = IB[k]()[1].rate, sl = salaNow(k, cur);
+  const ibA = cur && S.active.investback && S.active.investback.status === 'active', ibMax = IB[k]().slice(-1)[0].rate, sl = salaNow(k, cur);
   const locked = k === 'infinite' && !cur && S.inf === 'none' && !elig();
   let tag, sub = '', foot = '';
   if (k === 'one') tag = chip('Incluído · não usa fichas', 'y');
@@ -666,7 +665,7 @@ function pkCard(k){
     <div class="row">${plast(k)}<div class="g"><div class="b" style="font-size:16px;margin-bottom:4px">${cardName(k)}</div>${tag}</div><span class="chev mut" style="font-size:20px">›</span></div>
     ${sub ? `<div class="xs mut" style="margin-top:8px">${sub}</div>` : ''}
     <div class="pcs">
-      ${col('Investback', ibA ? pct(ib.rate) : k === 'one' ? '0,8%' : '1%', k === 'one' ? `a partir de ${brl(P.oneMin)}/mês` : '', ibA ? (ib.rate >= ibMax ? 'turbinado com fichas' : `até ${pct(ibMax)} com fichas`) : `até ${pct(ibMax)} com fichas`)}
+      ${col('Investback', ibA ? pct(ib.rate) : k === 'one' ? `Até ${pct(ibMax)}` : '1%', '', ibA ? (ib.rate >= ibMax ? 'com fichas' : `até ${pct(ibMax)} com fichas`) : k === 'one' ? 'com fichas' : `até ${pct(ibMax)} com fichas`)}
       ${col('Salas VIP', sl.main.replace(' acessos por ano', ' acessos/ano'), '', sl.up)}
     </div>
     ${foot}</button>`;
@@ -721,8 +720,8 @@ function pacote(){
 
     <h3 class="sec">O que já está valendo para você</h3>
     <div class="card">
-      <div class="kv"><span>Investback</span><span>${pct(ib.rate)} das compras${c === 'one' ? `<br><span class="xs mut" style="font-weight:400">quando você gasta ${brl(P.oneMin)} ou mais no mês</span>` : ''}</span></div>
-      <div class="kv"><span>Investback deste mês</span><span>${ib.applies ? `≈ ${brl(ib.valor)} de volta` : 'Ainda não vale'}<br><span class="xs mut" style="font-weight:400">${ib.applies ? `${pct(ib.rate)} de ${brl(S.gasto)} em compras` : `faltam ${brl(P.oneMin - S.gasto)} em compras para chegar a ${brl(P.oneMin)}`}</span></span></div>
+      <div class="kv"><span>Investback</span><span>${ib.applies ? `${pct(ib.rate)} das compras` : `Até ${pct(IB.one().slice(-1)[0].rate)}<em class="up">com fichas</em>`}</span></div>
+      ${ib.applies ? `<div class="kv"><span>Investback deste mês</span><span>≈ ${brl(ib.valor)} de volta<br><span class="xs mut" style="font-weight:400">${pct(ib.rate)} de ${brl(S.gasto)} em compras</span></span></div>` : ''}
       <div class="kv"><span>Salas VIP</span><span>${salaNow(c, true).main}${salaNow(c, true).up ? `<em class="up">${salaNow(c, true).up}</em>` : ''}${salaBase(c) ? `<br><span class="xs mut" style="font-weight:400">${P.salaCond}</span>` : ''}</span></div>
       ${c === 'infinite' ? `<div class="kv"><span>Benefícios Visa Infinite</span><span>Seguros de viagem e assistências</span></div>` : ''}
       ${S.active.investback ? `<div class="kv"><span>Investback turbinado</span><span>${optOf('investback', S.active.investback.opt).label}<br><span class="xs mut" style="font-weight:400">escolhido com fichas</span></span></div>` : ''}
@@ -735,8 +734,8 @@ function pacote(){
     ${accHead('cmp', 'Comparar os dois cartões')}
     <div class="cmp" ${isOpen('cmp') ? '' : 'hidden'}>
       <div></div><div ${cmpCur('one')}>XP One</div><div ${cmpCur('infinite')}>XP Infinite</div>
-      <div>Investback</div><div ${cmpCur('one')}>0,8%<br><span class="xs mut">a partir de ${brl(P.oneMin)}/mês</span></div><div ${cmpCur('infinite')}>1%</div>
-      <div>Turbinado com fichas</div><div ${cmpCur('one')}>até 1,1%</div><div ${cmpCur('infinite')}>até 1,5%</div>
+      <div>Investback</div><div ${cmpCur('one')}>Até 1,1%<br><span class="xs mut">com fichas</span></div><div ${cmpCur('infinite')}>1%<br><span class="xs mut">já incluído</span></div>
+      <div>Investback com fichas</div><div ${cmpCur('one')}>0,8%, 1,0% ou 1,1%</div><div ${cmpCur('infinite')}>1,2% ou 1,5%</div>
       <div>Salas VIP</div><div ${cmpCur('one')}>${salaNow('one').main}<br><span class="xs mut">${salaNow('one').up}</span></div><div ${cmpCur('infinite')}>${salaNow('infinite').main}<br><span class="xs mut">${salaNow('infinite').up}</span></div>
       <div>Como ter</div><div ${cmpCur('one')}>Cartão de entrada</div><div ${cmpCur('infinite')}>${brl(P.corte)} investidos${S.scen === 'B' ? ` ou ${pt(P.infPts)}` : ''}</div>
     </div>`;
@@ -748,7 +747,7 @@ function shelf(){
     const st = S.inf === 'active' ? chip('✓ Ativo', 'ok') : S.inf === 'requested' ? chip('<i class="spin"></i> Em análise', 'y')
       : available() >= P.infPts ? chip('Disponível', 'av') : chip(`Faltam ${P.infPts - available()}`, 'ghost');
     cardSec = `<h3 class="sec" style="margin-top:14px">Seu cartão</h3>
-      <div class="card">${S.inf === 'active' ? '' : `<div class="row">${plast('one')}<div class="g"><div class="xs mut b">HOJE VOCÊ TEM</div><div class="b">XP One</div><div class="xs mut">Investback de 0,8%</div></div></div>`}
+      <div class="card">${S.inf === 'active' ? '' : `<div class="row">${plast('one')}<div class="g"><div class="xs mut b">HOJE VOCÊ TEM</div><div class="b">XP One</div><div class="xs mut">Investback até 1,1%, com fichas</div></div></div>`}
       <button class="opt" style="${S.inf === 'active' ? 'margin-top:0' : ''}" data-a="${S.inf === 'none' ? (available() >= P.infPts ? 'sheet:infPts' : 'go:pacote') : 'go:pacote'}">${plast('infinite')}<div class="g"><b>XP Infinite</b><span>${S.inf === 'active' ? `Seu cartão atual · ${pt(P.infPts)} em uso` : `${pt(P.infPts)} · Investback de 1% e mais benefícios`}</span></div>${st}</button>
       <div class="xs mut" style="margin-top:8px">O cartão muda quais opções de Investback turbinado você pode escolher. Decida o cartão primeiro.</div></div>`;
   }
@@ -766,12 +765,12 @@ function shelf(){
     <h3 class="sec">O que cabe em ${pt(total())}</h3>
     <div class="card">${cb.length ? cb.map(c => `<div class="li"><div class="g"><b>${[c.inf ? 'XP Infinite' : null, ...c.items.map(i => i.fam === 'Corretagem zero' ? i.fam : i.fam === 'Sala VIP' ? `Sala VIP ${i.n}x` : `${i.fam.split(' ')[0]} ${i.label.split(' ')[0]}`)].filter(Boolean).join(' + ')}</b>
         <span>${c.inf === false ? 'Com o XP One · ' : c.inf && !c.items.length ? 'Nenhum benefício extra cabe ainda · ' : ''}usa ${pt(c.cost)}${c.left ? `, sobram ${c.left}` : ''}</span></div></div>`).join('')
-      : `<div class="sm mut">Com ${pt(total())} ainda não cabe nenhum benefício. ${(f => `O mais próximo é ${f.nome}, a partir de ${pt(f.opts[0].price)}.`)(families().filter(f => f.id !== 'investback' || activeCard() === 'infinite' || S.gasto >= P.oneMin).sort((a, b) => a.opts[0].price - b.opts[0].price)[0])}</div><button class="btn sec" data-a="go:juntar">Ver como ganhar fichas</button>`}</div>`;
+      : `<div class="sm mut">Com ${pt(total())} ainda não cabe nenhum benefício. ${(f => `O mais próximo é ${f.nome}, a partir de ${pt(f.opts[0].price)}.`)(families().sort((a, b) => a.opts[0].price - b.opts[0].price)[0])}</div><button class="btn sec" data-a="go:juntar">Ver como ganhar fichas</button>`}</div>`;
 }
 
 const FAMINFO = {
   cofrinho: () => [`Vale para o dinheiro guardado no Cofrinho.`, `O Cofrinho só existe com fichas em uso. Não há versão sem Turbo.`],
-  investback: () => { const c = activeCard(); return [`A taxa escolhida é o total do cartão, não um extra. Ex.: ${IB[c]()[0].label.split(' ')[0]} substitui os ${pct(baseRate(c))} de hoje.`, c === 'one' ? `Vale quando você gasta ${brl(P.oneMin)} ou mais no mês.` : `Vale para as compras no XP Infinite.`, `O valor volta como investimento.`]; },
+  investback: () => { const c = activeCard(); return [c === 'one' ? `No XP One, o Investback é ativado com fichas. A taxa escolhida vale para todas as compras.` : `A taxa escolhida é o total do cartão, não um extra. Ex.: 1,2% substitui o 1% de hoje.`, `Vale para as compras no ${cardName(c)}.`, `O valor volta como investimento.`]; },
   salavip: () => [salaBase(activeCard()) ? `O número escolhido é o total do ano, já contando os ${salaBase(activeCard())} acessos do seu cartão.` : `O número escolhido é o total de acessos no ano.`, `Os acessos valem enquanto o benefício estiver em uso.`],
   corretagem: () => [P.corrCob + '.', `Vale enquanto o benefício estiver ativo.`],
 };
@@ -785,7 +784,7 @@ function famScreen(){
     <div class="split" style="margin-top:12px"><div><span>${sel ? 'Custo' : 'A partir de'}</span><b>${pt(sel ? f.opts.find(o => o.id === sel).price : f.opts[0].price)}</b></div><div><span><i class="d g"></i>Disponíveis</span><b>${pt(available())}</b></div></div>
     ${a ? `<div class="card" style="margin-top:12px"><div class="row"><div class="g"><div class="xs mut b">EM USO AGORA</div><div class="b" style="font-size:17px">${optOf(f.id, a.opt).label}</div><div class="xs mut">${pt(optOf(f.id, a.opt).price)} em uso</div></div>${optState(f, optOf(f.id, a.opt))}</div></div>` : ''}
     ${f.id === 'cofrinho' && S.legacy && !a ? `<button class="ban ${legacyCopy().k === 'ok' ? 'ok' : ''}" data-a="sheet:legacy"><div class="ic">i</div><div><b>${legacyCopy().status}</b><span>${legacyCopy().short}</span><em>Seu Cofrinho no novo programa ›</em></div></button>` : ''}
-    ${f.id === 'investback' ? `<div class="note">Seu cartão é o <b style="color:var(--tx)">${cardName(c)}</b>, com ${pct(baseRate(c))} de Investback. As opções abaixo são as do seu cartão.</div>` : ''}
+    ${f.id === 'investback' ? `<div class="note">Seu cartão é o <b style="color:var(--tx)">${cardName(c)}</b>${baseRate(c) ? `, que já vem com ${pct(baseRate(c))} de Investback` : ''}. As opções abaixo são as do seu cartão.</div>` : ''}
 
     <h3 class="sec">${a ? 'Trocar por outra opção' : 'Escolha uma opção'}</h3>
     ${f.opts.map(o => { const isA = a && a.opt === o.id;
@@ -866,7 +865,7 @@ function sheet(){
         <button class="btn" data-a="do:${s.fam}:${s.opt}">Confirmar troca</button><button class="btn ghost" data-a="close">Manter como está</button>`;
     } else {
       h = `<h2>Ativar ${f.nome}</h2><p>Confira antes de confirmar.</p>
-        <div class="hero"><small>Você está ativando</small><b>${o.label}</b><div class="sm mut">${f.id === 'investback' ? `No ${cardName(activeCard())}: de ${pct(baseRate(activeCard()))} para ${pct(o.rate)} no total` : f.desc}</div></div>
+        <div class="hero"><small>Você está ativando</small><b>${o.label}</b><div class="sm mut">${f.id === 'investback' ? (baseRate(activeCard()) ? `No ${cardName(activeCard())}: de ${pct(baseRate(activeCard()))} para ${pct(o.rate)} no total` : `${pct(o.rate)} de volta nas compras do ${cardName(activeCard())}`) : f.desc}</div></div>
         ${saldoRows(0, o.price)}
         <div class="note">As fichas ficam em uso enquanto o benefício estiver ativo. Ao desativar, voltam para o seu saldo.</div>
         <button class="btn" data-a="do:${s.fam}:${s.opt}">Confirmar e ativar</button><button class="btn ghost" data-a="close">Agora não</button>`;
@@ -927,7 +926,7 @@ function sheet(){
   else if (s.t === 'infPts'){
     const ib = S.active.investback && optOf('investback', S.active.investback.opt);
     h = `<h2>Pedir o XP Infinite com fichas</h2><p>Você troca de cartão: sai do XP One e passa para o XP Infinite.</p>
-      <div class="swap"><div><small>Hoje</small><b>XP One</b><span>Investback 0,8%</span></div><div class="mut">→</div><div class="new"><small style="color:var(--y)">Novo</small><b>XP Infinite</b><span>Investback 1%</span></div></div>
+      <div class="swap"><div><small>Hoje</small><b>XP One</b><span>Investback com fichas</span></div><div class="mut">→</div><div class="new"><small style="color:var(--y)">Novo</small><b>XP Infinite</b><span>Investback 1% incluído</span></div></div>
       ${saldoRows(0, P.infPts)}
       <div class="note">As ${pt(P.infPts)} ficam em uso enquanto seu patrimônio estiver abaixo de ${brl(P.corte)}. Quando você chegar lá, as fichas voltam para o seu saldo e o cartão continua com você.</div>
       ${ib ? `<div class="note">Seu ${ib.label} é do XP One. Quando o Infinite for ativado, ele é encerrado e os ${pt(ib.price)} voltam para o saldo.</div>` : ''}
@@ -936,7 +935,7 @@ function sheet(){
   else if (s.t === 'infReq'){
     const ib = S.active.investback && optOf('investback', S.active.investback.opt);
     h = `<h2>Pedir o XP Infinite</h2><p>Com ${brl(P.corte)} ou mais investidos, você pode pedir o XP Infinite sem usar fichas.</p>
-      <div class="swap"><div><small>Hoje</small><b>XP One</b><span>Investback 0,8%</span></div><div class="mut">→</div><div class="new"><small style="color:var(--y)">Novo</small><b>XP Infinite</b><span>Investback 1%</span></div></div>
+      <div class="swap"><div><small>Hoje</small><b>XP One</b><span>Investback com fichas</span></div><div class="mut">→</div><div class="new"><small style="color:var(--y)">Novo</small><b>XP Infinite</b><span>Investback 1% incluído</span></div></div>
       <div class="card"><div class="kv"><span>Fichas usadas</span><span>Nenhuma</span></div><div class="kv"><span>Enquanto o pedido é analisado</span><span>Você segue com o XP One</span></div></div>
       ${ib ? `<div class="note">Seu ${ib.label} é do XP One. Quando o Infinite for ativado, ele é encerrado e os ${pt(ib.price)} voltam para o saldo.</div>` : ''}
       <button class="btn" data-a="infreq:patrimonio">Pedir o XP Infinite</button><button class="btn ghost" data-a="close">Agora não</button>`;
@@ -1040,7 +1039,7 @@ function renderPhone(){
 
 const HIPOTESES = [
   ['Pacotes', 'Dois pacotes, XP One e XP Infinite, sem nomes de nível ou segmento. Na tela, a palavra é sempre "cartão": o do cliente aparece como "Incluído · não usa fichas", com a razão (cliente XP Digital, ou R$ 30 mil ou mais investidos).'],
-  ['Pacotes', 'One: 0,8% de Investback a partir de R$ 2.500 de gasto no mês. Infinite: 1%, sem gasto mínimo. Configuração de fevereiro de 2027.'],
+  ['Pacotes', 'No One, o Investback vem só de fichas: 0,8%, 1,0% ou 1,1% por 5, 10 ou 15 fichas. Não há mais gasto mínimo de R$ 2.500: gastar R$ 2.500 no cartão rende as 5 fichas do 0,8%. No Infinite, 1% já vem incluído.'],
   ['Pacotes', 'Quem tem o XP One vê o Infinite ao lado, em carrossel. Quem já tem o Infinite vê só o Infinite. Quem está longe do corte (abaixo de 60%) não vê barra de "faltam R$": só a regra, sem cobrança.'],
   ['Sala VIP', 'Dois modos no painel. Mínimo no cartão: o Infinite inclui 4 acessos por ano e chega a 6 ou 8 com 10 ou 15 fichas. Tudo por fichas: nenhum cartão inclui, e o Infinite tem 4 ou 8 acessos por 10 ou 15 fichas. Nos dois modos o One tem 2 acessos por 10 fichas. Quantidades e preços são ilustrativos.'],
   ['Sala VIP', 'Como no Investback, o número escolhido é o total de acessos do ano, não um extra.'],
@@ -1054,7 +1053,7 @@ const HIPOTESES = [
   ['Saldo', 'Fichas travadas: ficam em uso enquanto o benefício está ativo e voltam ao desativar. Uma opção ativa por família.'],
   ['Saldo', 'Na troca dentro da família, as fichas da opção atual são liberadas e as da nova entram em uso, em um só passo.'],
   ['Prateleira', 'Cofrinho Turbo 110/115/125% do CDI por 10/15/30 fichas. Não existe Cofrinho sem Turbo.'],
-  ['Prateleira', 'Investback turbinado é a taxa total do cartão. One: 1,0% ou 1,1% por 5 ou 10. Infinite: 1,2% ou 1,5% por 10 ou 15.'],
+  ['Prateleira', 'Investback turbinado é a taxa total do cartão. One: 0,8%, 1,0% ou 1,1% por 5, 10 ou 15 (os preços de 1,0% e 1,1% subiram 5 fichas para abrir espaço ao 0,8%). Infinite: 1,2% ou 1,5% por 10 ou 15.'],
   ['Prateleira', 'Corretagem zero em corte único por 15 fichas, com cobertura parametrizável.'],
   ['Prateleira', 'Investback turbinado pertence ao cartão. Se o cartão muda, a opção é encerrada e as fichas voltam ao saldo.'],
   ['Cenário B', 'Infinite por 10 fichas abaixo do corte. As fichas ficam reservadas desde o pedido.'],
@@ -1122,7 +1121,7 @@ function renderPanel(){
       <label class="fld">Corte patrimonial (R$) <input type="number" data-p="corte" step="1000" value="${P.corte}"></label>
       <label class="fld">Corretagem zero (fichas) <input type="number" data-p="corrPts" value="${P.corrPts}"></label>
       <label class="fld">Cofrinho 110 / 115 / 125 <span><input type="number" data-p="cofre.0" value="${P.cofre[0]}" style="width:46px"> <input type="number" data-p="cofre.1" value="${P.cofre[1]}" style="width:46px"> <input type="number" data-p="cofre.2" value="${P.cofre[2]}" style="width:46px"></span></label>
-      <label class="fld">Investback One 1,0 / 1,1 <span><input type="number" data-p="ibOne.0" value="${P.ibOne[0]}" style="width:46px"> <input type="number" data-p="ibOne.1" value="${P.ibOne[1]}" style="width:46px"></span></label>
+      <label class="fld">Investback One 0,8 / 1,0 / 1,1 <span><input type="number" data-p="ibOne.0" value="${P.ibOne[0]}" style="width:42px"> <input type="number" data-p="ibOne.1" value="${P.ibOne[1]}" style="width:42px"> <input type="number" data-p="ibOne.2" value="${P.ibOne[2]}" style="width:42px"></span></label>
       <label class="fld">Investback Infinite 1,2 / 1,5 <span><input type="number" data-p="ibInf.0" value="${P.ibInf[0]}" style="width:46px"> <input type="number" data-p="ibInf.1" value="${P.ibInf[1]}" style="width:46px"></span></label>
       <label class="fld">Acessos incluídos no Infinite <input type="number" data-p="salaIncl" value="${P.salaIncl}"></label>
       <label class="fld txt">Cobertura da corretagem zero <input type="text" data-p="corrCob" value="${P.corrCob}"></label>
