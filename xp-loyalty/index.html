@@ -374,7 +374,7 @@ h3.sec2 span{display:block;font-size:14.5px;color:var(--mut);font-weight:400;mar
 .dest .card .lg{width:30px;height:30px;border-radius:50%;margin-bottom:auto}
 
 /* ===== Tema claro ===== */
-#phone.light{--bk:#FAFAFB;--tx:#16161A;--mut:#6A6A72;--dim:#A3A3AB;--s1:#EFEFF3;--s2:#E9E9EE;--s3:#DFDFE5;--line:rgba(0,0,0,.09);--ya:#7A5A00;--oka:#0C7F45;
+#phone.light{--bk:#FAFAFB;--tx:#16161A;--mut:#6A6A72;--dim:#A3A3AB;--s1:#EFEFF3;--s2:#E9E9EE;--s3:#DFDFE5;--line:rgba(0,0,0,.09);--ya:#16161A;--oka:#0A7A3D;--ok:#14A558;
   background:radial-gradient(120% 34% at 18% 0%,#FFF1BF 0%,rgba(255,241,191,0) 62%) #FAFAFB;color:var(--tx)}
 .light .status i{color:#55555c}
 .light .hd .back{background:#ECECEF}
@@ -394,8 +394,8 @@ h3.sec2 span{display:block;font-size:14.5px;color:var(--mut);font-weight:400;mar
 .light .dots i{background:#CDCDD5} .light .dots i.on{background:#16161A}
 .light .d.o{background:#C2C2CB}
 .light .chip{background:#E1E1E7;color:#16161A}
-.light .chip.y{background:var(--y);color:#000} .light .chip.av{background:#BDEFD3;color:#075C31}
-.light .chip.use{background:#FFEFB0;color:#6B4F00} .light .chip.ok{background:#D6F4E3;color:#0C7F45}
+.light .chip.y{background:var(--y);color:#000} .light .chip.av{background:#14A558;color:#fff}
+.light .chip.use{background:#FFE27A;color:#16161A} .light .chip.ok{background:#DDF3E6;color:#0A7A3D}
 .light .chip.ghost{background:transparent;border-color:#CDCDD5;color:#6A6A72}
 .light .ico{background:#E1E1E7;color:#16161A}
 .light .okc.wait{background:#E9E9EE} .light .okc.big{background:none}
@@ -430,6 +430,19 @@ h3.sec2 span{display:block;font-size:14.5px;color:var(--mut);font-weight:400;mar
 .nd.no b,.nd.no span{color:var(--dim)}
 .nd.proc i{animation:ndp 1s ease-in-out infinite} @keyframes ndp{50%{box-shadow:0 0 0 9px rgba(255,199,9,.1)}}
 .lk{display:block;width:100%;margin-top:15px;padding-top:13px;border-top:1px solid var(--line)}
+[data-a]{cursor:pointer}
+.light .okc:not(.wait):not(.big){color:#fff}
+.light .rh>span::before,.light .up::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--y);margin-right:6px;vertical-align:1px}
+.light .nd i{background:#fff;border-color:#B4B4BD}
+.light .nd.av i{border-color:#14A558;background:#fff}
+.light .nd.past i,.light .nd.cur i{background:var(--y);border-color:var(--y)}
+.light .nd.cur i{box-shadow:0 0 0 5px rgba(255,199,9,.35)}
+.light .nd.org i{background:#B4B4BD}
+.light .nd.no b,.light .nd.no span{color:#A3A3AB}
+.light .hb .ba{background:#14A558}
+.light .ban em,.light h3.sec button,.light .btn.ghost,.light .pkl{color:#16161A;text-decoration:underline;text-decoration-color:var(--y);text-decoration-thickness:2px;text-underline-offset:3px}
+.light .card,.light .pk,.light .split,.light .ban,.light .opt,.light .stp{background:#F1F1F4}
+#phone.light{background:radial-gradient(120% 30% at 18% 0%,#FFF6D6 0%,rgba(255,246,214,0) 60%) #FCFCFD}
 </style>
 </head>
 <body>
@@ -814,7 +827,9 @@ function pacote(){
       <button class="row" style="width:100%" data-a="openfam:investback"><div class="ico">${I.investback}</div><div class="g"><div class="sm mut">Investback deste mês</div><div style="font-size:19px">${ib.applies ? `≈ ${brl(ib.valor)} de volta` : 'Ainda não ativo'}</div></div><span class="chev mut" style="font-size:20px">›</span></button>
       <button class="pillb" data-a="go:shelf">Turbinar com fichas</button>
     </div>
-    <div class="ttabs flat"><button class="on">Para você</button><button>Lojas parceiras</button><button>Viagem</button><button>Seguros</button></div>
+    <div class="ttabs flat">${['Para você', 'Lojas parceiras', 'Viagem', 'Seguros'].map((t, i) => `<button class="${(S.ctab || 0) === i ? 'on' : ''}" data-a="ctab:${i}">${t}</button>`).join('')}</div>
+    ${S.ctab ? `<h3 class="sec2">${['', 'Lojas parceiras', 'Viagem', 'Seguros'][S.ctab]}<span>Benefício exclusivo para clientes XP</span></h3>
+      <div class="sels">${[[], ['Moda', 'Eletrônicos', 'Casa'], ['Hotéis', 'Passagens', 'Aluguel de carro'], ['Viagem', 'Compra protegida', 'Garantia estendida']][S.ctab].map((t, i) => tile(t, 'Benefício exclusivo para clientes XP', ['linear-gradient(170deg,#8fa6bd,#3d5066 60%,#0f141b)', 'linear-gradient(170deg,#4a4560,#2a2738 60%,#0d0c12)', 'linear-gradient(170deg,#9fc0c4,#2f6b73 60%,#0b1a1c)'][i])).join('')}</div>` : `
     ${cardAtRisk() ? `<button class="ban warn" data-a="sheet:lossCard"><div class="ic">!</div><div><b>Patrimônio abaixo de ${brl(P.corte)}</b><span>Seu Infinite continua ativo por enquanto.</span><em>Ver como manter ›</em></div></button>` : ''}
 
     <h3 class="sec2">Do seu cartão<span>O que já vale e o que dá para turbinar</span></h3>
@@ -845,7 +860,7 @@ function pacote(){
       <div>Investback com fichas</div><div ${cmpCur('one')}>0,8%, 1,0% ou 1,1%</div><div ${cmpCur('infinite')}>1,2% ou 1,5%</div>
       <div>Salas VIP</div><div ${cmpCur('one')}>${salaNow('one').main}<br><span class="xs mut">${salaNow('one').up}</span></div><div ${cmpCur('infinite')}>${salaNow('infinite').main}<br><span class="xs mut">${salaNow('infinite').up}</span></div>
       <div>Como ter</div><div ${cmpCur('one')}>Cartão de entrada</div><div ${cmpCur('infinite')}>${brl(P.corte)} investidos${S.scen === 'B' ? ` ou ${pt(P.infPts)}` : ''}</div>
-    </div>`;
+    </div>`}`;
 }
 
 // régua: uma linha com os pontos da escala; tocar num ponto leva à confirmação
@@ -867,8 +882,8 @@ function infRow(){
   const can = S.scen === 'B' && S.inf === 'none' && !elig() && available() >= P.infPts;
   const right = S.inf === 'requested' ? chip('<i class="spin"></i> Em análise', 'y') : elig() ? chip('Pode pedir ›', 'av')
     : can ? `<span class="tb" style="margin:0" data-a="sheet:infPts">Pedir com ${pt(P.infPts)} ›</span>` : `<span class="xs mut">Faltam ${brl(P.corte - S.auc)}</span>`;
-  return `<button class="lk" data-a="go:pacote"><div class="row" style="gap:8px">${S.inf === 'none' && !elig() ? `<span class="mut">${I.lock}</span>` : ''}<b class="g" style="font-size:14px">XP Infinite</b>${right}</div>
-    ${S.inf === 'none' && !elig() ? `<div class="prog" style="margin:9px 0 0;height:4px"><i style="width:${S.auc / P.corte * 100}%"></i></div>` : ''}</button>`;
+  return `<div class="lk" role="button" tabindex="0" data-a="go:pacote"><div class="row" style="gap:8px">${S.inf === 'none' && !elig() ? `<span class="mut">${I.lock}</span>` : ''}<b class="g" style="font-size:14px">XP Infinite</b>${right}</div>
+    ${S.inf === 'none' && !elig() ? `<div class="prog" style="margin:9px 0 0;height:4px"><i style="width:${S.auc / P.corte * 100}%"></i></div>` : ''}</div>`;
 }
 function shelf(){
   const c = activeCard(), fs = families(), F = id => fs.find(f => f.id === id);
@@ -1285,7 +1300,7 @@ function act(a){
   const [cmd, x, y] = a.split(':');
   const go = (scr, param) => { S.screen = scr === 'home' ? 'shelf' : scr; S.param = param || null; S.sheet = null; };
   switch (cmd){
-    case 'go': go(x); break;
+    case 'go': if (x === 'pacote') S.ctab = 0; go(x); break;
     case 'home': go('home'); break;
     case 'back': go(S.screen === 'fam' ? 'shelf' : S.screen === 'pacote' ? 'home' : 'welcome'); break;
     case 'enter': go('home'); prevBal = { t:0, v:['0%', '0%'] }; break;
@@ -1317,6 +1332,7 @@ function act(a){
     case 'leg': S.legRule = x; break;
     case 'sala': S.salaMode = x; break;
     case 'theme': S.theme = x; break;
+    case 'ctab': S.ctab = +x; break;
     case 'preset': S.legacy = false; PRESETS[x](); document.getElementById('panel').classList.remove('open'); break;
   }
   render();
