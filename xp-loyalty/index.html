@@ -338,6 +338,7 @@ h3.sec button{color:var(--y);font-size:13px;font-weight:600}
 .pc+.pc{border-left:1px solid var(--line);padding-left:12px}
 .pc .pl{font-size:11.5px;color:var(--mut)} .pc b{font-size:14px;line-height:1.3;white-space:nowrap;letter-spacing:-.01em} .pc .pcnd{font-size:11px;color:var(--mut)}
 .pk.lock .pc b{color:var(--mut)}
+.pkl{display:block;margin-top:10px;padding-top:9px;border-top:1px solid var(--line);font-size:12.5px;font-weight:650;color:var(--y);text-align:left}
 </style>
 </head>
 <body>
@@ -662,13 +663,14 @@ function pkCard(k){
       : `<div class="xs mut" style="margin-top:10px">Desbloqueia com ${brl(P.corte)} investidos${alt}</div>`;
   }
   return `<button class="pk ${cur ? 'cur' : ''} ${locked ? 'lock' : ''}" data-a="go:pacote">
-    <div class="row">${plast(k)}<div class="g"><div class="b" style="font-size:16px;margin-bottom:4px">${cardName(k)}</div>${tag}</div><span class="chev mut" style="font-size:20px">›</span></div>
+    <div class="row">${plast(k)}<div class="g"><div class="b" style="font-size:16px;margin-bottom:4px">${cardName(k)}</div>${tag}</div></div>
     ${sub ? `<div class="xs mut" style="margin-top:8px">${sub}</div>` : ''}
     ${foot}
     <div class="pcs">
       ${col('Investback', ibA ? pct(ib.rate) : k === 'one' ? `Até ${pct(ibMax)}` : '1%', '', ibA ? (ib.rate >= ibMax ? 'com fichas' : `até ${pct(ibMax)} com fichas`) : k === 'one' ? 'com fichas' : `até ${pct(ibMax)} com fichas`)}
       ${col('Salas VIP', sl.main.replace(' acessos por ano', ' acessos/ano'), '', sl.up)}
-    </div></button>`;
+    </div>
+    <span class="pkl">Ver todos os benefícios do cartão ›</span></button>`;
 }
 function home(){
   const c = activeCard(), act = Object.keys(S.active);
