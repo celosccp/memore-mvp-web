@@ -342,8 +342,8 @@ h3.sec button{color:var(--y);font-size:13px;font-weight:600}
 .mk{width:22px;height:22px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:12px;font-weight:800;font-style:normal}
 .mk.on{background:var(--y);color:#000} .mk.off{border:1.5px solid var(--dim)} .mk.part{border:1.5px solid var(--y);color:var(--y)}
 .rv{font-size:13px;font-weight:700;color:var(--dim);white-space:nowrap} .rv.on{color:var(--y)}
-.st{display:flex;gap:8px;align-items:flex-end;margin-top:10px}
-.stp{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;text-align:left;min-height:calc(88px + var(--h)*13px);padding:9px 9px 8px;border-radius:14px;border:1.5px solid var(--line);background:rgba(255,255,255,.045);transition:transform .14s ease}
+.st{display:flex;gap:8px;align-items:stretch;margin-top:10px}
+.stp{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;text-align:left;min-height:86px;padding:9px 9px 8px;border-radius:14px;border:1.5px solid var(--line);background:rgba(255,255,255,.045);transition:transform .14s ease}
 .stp:active{transform:scale(.97)}
 .stp b{font-size:19px;letter-spacing:-.02em;line-height:1.1}
 .stp .t{font-size:11px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -461,7 +461,7 @@ function families(card = activeCard()){
   return [
     { id:'cofrinho', nome:'Cofre XP Turbo', desc:'O dinheiro guardado no Cofre XP rende mais.',
       opts:[ {id:'c110', label:'110% do CDI', price:P.cofre[0]}, {id:'c115', label:'115% do CDI', price:P.cofre[1]}, {id:'c125', label:'125% do CDI', price:P.cofre[2]} ] },
-    { id:'investback', nome:'Investback turbinado', desc:`Mais dinheiro de volta nas compras do ${cardName(card)}.`, card, opts: IB[card]() },
+    { id:'investback', nome:'Investback turbinado', desc:'Mais dinheiro de volta nas compras.', card, opts: IB[card]() },
     { id:'corretagem', nome:'Corretagem zero', desc:'Invista na bolsa sem pagar corretagem.',
       opts:[ {id:'cz', label:'Corretagem zero', price:P.corrPts} ] },
     { id:'salavip', nome:'Sala VIP', desc: salaBase(card) ? `Mais acessos a salas VIP, além dos ${salaBase(card)} do seu cartão.` : 'Acessos a salas VIP em aeroportos.', card, opts: SV(card) },
@@ -623,7 +623,7 @@ function legacyCopy(){
     muda:[`No novo programa, o Cofre XP só fica ativo com fichas em uso.`, `Para manter ${P.legRate}% do CDI, ative o Cofre XP Turbo com ${pt(P.cofre[0])}.`, need ? `Hoje faltam ${pt(need)}.` : `Você já tem fichas para ativar.`], acao: need ? 'Ver como ganhar fichas' : `Ativar com ${pt(P.cofre[0])}` };
 }
 
-// opções em faixas viram uma escadinha horizontal
+// opções em faixas ficam lado a lado, em caixas do mesmo tamanho
 function stairs(f, sel, act){
   const a = S.active[f.id];
   return `<div class="st">${f.opts.map((o, i) => { const isA = a && a.opt === o.id, m = missing(f.id, o.id);
