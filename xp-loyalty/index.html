@@ -568,6 +568,9 @@ h3.sec2 span{display:block;font-size:14.5px;color:var(--mut);font-weight:400;mar
 }
 @media (max-width:679px){ .pmn{display:none} }
 @media (min-width:680px){ .ph h1{padding-right:104px} }
+.kv span:only-child{max-width:none;flex:1 1 auto;min-width:0}
+.peek .pt{white-space:nowrap}
+.pk2 .chip{flex:none}
 </style>
 </head>
 <body>
@@ -819,7 +822,7 @@ function banners(){
   if (deficit() > 0) B('warn', '!', `Faltam ${pt(deficit())} para manter seus benefícios`, 'Suas fichas diminuíram. Nada muda agora: veja o prazo e suas opções.', 'sheet:loss', 'Ver o que fazer');
   if (cardAtRisk()) B('warn', '!', `Seu patrimônio está abaixo de ${brl(P.corte)}`, 'Seu XP Infinite continua ativo por enquanto. Veja como manter.', 'sheet:lossCard', 'Ver como manter');
   if (S.released) B('ok', '✓', `${pt(S.released)} voltaram para o seu saldo`, `Você chegou a ${brl(P.corte)} investidos. Seu XP Infinite agora vem do seu patrimônio.`, 'sheet:transB', 'Entender a mudança');
-  if (elig() && S.inf === 'none') B('y', '★', 'Você já pode pedir o XP Infinite', `Você chegou a ${brl(P.corte)} investidos. O pedido é feito por você, quando quiser.`, 'go:pacote', 'Ver o cartão e pedir');
+  if (elig() && S.inf === 'none') B('y', '★', 'Você já pode pedir o Cartão XP Infinite', `Você chegou a ${brl(P.corte)} investidos. O pedido é feito por você, quando quiser.`, 'go:pacote', 'Ver o cartão e pedir');
   if (S.inf === 'requested') B('', '…', 'XP Infinite em análise', 'Você continua com o XP One até o novo cartão ser ativado.', 'go:pacote', 'Acompanhar');
   if (S.ibNotice) B('', 'i', `${pt(S.ibNotice.price)} voltaram para o seu saldo`, `Seu cartão mudou. ${S.ibNotice.sv ? 'A opção de Sala VIP' : 'O Investback turbinado de ' + S.ibNotice.label.split(' ')[0]} era do cartão anterior e foi encerrado.`, 'ibnotice', 'Escolher a opção do novo cartão');
   if (S.legacy && !S.active.cofrinho) B('', 'i', 'Seu Cofre XP no novo programa', legacyCopy().short, 'sheet:legacy', 'Entender');
@@ -829,7 +832,7 @@ function banners(){
 function legacyCopy(){
   const r = S.legRule, need = Math.max(0, P.cofre[0] - available());
   if (r === 'preservar') return { short:`Você mantém ${P.legRate}% do CDI sem usar fichas.`, status:`Ativo · ${P.legRate}% do CDI`, k:'ok',
-    muda:[`Nada muda na sua condição: ${P.legRate}% do CDI, sem usar fichas.`, `Para render mais (${fam('cofrinho').opts[1].label} ou ${fam('cofrinho').opts[2].label}), você pode usar fichas.`], acao:'Ver opções para render mais' };
+    muda:[`Nada muda na sua condição: ${P.legRate}% do CDI, sem usar fichas.`, `Para render mais (${fam('cofrinho').opts[1].label} ou ${fam('cofrinho').opts[2].label}), você pode usar fichas.`], acao:'Ver as opções na régua' };
   if (r === 'carencia') return { short:`Seus ${P.legRate}% do CDI estão garantidos até ${P.legAte}.`, status:`${P.legRate}% do CDI até ${P.legAte}`, k:'warn',
     muda:[`Até ${P.legAte}, tudo fica como está: ${P.legRate}% do CDI, sem usar fichas.`, `Depois dessa data, manter ${P.legRate}% do CDI passa a usar ${pt(P.cofre[0])}.`, need ? `Hoje faltam ${pt(need)} para você manter. Dá tempo de chegar lá.` : `Você já tem fichas para manter. Pode garantir agora ou esperar a data.`], acao: need ? 'Ver como ganhar fichas' : `Garantir com ${pt(P.cofre[0])}` };
   return { short:`O Cofre XP Turbo agora é ativado com fichas.`, status:`Rendendo ${P.cofBase}% do CDI`, k:'warn',
@@ -1028,14 +1031,14 @@ function shelf(){
   let inf = '';
   if (!solo){
     const fi = families('infinite'), Fi = id => fi.find(f => f.id === id), can = S.scen === 'B' && S.inf === 'none' && !elig() && available() >= P.infPts;
-    const tag = S.inf === 'requested' ? chip('<i class="spin"></i> Em análise', 'y') : elig() ? chip('Desbloqueado · você já pode pedir', 'av') : chip(I.lock + ' Bloqueado', 'ghost');
+    const tag = S.inf === 'requested' ? chip('<i class="spin"></i> Em análise', 'y') : elig() ? chip('Desbloqueado', 'av') : chip(I.lock + ' Bloqueado', 'ghost');
     const foot = S.inf === 'requested' ? '' : elig() ? `<span class="tb" style="display:inline-block;margin-top:12px">Pedir o XP Infinite ›</span>`
       : `<div class="prog" style="margin:9px 0 4px;height:4px"><i style="width:${S.auc / P.corte * 100}%"></i></div><div class="xs mut">Faltam ${brl(P.corte - S.auc)} investidos${S.scen === 'B' && !can ? ` · ou ${pt(P.infPts)}` : ''}</div>${can ? `<span class="tb" style="display:inline-block;margin-top:8px" data-a="sheet:infPts">Pedir com ${pt(P.infPts)} ›</span>` : ''}`;
     inf = `<div class="pk2 ${S.inf === 'none' && !elig() ? 'lock' : ''}" role="button" tabindex="0" data-a="go:pacote">
-      <div class="row">${plast('infinite')}<div class="g"><div class="b" style="font-size:16px">Cartão XP Infinite</div></div>${tag}</div>
+      <div class="row">${plast('infinite')}<div class="g"><div class="b" style="font-size:16px;white-space:nowrap">Cartão XP Infinite</div></div>${tag}</div>
       ${foot}${lrow(Fi('investback'), 'Investback')}${lrow(Fi('salavip'), 'Salas VIP')}</div>`;
   }
-  const infState = S.inf === 'requested' ? 'Em análise' : elig() ? 'Você já pode pedir' : `Faltam ${brl(P.corte - S.auc)}`;
+  const infState = S.inf === 'requested' ? 'Em análise' : elig() ? 'Você já pode pedir' : S.auc >= P.corte * 0.6 ? `Faltam ${brl(P.corte - S.auc)}` : 'Bloqueado';
   const peek = solo ? '' : idx === 0
     ? `<button class="peek infinite" data-a="pk:1"><i class="pp" style="width:${S.inf === 'none' && !elig() ? Math.min(100, S.auc / P.corte * 100) : 100}%"></i><b>CARTÃO XP INFINITE</b><span class="pt">${S.inf === 'none' && !elig() ? I.lock : ''}${infState}</span></button>`
     : `<button class="peek one" data-a="pk:0"><b>CARTÃO XP ONE</b><span class="pt">Seu cartão</span></button>`;
@@ -1135,12 +1138,14 @@ function sheet(){
         <div class="swap"><div><small>Atual</small><b>${cur.label}</b><span>${pt(cur.price)}</span></div><div class="mut">→</div><div class="new"><small style="color:var(--ya)">Novo</small><b>${o.label}</b><span>${pt(o.price)}</span></div></div>
         ${saldoRows(cur.price, o.price)}
         <div class="note">As ${pt(cur.price)} de ${cur.label} voltam para o saldo e ${pt(o.price)} passam para ${o.label}. Só uma opção de ${f.nome} fica ativa por vez.</div>
+        ${accHead('rule', 'Regra do benefício')}<div class="card sm" ${isOpen('rule') ? '' : 'hidden'}>${FAMINFO[f.id]().map(t => `<div class="kv" style="font-size:13.5px"><span style="color:var(--tx)">${t}</span></div>`).join('')}</div>
         <button class="btn" data-a="do:${s.fam}:${s.opt}">Confirmar troca</button><button class="btn ghost" data-a="close">Manter como está</button>`;
     } else {
       h = `<h2>Ativar ${f.nome}</h2><p>Confira antes de confirmar.</p>
         <div class="hero"><small>Você está ativando</small><b>${o.label}</b><div class="sm mut">${f.id === 'investback' ? (baseRate(activeCard()) ? `No ${cardName(activeCard())}: de ${pct(baseRate(activeCard()))} para ${pct(o.rate)} no total` : `${pct(o.rate)} de volta nas compras do ${cardName(activeCard())}`) : f.desc}</div></div>
         ${saldoRows(0, o.price)}
         <div class="note">As fichas ficam em uso enquanto o benefício estiver ativo. Ao desativar, voltam para o seu saldo.</div>
+        ${accHead('rule', 'Regra do benefício')}<div class="card sm" ${isOpen('rule') ? '' : 'hidden'}>${FAMINFO[f.id]().map(t => `<div class="kv" style="font-size:13.5px"><span style="color:var(--tx)">${t}</span></div>`).join('')}</div>
         <button class="btn" data-a="do:${s.fam}:${s.opt}">Confirmar e ativar</button><button class="btn ghost" data-a="close">Agora não</button>`;
     }
   }
@@ -1260,7 +1265,7 @@ function sheet(){
       <div class="hero"><small>Sua condição</small><b>${c.status}</b></div>
       <div class="card">${c.muda.map(t => `<div class="kv" style="font-size:13.5px"><span style="color:var(--tx)">${t}</span></div>`).join('')}
         <div class="kv" style="font-size:13.5px"><span style="color:var(--tx)">O dinheiro guardado não muda e continua disponível para você.</span></div></div>
-      <button class="btn" data-a="${S.legRule === 'preservar' ? 'openfam:cofrinho:c115' : need ? 'go:juntar' : 'openfam:cofrinho:c110'}">${c.acao}</button><button class="btn ghost" data-a="close">Entendi</button>`;
+      <button class="btn" data-a="${S.legRule === 'preservar' ? 'close' : need ? 'go:juntar' : 'sheet:confirm:cofrinho:c110'}">${c.acao}</button><button class="btn ghost" data-a="close">Entendi</button>`;
   }
   return `<div class="ov" data-a="close"><div class="sheet" data-stop>${h}</div></div>`;
 }
@@ -1385,9 +1390,10 @@ function renderPanel(){
         `<label class="tog" style="padding:4px 0">${b.sub || b.nome} <span class="hint" style="margin:0 6px 0 auto">+${b.pts}</span><input type="checkbox" data-d="${b.id}" ${S.done[b.id] ? 'checked' : ''}></label>`).join('') : ''; }).join('')}
       <button class="pbtn" style="margin-top:10px" data-a="prof:p1">Reiniciar simulação</button>
       <h2>Ir direto a um estado</h2>
-      ${[['Saldo', [['welcome','Boas-vindas'],['zero','Zero ficha'],['insuf','Fichas insuficientes']]],
-        ['Benefício', [['disp','Disponível'],['proc','Em processamento'],['ativo','Ativo'],['troca','Troca'],['perda','Perda de elegibilidade'],['legado','Cofre XP já ativo']]],
-        ['Cartão', [['infB','B · Infinite por fichas'],['transA','A · chegou a 30 mil'],['transB','B · chegou a 30 mil'],['perdaCard','Patrimônio caiu']]]]
+      ${[['Começo', [['welcome','Boas-vindas'],['zero','Zero ficha'],['ativo','Benefício em uso']]],
+        ['Ativar e trocar', [['disp','Confirmar ativação'],['proc','Em processamento'],['troca','Confirmar troca'],['insuf','Faltam fichas'],['trilha','Trilha concluída']]],
+        ['Cartão XP Infinite', [['bloq','Bloqueado'],['transA','A · chegou a 30 mil'],['infB','B · pedir com fichas'],['transB','B · fichas voltam']]],
+        ['Situações de atenção', [['perda','Fichas caíram'],['perdaCard','Patrimônio caiu'],['legado','Cofre XP já ativo']]]]
         .map(([g, items]) => `<div class="glab">${g}</div><div class="grid2">${items.map(([k, t]) => `<button class="pbtn" data-a="preset:${k}">${t}</button>`).join('')}</div>`).join('')}
       <h2>Salas VIP</h2>
       <div class="seg"><button class="${S.salaMode === 'incluida' ? 'on' : ''}" data-a="sala:incluida">Mínimo no cartão</button><button class="${S.salaMode === 'fichas' ? 'on' : ''}" data-a="sala:fichas">Tudo por fichas</button></div>
@@ -1426,19 +1432,21 @@ function activate(famId, optId, hold){
 function setInfActive(){ S.fx = true; S.inf = 'active'; S.pk = null; S.seen.req = true; reconcile(); S.sheet = S.released ? {t:'transB'} : {t:'infOn'}; }
 
 const PRESETS = {
-  welcome(){ loadProfile(S.prof); S.screen = 'welcome'; },
+  welcome(){ loadProfile('p1'); S.screen = 'welcome'; },
   zero(){ loadProfile('p3'); },
-  insuf(){ loadProfile('p2'); S.goal = null; S.screen = 'fam'; S.param = 'cofrinho'; S.sel = 'c110'; S.sheet = {t:'confirm', fam:'cofrinho', opt:'c110'}; },
-  disp(){ loadProfile('p1'); S.screen = 'fam'; S.param = 'cofrinho'; S.sel = 'c115'; },
+  insuf(){ loadProfile('p2'); S.goal = null; S.sheet = {t:'confirm', fam:'cofrinho', opt:'c110'}; },
+  disp(){ loadProfile('p1'); S.sheet = {t:'confirm', fam:'cofrinho', opt:'c115'}; },
   proc(){ loadProfile('p1'); activate('cofrinho', 'c110', true); S.sheet = {t:'done', fam:'cofrinho'}; },
   ativo(){ loadProfile('p1'); S.active.cofrinho = {opt:'c110', status:'active'}; },
-  troca(){ loadProfile('p1'); S.active.cofrinho = {opt:'c110', status:'active'}; S.screen = 'fam'; S.param = 'cofrinho'; S.sel = 'c115'; S.sheet = {t:'confirm', fam:'cofrinho', opt:'c115'}; },
+  troca(){ loadProfile('p1'); S.active.cofrinho = {opt:'c110', status:'active'}; S.sheet = {t:'confirm', fam:'cofrinho', opt:'c115'}; },
+  trilha(){ loadProfile('p2'); S.screen = 'juntar'; S.done = {of:true, aporte:true, sal:true}; },
   perda(){ loadProfile('p1'); S.active.cofrinho = {opt:'c115', status:'active'}; S.gasto = 4000; S.sheet = {t:'loss'}; },
-  perdaCard(){ loadProfile('p2'); S.auc = 27000; S.sheet = {t:'lossCard'}; },
-  infB(){ S.scen = 'B'; loadProfile('p1'); S.screen = 'shelf'; },
-  transA(){ S.scen = 'A'; loadProfile('p1'); S.auc = P.corte; },
-  transB(){ S.scen = 'B'; loadProfile('p1'); S.inf = 'active'; S.infVia = 'fichas'; S.seen.req = true; S.auc = P.corte; },
   legado(){ loadProfile('p1'); S.legacy = true; S.sheet = {t:'legacy'}; },
+  bloq(){ S.scen = 'A'; loadProfile('p1'); S.pk = 1; },
+  infB(){ S.scen = 'B'; loadProfile('p1'); S.pk = 1; },
+  transA(){ S.scen = 'A'; loadProfile('p1'); S.auc = P.corte; S.pk = 1; },
+  transB(){ S.scen = 'B'; loadProfile('p1'); S.inf = 'active'; S.infVia = 'fichas'; S.seen.req = true; S.auc = P.corte; },
+  perdaCard(){ S.scen = 'A'; loadProfile('p2'); S.auc = 27000; S.sheet = {t:'lossCard'}; },
 };
 
 function act(a){
@@ -1449,9 +1457,9 @@ function act(a){
     case 'home': go('home'); break;
     case 'back': go(S.screen === 'fam' ? 'shelf' : S.screen === 'pacote' ? 'home' : 'welcome'); break;
     case 'enter': go('home'); prevBal = { t:0, v:['0%', '0%'] }; break;
-    case 'openfam': go('fam', x); S.sel = y || (S.active[x] ? S.active[x].opt : null); break;
+    case 'openfam': go('shelf'); if (y && fam(x) && fam(x).opts.some(o => o.id === y)) S.sheet = {t:'confirm', fam:x, opt:y}; break;
     case 'sel': S.sel = x; break;
-    case 'sheet': S.cond = false; S.sheet = x === 'confirm' ? {t:x, fam:y, opt:a.split(':')[3]} : x === 'deact' ? {t:x, fam:y} : {t:x}; break;
+    case 'sheet': S.cond = false; S.open.rule = false; S.sheet = x === 'confirm' ? {t:x, fam:y, opt:a.split(':')[3]} : x === 'deact' ? {t:x, fam:y} : {t:x}; break;
     case 'beh': S.cond = false; S.sheet = {t:'beh', id:x}; break;
     case 'close': S.sheet = null; break;
     case 'tog': S.open[x] = !(S.open[x] ?? y === '1'); break;
@@ -1466,7 +1474,7 @@ function act(a){
     case 'infoff': S.inf = 'none'; S.infVia = null; go('home'); break;
     case 'keepinf': S.infVia = 'fichas'; S.sheet = null; break;
     case 'seenrel': S.released = 0; S.sheet = null; if (x) go(x); break;
-    case 'ibnotice': S.ibNotice = null; go('fam', 'investback'); S.sel = null; break;
+    case 'ibnotice': S.ibNotice = null; go('shelf'); break;
     case 'finish': for (const k in S.active) S.active[k].status = 'active'; S.fx = true; break;
     // painel
     case 'panel':   // tela estreita: gaveta por cima; tela larga: recolhe e o app ocupa tudo
