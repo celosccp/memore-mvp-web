@@ -528,6 +528,30 @@ h3.sec2 span{display:block;font-size:14.5px;color:var(--mut);font-weight:400;mar
 .rg.off .nd i,.light .rg.off .nd i{border-color:var(--s3);background:var(--nb)}
 .rg.off .rt{opacity:.6}
 .pk2.lock .rh b{color:var(--mut)}
+
+/* ===== Usar: o espaço cresce com a altura da tela, sem passar de uma tela ===== */
+#phone{--e:clamp(0px,calc((min(844px,100dvh - 16px) - 756px)*.42),37px)}
+.hubv .bal .btop .n{font-size:calc(32px + var(--e)/11)}
+.hubv .hb{margin:calc(6px + var(--e)/30) 0 calc(6px + var(--e)/40)}
+.hubv .ttabs{margin-top:calc(6px + var(--e)/24)} .hubv .ttabs button{padding:calc(8px + var(--e)/30) 0 calc(7px + var(--e)/30)}
+.stack{margin-top:calc(8px + var(--e)/16)}
+.s-shelf .pk2{padding:calc(11px + var(--e)/22) calc(13px + var(--e)/40)}
+.s-shelf .card{padding:calc(9px + var(--e)/22) calc(13px + var(--e)/40) calc(8px + var(--e)/22)}
+.s-shelf .card+.card,.s-shelf .stack+.card{margin-top:calc(8px + var(--e)/24)}
+.s-shelf .rs{margin-top:calc(7px + var(--e)/26);padding-top:calc(7px + var(--e)/26)}
+.s-shelf .rs .rh,.s-shelf .card .rh{margin-bottom:calc(5px + var(--e)/26)}
+.s-shelf .rh b{font-size:calc(13.5px + var(--e)/80)}
+.s-shelf .nd i{width:calc(16px + var(--e)/30);height:calc(16px + var(--e)/30);margin-bottom:calc(3px + var(--e)/40)}
+.s-shelf .rt{top:calc(6px + var(--e)/60)}
+.s-shelf .nd.org i{width:calc(9px + var(--e)/40);height:calc(9px + var(--e)/40);margin:calc(3.5px + var(--e)/240) 0 calc(6.5px + var(--e)/34)}
+.s-shelf .nd b{font-size:calc(12px + var(--e)/100)} .s-shelf .nd span{font-size:calc(10px + var(--e)/150)}
+.s-shelf .pk2 .plast{width:calc(50px + var(--e)/8);height:calc(32px + var(--e)/12.5)}
+/* a sobra de altura vai para dentro dos cards, na proporcao do conteudo */
+.s-shelf{display:flex;flex-direction:column}
+.s-shelf>*{flex-shrink:0}
+.s-shelf>.stack{flex:1.7 0 auto;display:flex;flex-direction:column}
+.s-shelf>.stack>.pk2{flex:1 0 auto;display:flex;flex-direction:column;justify-content:space-between}
+.s-shelf>.card{flex:1 0 auto;display:flex;flex-direction:column;justify-content:space-evenly}
 </style>
 </head>
 <body>
@@ -1060,7 +1084,7 @@ function juntar(){
       ${i === 3 ? `<div class="xs mut" style="margin-bottom:6px">Só fazem sentido se você já tem um plano que precisa deles. Veja as condições antes de decidir.</div>` : ''}
       ${bs.map(row).join('')}
     </div></div>`; }).join('')}
-    ${goalCard() ? `<h3 class="sec">${S.goal ? 'Sua trilha' : 'Sugeridos para você'}</h3>${goalCard()}` : ''}`;
+    ${goalCard() ? `<h3 class="sec">${S.goal ? 'Sua trilha recomendada' : 'Sugeridos para você'}</h3>${goalCard()}` : ''}`;
 }
 
 // ---------- Sheets ----------
@@ -1152,7 +1176,7 @@ function sheet(){
   else if (s.t === 'behDone'){
     const b = beh(s.id), g = S.goal && fam(S.goal.fam) ? { f: fam(S.goal.fam), o: optOf(S.goal.fam, S.goal.opt), m: missing(S.goal.fam, S.goal.opt) } : null;
     h = `${burst()}<div class="ctr"><div class="okc">✓</div><h2>+${pt(b.pts)}</h2><p>Passo concluído: ${b.nome}.</p></div>
-      ${g && g.m ? `<div class="card"><div class="row">${ring((g.o.price - g.m) / g.o.price, `<span>${Math.round((g.o.price - g.m) / g.o.price * 100)}%</span>`)}<div class="g"><div class="xs mut b">SUA TRILHA</div><div class="b">${g.f.nome} · ${g.o.label}</div><div class="xs mut">Faltam ${pt(g.m)}.</div></div></div></div>` : ''}
+      ${g && g.m ? `<div class="card"><div class="row">${ring((g.o.price - g.m) / g.o.price, `<span>${Math.round((g.o.price - g.m) / g.o.price * 100)}%</span>`)}<div class="g"><div class="xs mut b">SUA TRILHA RECOMENDADA</div><div class="b">${g.f.nome} · ${g.o.label}</div><div class="xs mut">Faltam ${pt(g.m)}.</div></div></div></div>` : ''}
       <button class="btn" data-a="close">Continuar</button>`;
   }
   else if (s.t === 'infPts'){
