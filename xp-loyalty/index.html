@@ -1375,15 +1375,15 @@ function renderPanel(){
       <p class="hint">Seletor só da demonstração. O cliente verá uma única regra.</p>
       <h2>Tema do app</h2>
       <div class="seg"><button class="${S.theme === 'light' ? 'on' : ''}" data-a="theme:light">Claro</button><button class="${S.theme === 'dark' ? 'on' : ''}" data-a="theme:dark">Escuro</button></div>
-      <h2>Perfil</h2>
-      ${Object.entries(PROFILES).map(([id, p]) => `<button class="prof ${S.prof === id ? 'on' : ''}" data-a="prof:${id}"><b>${p.nome}</b><span>${p.resumo}</span></button>`).join('')}
       ${S.inf === 'requested' ? `<button class="pbtn hot" data-a="approve">Simular: XP Infinite aprovado e ativo<small>O pedido está em análise no app</small></button>` : ''}
       ${proc ? `<button class="pbtn hot" data-a="finish">Concluir ativação em processamento</button>` : ''}
       <h2>Simular comportamento</h2>
+      <div class="seg" style="margin-bottom:12px"><button class="${S.inf !== 'active' ? 'on' : ''}" data-a="card:one">Tem o XP One</button><button class="${S.inf === 'active' ? 'on' : ''}" data-a="card:infinite">Tem o XP Infinite</button></div>
       <div class="sl"><label>Patrimônio investido <output id="oAuc">${brl(S.auc)}</output></label><input type="range" id="rAuc" min="0" max="100000" step="1000" value="${S.auc}"></div>
       <div class="sl"><label>Gasto mensal no cartão <output id="oGasto">${brl(S.gasto)}</output></label><input type="range" id="rGasto" min="0" max="10000" step="100" value="${S.gasto}"></div>
       ${CTX.map((cx, i) => { const bs = visibleBeh().filter(b => b.ctx === i && !b.dyn); return bs.length ? `<div class="glab">${cx}</div>` + bs.map(b =>
         `<label class="tog" style="padding:4px 0">${b.sub || b.nome} <span class="hint" style="margin:0 6px 0 auto">+${b.pts}</span><input type="checkbox" data-d="${b.id}" ${S.done[b.id] ? 'checked' : ''}></label>`).join('') : ''; }).join('')}
+      <button class="pbtn" style="margin-top:10px" data-a="prof:p1">Reiniciar simulação</button>
       <h2>Ir direto a um estado</h2>
       ${[['Saldo', [['welcome','Boas-vindas'],['zero','Zero ficha'],['insuf','Fichas insuficientes']]],
         ['Benefício', [['disp','Disponível'],['proc','Em processamento'],['ativo','Ativo'],['troca','Troca'],['perda','Perda de elegibilidade'],['legado','Cofre XP já ativo']]],
@@ -1480,6 +1480,10 @@ function act(a){
     case 'leg': S.legRule = x; break;
     case 'sala': S.salaMode = x; break;
     case 'theme': S.theme = x; break;
+    case 'card':   // define qual cartão o cliente já tem, sem passar pelo pedido
+      if (x === 'infinite'){ S.inf = 'active'; S.infVia = 'patrimonio'; S.auc = Math.max(S.auc, P.corte); S.seen.req = true; }
+      else { S.inf = 'none'; S.infVia = null; }
+      S.pk = null; break;
     case 'pk': S.pk = +x; break;
     case 'ctab': S.ctab = +x; break;
     case 'preset': S.legacy = false; PRESETS[x](); document.getElementById('panel').classList.remove('open'); break;
