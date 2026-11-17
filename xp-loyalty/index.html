@@ -555,6 +555,11 @@ h3.sec2 span{display:block;font-size:14.5px;color:var(--mut);font-weight:400;mar
 .pkl2{display:block;width:100%;text-align:left;font-size:12.5px;font-weight:650;color:var(--ya);border-top:1px solid var(--line);margin-top:calc(7px + var(--e)/26);padding-top:calc(7px + var(--e)/26)}
 .light .pkl2{text-decoration:underline;text-decoration-color:var(--y);text-decoration-thickness:2px;text-underline-offset:3px}
 .status{height:30px}
+.pk2.lock .rh .ico{opacity:.5}
+.hd{min-height:36px;padding:2px 16px 4px} .hd .back{width:32px;height:32px}
+.stack{margin-top:calc(6px + var(--e)/16)}
+.s-shelf .card+.card,.s-shelf .stack+.card{margin-top:calc(6px + var(--e)/24)}
+.s-shelf.scr{padding-bottom:8px}
 </style>
 </head>
 <body>
@@ -1005,8 +1010,8 @@ function rgState(f, card, locked){
 function shelf(){
   const c = activeCard(), fs = families(), F = id => fs.find(f => f.id === id), solo = c === 'infinite', idx = solo ? 0 : (S.pk ?? 0);
   // linha recolhível dentro do cartão: resumo sempre visível, régua ao tocar
-  const row = (f, t) => `<div class="rs"><div class="rh"><b>${t}</b></div>${regua(f)}</div>`;
-  const lrow = (f, t) => `<div class="rs"><div class="rh"><b>${t}</b></div>${regua(f, 'infinite', S.inf !== 'active')}</div>`;
+  const row = (f, t) => `<div class="rs"><div class="rh"><div class="row" style="gap:10px"><div class="ico" style="width:32px;height:32px;border-radius:10px">${I[f.id]}</div><b>${t}</b></div></div>${regua(f)}</div>`;
+  const lrow = (f, t) => `<div class="rs"><div class="rh"><div class="row" style="gap:10px"><div class="ico" style="width:32px;height:32px;border-radius:10px">${I[f.id]}</div><b>${t}</b></div></div>${regua(f, 'infinite', S.inf !== 'active')}</div>`;
   const solocard = (f, t, unit) => `<div class="card"><div class="rh"><div class="row" style="gap:10px"><div class="ico" style="width:32px;height:32px;border-radius:10px">${I[f.id]}</div><b>${t}</b>${unit ? `<em class="xs mut" style="font-style:normal">${unit}</em>` : ''}</div></div>${regua(f)}</div>`;
   const mine = `<div class="pk2 cur">
       <div class="row">${plast(c)}<div class="b g" style="font-size:16px">${cardName(c)}</div>${infByPoints() && S.inf === 'active' ? chip(`${pt(P.infPts)} em uso`, 'use') : chip('Incluído', 'y')}</div>
