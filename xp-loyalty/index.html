@@ -456,6 +456,39 @@ h3.sec2 span{display:block;font-size:14.5px;color:var(--mut);font-weight:400;mar
 .nd.cur span{color:var(--tx);font-weight:700}
 .nd.av span{color:var(--oka);font-weight:600}
 .rg.off .nd i{border-color:var(--s3)}
+
+/* ===== Hub compacto: a aba Usar cabe sem rolar ===== */
+.hd{padding:2px 16px 6px;min-height:42px}
+.hd .back{width:34px;height:34px}
+.status{height:34px}
+.hubv .bal .btop .n{font-size:36px}
+.hubv .blab b{font-size:15px} .hubv .blab span{font-size:12px}
+.hubv .hb{height:8px;margin:8px 0 7px}
+.hubv .leg{font-size:12px;gap:2px 12px} .hubv .leg b{font-size:13px}
+.hubv .ttabs{margin-top:8px} .hubv .ttabs button{padding:9px 0 8px;font-size:14px}
+.s-shelf .pks{margin-top:10px!important}
+.s-shelf .pk2{padding:11px 13px}
+.s-shelf .pk2 .plast{width:62px;height:40px}
+.s-shelf .rs{margin-top:9px;padding-top:9px}
+.s-shelf .dots{margin:7px 0 9px}
+.s-shelf .card{padding:10px 13px 9px;border-radius:20px}
+.s-shelf .card+.card{margin-top:8px}
+.s-shelf .rh{margin-bottom:8px}
+.s-shelf .rh .ico{width:28px!important;height:28px!important}
+.s-shelf .nd i{width:18px;height:18px;margin-bottom:4px}
+.s-shelf .rt{top:7px}
+.s-shelf .nd.org i{width:10px;height:10px;margin:4px 0 8px}
+.s-shelf .nd b{font-size:12.5px}
+.s-shelf.scr{padding-bottom:10px}
+.stack{margin-top:10px}
+.peek{display:flex;align-items:center;gap:7px;width:calc(100% - 30px);margin:0 15px -18px;padding:8px 14px 26px;border-radius:18px 18px 0 0;background:rgba(255,255,255,.1);font-size:12.5px;color:var(--mut);text-align:left;transition:transform .14s ease}
+.peek:active{transform:translateY(-3px)}
+.peek b{color:var(--tx);font-size:13.5px;flex:1}
+.light .peek{background:#E3E3E9}
+.stack .pk2{position:relative;z-index:1;background:var(--nb);box-shadow:0 -6px 18px rgba(0,0,0,.22);animation:pkin .32s cubic-bezier(.2,.8,.2,1)}
+.light .stack .pk2{background:#F1F1F4;box-shadow:0 -5px 14px rgba(0,0,0,.07)}
+@keyframes pkin{from{transform:translateY(10px);opacity:.6}}
+.s-shelf .stack+.card{margin-top:8px}
 </style>
 </head>
 <body>
@@ -693,7 +726,7 @@ function bal(){
   return `<div class="bal"><div class="btop"><div class="n"><span class="cnt">${t}</span></div><div class="blab"><b>${t === 1 ? 'ficha' : 'fichas'}</b><span>de ${mx} possíveis</span></div></div>
     <div class="hb"><i class="bu" style="width:${(al / mx * 100).toFixed(1)}%"></i><i class="ba" style="width:${(av / mx * 100).toFixed(1)}%"></i></div>
     <div class="leg"><span><i class="d y"></i>Em uso <b>${al}</b></span><span><i class="d g"></i>Disponíveis <b>${av}</b></span><button data-a="go:juntar"><i class="d o"></i>A conquistar <b>${mx - Math.max(t, al)}</b></button></div>
-    ${t === 0 && al === 0 ? '<div class="xs mut" style="margin-top:10px">Você ainda não tem fichas. Com elas você ativa Investback, Cofre XP Turbo e outros benefícios. Veja em Juntar por onde começar.</div>' : ''}</div>`;
+    ${t === 0 && al === 0 ? '<button class="xs mut" style="margin-top:6px;display:block" data-a="go:juntar">Você ainda não tem fichas. <b style="color:var(--tx)">Veja em Juntar por onde começar ›</b></button>' : ''}</div>`;
 }
 const strip = () => '';
 const canActivate = () => families().some(f => !S.active[f.id] && missing(f.id, f.opts[0].id) === 0)
@@ -920,11 +953,13 @@ function shelf(){
       : `<div class="prog" style="margin:12px 0 5px;height:5px"><i style="width:${S.auc / P.corte * 100}%"></i></div><div class="xs mut">Faltam ${brl(P.corte - S.auc)} investidos${S.scen === 'B' && !can ? ` · ou ${pt(P.infPts)}` : ''}</div>${can ? `<span class="tb" style="display:inline-block;margin-top:8px" data-a="sheet:infPts">Pedir com ${pt(P.infPts)} ›</span>` : ''}`;
     inf = `<div class="pk2 ${S.inf === 'none' && !elig() ? 'lock' : ''}" role="button" tabindex="0" data-a="go:pacote">
       <div class="row">${plast('infinite')}<div class="g"><div class="b" style="font-size:17px;margin-bottom:4px">XP Infinite</div>${tag}</div></div>
-      ${foot}${lrow(Fi('investback'), 'Investback')}${lrow(Fi('salavip'), 'Salas VIP')}</div>`;
+      ${foot}<div class="rs xs mut">Investback <b style="color:var(--tx)">${rgBase(Fi('investback'), 'infinite')}</b>${rgBase(Fi('salavip'), 'infinite') ? ` · Salas VIP <b style="color:var(--tx)">${rgBase(Fi('salavip'), 'infinite')}</b>` : ''} · mais com fichas</div></div>`;
   }
-  return `<div class="pks ${solo ? 'solo' : ''}" data-idx="${idx}" style="margin-top:14px">${mine}${inf}</div>
-    ${solo ? '' : `<div class="dots"><i class="${idx === 0 ? 'on' : ''}"></i><i class="${idx === 1 ? 'on' : ''}"></i></div>`}
-    <div style="height:12px"></div>
+  const infState = S.inf === 'requested' ? 'Em análise' : elig() ? 'Você já pode pedir' : `Faltam ${brl(P.corte - S.auc)}`;
+  const peek = solo ? '' : idx === 0
+    ? `<button class="peek" data-a="pk:1">${S.inf === 'none' && !elig() ? I.lock : ''}<b>XP Infinite</b><span>${infState}</span><span>›</span></button>`
+    : `<button class="peek" data-a="pk:0"><b>${cardName(c)}</b><span>Seu cartão</span><span>›</span></button>`;
+  return `<div class="stack">${peek}${solo || idx === 0 ? mine : inf}</div>
     ${solocard(F('cofrinho'), 'Cofre XP', '% do CDI')}
     ${solocard(F('corretagem'), 'Corretagem zero', 'por mês')}`;
 }
@@ -1162,7 +1197,7 @@ function renderPhone(){
   const hadSheet = !!app.querySelector('.ov');
   const cta = isHub && S.screen !== 'shelf' && canActivate() ? `<button class="go" data-a="go:shelf"><span>Você tem benefícios para ativar</span><span>›</span></button>` : '';
   app.innerHTML = `<div class="hd"><button class="back" data-a="back">←</button><h1>${isHub ? 'Loyalty XP Digital' : S.screen === 'fam' ? fam(S.param).nome : ''}</h1></div>
-    <div class="scr ${key !== lastKey ? 'enter' : ''} ${isHub ? '' : 'sub'}">${isHub ? bal() + banners() + cta + hubTabs() : ''}${body}</div>
+    <div class="scr ${key !== lastKey ? 'enter' : ''} ${isHub ? 'hubv' : 'sub'} s-${S.screen}">${isHub ? bal() + banners() + cta + hubTabs() : ''}${body}</div>
     ${S.screen === 'fam' ? famFoot() : ''}
     ${sheet()}`;
   app.querySelector('.scr').scrollTop = st; lastKey = key;
@@ -1361,6 +1396,7 @@ function act(a){
     case 'leg': S.legRule = x; break;
     case 'sala': S.salaMode = x; break;
     case 'theme': S.theme = x; break;
+    case 'pk': S.pk = +x; break;
     case 'ctab': S.ctab = +x; break;
     case 'preset': S.legacy = false; PRESETS[x](); document.getElementById('panel').classList.remove('open'); break;
   }
