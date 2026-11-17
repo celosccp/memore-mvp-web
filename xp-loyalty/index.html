@@ -552,6 +552,9 @@ h3.sec2 span{display:block;font-size:14.5px;color:var(--mut);font-weight:400;mar
 .s-shelf>.stack{flex:1.7 0 auto;display:flex;flex-direction:column}
 .s-shelf>.stack>.pk2{flex:1 0 auto;display:flex;flex-direction:column;justify-content:space-between}
 .s-shelf>.card{flex:1 0 auto;display:flex;flex-direction:column;justify-content:space-evenly}
+.pkl2{display:block;width:100%;text-align:left;font-size:12.5px;font-weight:650;color:var(--ya);border-top:1px solid var(--line);margin-top:calc(7px + var(--e)/26);padding-top:calc(7px + var(--e)/26)}
+.light .pkl2{text-decoration:underline;text-decoration-color:var(--y);text-decoration-thickness:2px;text-underline-offset:3px}
+.status{height:30px}
 </style>
 </head>
 <body>
@@ -788,8 +791,8 @@ function bal(){
   const t = total(), al = allocated(), av = available(), mx = Math.max(maxTotal(), t, al);
   return `<div class="bal"><div class="btop"><div class="n"><span class="cnt">${t}</span></div><div class="blab"><b>${t === 1 ? 'ficha' : 'fichas'}</b><span>de ${mx} possíveis</span></div></div>
     <div class="hb"><i class="bu" style="width:${(al / mx * 100).toFixed(1)}%"></i><i class="ba" style="width:${(av / mx * 100).toFixed(1)}%"></i></div>
-    <div class="leg"><span><i class="d y"></i>Em uso <b>${al}</b></span><span><i class="d g"></i>Disponíveis <b>${av}</b></span><button data-a="go:juntar"><i class="d o"></i>A conquistar <b>${mx - Math.max(t, al)}</b></button></div>
-    ${t === 0 && al === 0 ? '<button class="xs" style="margin-top:5px;display:block;font-weight:650" data-a="go:juntar">Veja em Juntar como conseguir fichas ›</button>' : ''}</div>`;
+    <div class="leg" ${t === 0 && al === 0 ? 'hidden' : ''}><span><i class="d y"></i>Em uso <b>${al}</b></span><span><i class="d g"></i>Disponíveis <b>${av}</b></span><button data-a="go:juntar"><i class="d o"></i>A conquistar <b>${mx - Math.max(t, al)}</b></button></div>
+    ${t === 0 && al === 0 ? '<button class="xs" style="display:block;font-weight:650" data-a="go:juntar">Veja em Juntar como conseguir fichas ›</button>' : ''}</div>`;
 }
 const strip = () => '';
 const canActivate = () => families().some(f => !S.active[f.id] && missing(f.id, f.opts[0].id) === 0)
@@ -1006,8 +1009,9 @@ function shelf(){
   const lrow = (f, t) => `<div class="rs"><div class="rh"><b>${t}</b></div>${regua(f, 'infinite', S.inf !== 'active')}</div>`;
   const solocard = (f, t, unit) => `<div class="card"><div class="rh"><div class="row" style="gap:10px"><div class="ico" style="width:32px;height:32px;border-radius:10px">${I[f.id]}</div><b>${t}</b>${unit ? `<em class="xs mut" style="font-style:normal">${unit}</em>` : ''}</div></div>${regua(f)}</div>`;
   const mine = `<div class="pk2 cur">
-      <button class="row" style="width:100%" data-a="go:pacote">${plast(c)}<div class="b g" style="font-size:16px">${cardName(c)}</div>${infByPoints() && S.inf === 'active' ? chip(`${pt(P.infPts)} em uso`, 'use') : chip('Incluído', 'y')}<span class="chev mut" style="font-size:20px">›</span></button>
-      ${row(F('investback'), 'Investback')}${row(F('salavip'), 'Salas VIP')}</div>`;
+      <div class="row">${plast(c)}<div class="b g" style="font-size:16px">${cardName(c)}</div>${infByPoints() && S.inf === 'active' ? chip(`${pt(P.infPts)} em uso`, 'use') : chip('Incluído', 'y')}</div>
+      ${row(F('investback'), 'Investback')}${row(F('salavip'), 'Salas VIP')}
+      <button class="pkl2" data-a="go:pacote">Ver todos os benefícios do cartão ›</button></div>`;
   let inf = '';
   if (!solo){
     const fi = families('infinite'), Fi = id => fi.find(f => f.id === id), can = S.scen === 'B' && S.inf === 'none' && !elig() && available() >= P.infPts;
