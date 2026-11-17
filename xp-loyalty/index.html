@@ -299,6 +299,25 @@ h3.sec button{color:var(--y);font-size:13px;font-weight:600}
 @keyframes avp{50%{box-shadow:0 0 0 5px rgba(123,227,168,.14)}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 .pks.solo .pk{flex-basis:100%}
+
+/* ===== Medidor de fichas ===== */
+.gauge{position:relative;width:min(280px,82%);margin:2px auto 0}
+.gauge svg{display:block;width:100%;overflow:visible}
+.ga,.gu{transition:stroke-dasharray .9s cubic-bezier(.2,.8,.2,1),stroke-dashoffset .9s cubic-bezier(.2,.8,.2,1)}
+.gu{filter:drop-shadow(0 0 7px rgba(255,199,9,.55))} .ga{filter:drop-shadow(0 0 7px rgba(123,227,168,.5))}
+.gd{transform-origin:150px 140px;transition:transform .9s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 0 5px #fff)}
+.gc{position:absolute;left:0;right:0;top:36%;text-align:center}
+.bal .gc .n{font-size:64px;line-height:1;letter-spacing:-.04em}
+.split.s3{grid-template-columns:1fr 1fr 1fr;margin-top:2px}
+.split.s3>*{padding:11px 4px;text-align:center}
+.split.s3>*+*{border-left:1px solid rgba(255,255,255,.12)}
+.split.s3 b{font-size:20px}
+.d.o{background:rgba(255,255,255,.28)}
+.okc.big{width:84px;height:84px;background:none;color:var(--y)}
+.okc.big .ring{width:84px;height:84px;--p:100}
+.okc.big .ring::before{background:#241e17}
+.okc.big svg{width:34px;height:34px}
+.okc.big{margin-bottom:16px}
 </style>
 </head>
 <body>
@@ -373,7 +392,7 @@ function loadProfile(id){
   const p = PROFILES[id];
   Object.assign(S, { prof:id, auc:p.auc, gasto:p.gasto, done:{}, active:{}, inf:p.inf,
     infVia: p.inf==='active' ? 'patrimonio' : null, goal: p.goal ? {...p.goal} : null,
-    screen:'home', pk:null, param:null, sel:null, sheet:null, released:0, ibNotice:null, seen:{}, cond:false });
+    screen:'home', goalWas:false, pk:null, param:null, sel:null, sheet:null, released:0, ibNotice:null, seen:{}, cond:false });
 }
 
 // ---------- Regras ----------
@@ -438,6 +457,7 @@ function reconcile(){
   if (S.goal && S.goal.fam === 'salavip' && !fam('salavip')) S.goal = null;
   if (S.screen === 'fam' && !fam(S.param)){ S.screen = 'shelf'; S.param = null; }
   if (S.sheet && S.sheet.fam && !fam(S.sheet.fam)) S.sheet = null;
+  setTimeout(trailCheck, 0);
   if (S.scen === 'A' && S.infVia === 'fichas'){ S.inf = 'none'; S.infVia = null; }
   if (infByPoints() && elig()){           // transição no corte patrimonial (cenário B)
     S.infVia = 'patrimonio'; S.released = P.infPts; S.sheet = {t:'transB'}; S.fx = true;
@@ -450,6 +470,13 @@ function reconcile(){
   if (S.goal && S.goal.fam === 'investback' && !IB[activeCard()]().some(o => o.id === S.goal.opt)) S.goal = null;
 }
 
+// celebra quando a trilha que o cliente segue fica completa
+function trailCheck(){
+  const met = !!S.goal && !!fam(S.goal.fam) && missing(S.goal.fam, S.goal.opt) === 0;
+  const fire = met && !S.goalWas && S.screen !== 'welcome';
+  S.goalWas = met;
+  if (fire){ S.sheet = {t:'trailDone'}; S.fx = true; renderPhone(); }
+}
 // sugestões de próximo passo, na ordem pensada para o perfil
 function suggestions(n = 3){
   const out = [];
@@ -512,12 +539,21 @@ const chip = (t, k = '') => `<span class="chip ${k}">${t}</span>`;
 const plast = (c, lg) => `<div class="plast ${c} ${lg ? 'lg' : ''}"><span>${c === 'infinite' ? 'XP INFINITE' : 'XP ONE'}</span></div>`;
 
 const ring = (p, inner = '') => `<div class="ring" style="--p:${Math.round(Math.min(1, p) * 100)}">${inner}</div>`;
+const maxTotal = () => visibleBeh().reduce((a, b) => a + (b.id === 'cartao' ? P.cartaoMax : b.id === 'auc' ? P.aucMax : b.pts), 0);
 function bal(){
-  const t = total(), al = allocated(), av = available(), base = Math.max(t, al, 1);
-  return `<div class="bal"><div class="n"><span class="cnt">${t}</span> <small>${t === 1 ? 'ficha' : 'fichas'}</small></div>
-    <div class="bar"><i class="u" style="width:${al / base * 100}%"></i><i class="a" style="width:${av / base * 100}%"></i></div>
-    <div class="xs mut">${t === 0 && al === 0 ? 'Você ainda não tem fichas, e tudo bem: seu cartão já tem benefícios valendo. Fichas servem para ativar benefícios extras.' : 'Recalculadas todo mês com o que você faz na XP.'}</div>
-    <div class="split"><div><span><i class="d y"></i>Em uso</span><b>${pt(al)}</b></div><div><span><i class="d g"></i>Disponíveis</span><b>${pt(av)}</b></div></div></div>`;
+  const t = total(), al = allocated(), av = available(), mx = Math.max(maxTotal(), t, al), L = 460.8, C = 754;
+  const fu = al / mx, fa = av / mx, fe = Math.max(t, al) / mx;
+  const arc = (cls, col, len, off, cap) => `<circle class="${cls}" cx="150" cy="140" r="120" stroke-linecap="${cap ? 'round' : 'butt'}" style="stroke:${col};stroke-dasharray:${(L * len).toFixed(1)} ${C};stroke-dashoffset:${off.toFixed(1)}"/>`;
+  return `<div class="bal"><div class="gauge"><svg viewBox="0 0 300 192" aria-hidden="true">
+      <g transform="rotate(160 150 140)" fill="none" stroke-width="15">
+        <circle cx="150" cy="140" r="120" stroke="rgba(255,255,255,.1)" stroke-linecap="round" stroke-dasharray="${L} ${C}"/>
+        ${arc('ga', 'var(--ok)', fa, -L * fu - (fu && fa ? 4 : 0), !fu && fa)}
+        ${arc('gu', 'var(--y)', fu, 0, fu)}
+        <g class="gd" style="transform:rotate(${(220 * fe).toFixed(1)}deg)"><circle cx="270" cy="140" r="5" fill="#fff" stroke="none"/></g>
+      </g></svg>
+      <div class="gc"><div class="n"><span class="cnt">${t}</span></div><div class="sm mut">de ${mx} fichas possíveis</div></div></div>
+    <div class="split s3"><div><span><i class="d y"></i>Em uso</span><b>${al}</b></div><div><span><i class="d g"></i>Disponíveis</span><b>${av}</b></div><button data-a="go:juntar"><span><i class="d o"></i>A conquistar</span><b>${mx - Math.max(t, al)}</b></button></div>
+    ${t === 0 && al === 0 ? '<div class="xs mut" style="margin-top:10px;text-align:center">Você ainda não tem fichas, e tudo bem: seu cartão já tem benefícios valendo. Fichas servem para ativar benefícios extras.</div>' : ''}</div>`;
 }
 const strip = () => '';
 const canActivate = () => families().some(f => !S.active[f.id] && missing(f.id, f.opts[0].id) === 0)
@@ -859,6 +895,18 @@ function sheet(){
     }
     h = `<div class="xs b" style="color:var(--y);text-transform:uppercase;letter-spacing:.05em">${CTX[b.ctx]}</div><h2>${b.nome}</h2>${body}<button class="btn ghost" data-a="close">Fechar</button>`;
   }
+  else if (s.t === 'trailDone'){
+    if (!S.goal) return '';
+    const f = fam(S.goal.fam), o = optOf(S.goal.fam, S.goal.opt);
+    h = `${burst()}<div class="ctr"><div class="okc big">${ring(1, I[f.id])}</div><div class="xs b" style="color:var(--y);letter-spacing:.08em">TRILHA CONCLUÍDA</div><h2 style="margin-top:4px">Você chegou lá</h2><p>Você juntou as ${pt(o.price)} para ${f.nome} · ${o.label}. Agora é só ativar.</p></div>
+      <button class="btn" data-a="sheet:confirm:${f.id}:${o.id}">Ativar agora</button><button class="btn ghost" data-a="close">Depois</button>`;
+  }
+  else if (s.t === 'behDone'){
+    const b = beh(s.id), g = S.goal && fam(S.goal.fam) ? { f: fam(S.goal.fam), o: optOf(S.goal.fam, S.goal.opt), m: missing(S.goal.fam, S.goal.opt) } : null;
+    h = `${burst()}<div class="ctr"><div class="okc">✓</div><h2>+${pt(b.pts)}</h2><p>Desafio concluído: ${b.nome}.</p></div>
+      ${g && g.m ? `<div class="card"><div class="row">${ring((g.o.price - g.m) / g.o.price, `<span>${Math.round((g.o.price - g.m) / g.o.price * 100)}%</span>`)}<div class="g"><div class="xs mut b">SUA TRILHA</div><div class="b">${g.f.nome} · ${g.o.label}</div><div class="xs mut">Faltam ${pt(g.m)}.</div></div></div></div>` : ''}
+      <button class="btn" data-a="close">Continuar</button>`;
+  }
   else if (s.t === 'infPts'){
     const ib = S.active.investback && optOf('investback', S.active.investback.opt);
     h = `<h2>Pedir o XP Infinite com fichas</h2><p>Você troca de cartão: sai do XP One e passa para o XP Infinite.</p>
@@ -964,10 +1012,10 @@ function renderPhone(){
   // contador e barra do saldo animam quando o valor muda
   const cnt = app.querySelector('.bal .cnt');
   if (cnt){
-    const u = app.querySelector('.bal .bar .u'), a = app.querySelector('.bal .bar .a');
-    const now = { t: total(), u: u.style.width, a: a.style.width };
+    const els = [['.gu', 'strokeDasharray'], ['.ga', 'strokeDasharray'], ['.ga', 'strokeDashoffset'], ['.gd', 'transform']].map(([q, k]) => [app.querySelector('.bal ' + q), k]);
+    const now = { t: total(), v: els.map(([el, k]) => el.style[k]) };
     if (prevBal && !matchMedia('(prefers-reduced-motion: reduce)').matches){
-      if (prevBal.u !== now.u || prevBal.a !== now.a){ u.style.width = prevBal.u; a.style.width = prevBal.a; void u.offsetWidth; u.style.width = now.u; a.style.width = now.a; }
+      if (prevBal.v.join() !== now.v.join()){ els.forEach(([el, k], n) => { el.style[k] = prevBal.v[n]; }); void cnt.offsetWidth; els.forEach(([el, k], n) => { el.style[k] = now.v[n]; }); }
       if (prevBal.t !== now.t){ const from = prevBal.t, t0 = performance.now();
         const tick = ts => { const k = Math.min(1, (ts - t0) / 700), e = 1 - Math.pow(1 - k, 3); if (!cnt.isConnected) return;
           cnt.textContent = Math.round(from + (now.t - from) * e); if (k < 1) requestAnimationFrame(tick); };
@@ -989,6 +1037,7 @@ const HIPOTESES = [
   ['Fichas', 'Cartão: 1 ficha a cada R$ 500 de gasto no mês, até 15. Patrimônio: 0 ficha até R$ 30 mil e 1 ficha a cada R$ 5 mil completos acima disso, até 10.'],
   ['Fichas', 'Demais comportamentos com pontuação ilustrativa: Open Finance 3, aporte recorrente 3, previdência 3, pagamentos 2, salário 5, câmbio 1, crédito 2, consórcio 2, seguros 2, Seguro Conta e Cartão 1.'],
   ['Fichas', 'Apuração mensal: o saldo total é recalculado a cada ciclo conforme o comportamento. Não há acúmulo nem validade no protótipo.'],
+  ['Saldo', 'O medidor mostra as fichas do cliente contra o total possível (48 na régua ilustrativa): em uso, disponíveis e a conquistar. O total é a soma dos tetos de todos os desafios e muda com a calibração.'],
   ['Saldo', 'Fichas travadas: ficam em uso enquanto o benefício está ativo e voltam ao desativar. Uma opção ativa por família.'],
   ['Saldo', 'Na troca dentro da família, as fichas da opção atual são liberadas e as da nova entram em uso, em um só passo.'],
   ['Prateleira', 'Cofrinho Turbo 110/115/125% do CDI por 10/15/30 fichas. Não existe Cofrinho sem Turbo.'],
@@ -1107,7 +1156,7 @@ function act(a){
     case 'go': go(x); break;
     case 'home': go('home'); break;
     case 'back': go(S.screen === 'fam' ? 'shelf' : S.screen === 'pacote' ? 'home' : 'welcome'); break;
-    case 'enter': go('home'); prevBal = { t:0, u:'0%', a:'0%' }; break;
+    case 'enter': go('home'); prevBal = { t:0, v:['0 754', '0 754', '0', 'rotate(0deg)'] }; break;
     case 'openfam': go('fam', x); S.sel = y || (S.active[x] ? S.active[x].opt : null); break;
     case 'sel': S.sel = x; break;
     case 'sheet': S.cond = false; S.sheet = x === 'confirm' ? {t:x, fam:y, opt:a.split(':')[3]} : x === 'deact' ? {t:x, fam:y} : {t:x}; break;
@@ -1116,8 +1165,8 @@ function act(a){
     case 'tog': S.open[x] = !(S.open[x] ?? y === '1'); break;
     case 'do': activate(x, y); if (S.goal && S.goal.fam === x && S.goal.opt === y) S.goal = null; S.sheet = {t:'done', fam:x}; break;
     case 'undo': { const back = optOf(x, S.active[x].opt).price; delete S.active[x]; S.sel = null; S.sheet = {t:'done', fam:x, back}; break; }
-    case 'goal': S.goal = {fam:x, opt:y}; go('home'); break;
-    case 'simbeh': S.done[x] = true; break;
+    case 'goal': S.goal = {fam:x, opt:y}; S.goalWas = false; go('home'); break;
+    case 'simbeh': S.done[x] = true; S.fx = true; S.sheet = {t:'behDone', id:x}; break;
     case 'cond': S.cond = true; break;
     case 'noop': break;
     case 'infreq': S.inf = 'requested'; S.infVia = x; S.seen.req = true; S.sheet = {t:'infAsk'}; break;
