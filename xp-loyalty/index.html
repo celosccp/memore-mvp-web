@@ -339,6 +339,9 @@ h3.sec button{color:var(--y);font-size:13px;font-weight:600}
 .pc .pl{font-size:11.5px;color:var(--mut)} .pc b{font-size:14px;line-height:1.3;white-space:nowrap;letter-spacing:-.01em} .pc .pcnd{font-size:11px;color:var(--mut)}
 .pk.lock .pc b{color:var(--mut)}
 .pkl{display:block;margin-top:10px;padding-top:9px;border-top:1px solid var(--line);font-size:12.5px;font-weight:650;color:var(--y);text-align:left}
+.mk{width:22px;height:22px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:12px;font-weight:800;font-style:normal}
+.mk.on{background:var(--y);color:#000} .mk.off{border:1.5px solid var(--dim)} .mk.part{border:1.5px solid var(--y);color:var(--y)}
+.rv{font-size:13px;font-weight:700;color:var(--dim);white-space:nowrap} .rv.on{color:var(--y)}
 </style>
 </head>
 <body>
@@ -808,28 +811,25 @@ function famFoot(){
 }
 
 function juntar(){
-  const t = total(), list = visibleBeh();
-  const got = list.filter(b => behPts(b) > 0), sug = suggestions(3);
+  const t = total(), list = visibleBeh(), sug = suggestions(3);
   const defCtx = sug.length ? beh(sug[0].id).ctx : 0;
   const mx = b => b.id === 'cartao' ? P.cartaoMax : b.id === 'auc' ? P.aucMax : b.pts;
-  const detail = b => b.id === 'cartao' ? `${brl(S.gasto)} em compras no mês · 1 ficha a cada ${brl(P.cartaoPor)}`
-    : b.id === 'auc' ? `${brl(S.auc)} investidos · 1 ficha a cada ${brl(P.aucBloco)} acima de ${brl(P.corte)}` : (b.sub || 'Concluído');
+  const row = b => { const p = behPts(b), max = mx(b), full = p >= max;
+    const mark = full ? '<i class="mk on">✓</i>' : p ? '<i class="mk part">…</i>' : '<i class="mk off"></i>';
+    const sub = b.id === 'cartao' ? `${brl(S.gasto)} em compras no mês` : b.id === 'auc' ? `${brl(S.auc)} investidos` : full ? 'Feito' : b.need ? 'Se fizer sentido para você' : (b.sub || 'Ainda não feito');
+    const right = b.dyn ? `<span class="rv ${p ? 'on' : ''}">${p} de ${max}</span>` : full ? `<span class="rv on">${pt(p)}</span>` : b.need ? '' : `<span class="rv">+${b.pts}</span>`;
+    return `<button class="li" data-a="beh:${b.id}">${mark}<div class="g"><b>${b.nome}</b><span>${sub}</span></div>${right}<span class="chev">›</span></button>`; };
   return `
-    <h3 class="sec" style="margin-top:14px">De onde vêm suas fichas</h3>
-    <div class="card">${got.length ? got.map(b => `<button class="li" data-a="beh:${b.id}"><div class="g"><b>${b.nome}</b><span>${detail(b)}</span></div>${chip(pt(behPts(b)), 'use')}</button>`).join('')
-        + `<div class="kv tot" style="border-top:1px solid var(--line);margin-top:2px"><span>Total neste mês</span><span>${pt(t)}</span></div>`
-      : `<div class="sm mut">Você ainda não tem fichas. Elas vêm do que você faz na XP: guardar, usar o cartão, pagar contas. Comece por um desafio simples abaixo.</div>`}</div>
+    ${t === 0 ? `<div class="note" style="margin-top:14px">Fichas vêm do que você faz na XP: guardar, usar o cartão, pagar contas. Comece por um dos desafios abaixo.</div>` : ''}
+    ${sug.length ? `<h3 class="sec" style="margin-top:14px">Sugeridos para você</h3><div class="card">${sug.map(s => `<button class="li" data-a="beh:${s.id}"><div class="g"><b>${s.t}</b><span>${s.d}</span></div>${s.gain ? chip('+' + pt(s.gain), 'ghost') : ''}<span class="chev">›</span></button>`).join('')}</div>` : ''}
 
-    ${sug.length ? `<h3 class="sec">Sugeridos para você</h3><div class="card">${sug.map(s => `<button class="li" data-a="beh:${s.id}"><div class="g"><b>${s.t}</b><span>${s.d}</span></div>${s.gain ? chip('+' + pt(s.gain), 'ghost') : ''}<span class="chev">›</span></button>`).join('')}</div>` : ''}
-
-    <h3 class="sec">Todos os desafios</h3>
-    <div class="xs mut" style="margin:-4px 2px 10px">Faça o que combina com você. Nenhum é obrigatório.</div>
-    ${CTX.map((cx, i) => { const bs = list.filter(b => b.ctx === i), earned = bs.reduce((a, b) => a + behPts(b), 0), tot = bs.reduce((a, b) => a + mx(b), 0), done = bs.filter(b => behPts(b) >= mx(b)).length;
-      const op = isOpen('ctx' + i, i === defCtx);
-      return `<div class="card"><button class="row" style="width:100%" data-a="tog:ctx${i}:${i === defCtx ? 1 : 0}">${ring(earned / tot, `<span>${earned}</span>`)}<div class="g"><div class="b" style="font-size:16px">${cx}</div><div class="xs mut">${done}/${bs.length} ${bs.length === 1 ? 'desafio' : 'desafios'}</div></div>${i === 3 ? '' : earned < tot ? chip('+' + pt(tot - earned), 'ghost') : chip('Completo', 'use')}<span class="mut" style="font-size:18px;width:14px;text-align:center">${op ? '−' : '+'}</span></button><div ${op ? '' : 'hidden'} style="margin-top:10px">
+    <h3 class="sec">Seu avanço em cada desafio</h3>
+    ${CTX.map((cx, i) => { const bs = list.filter(b => b.ctx === i), earned = bs.reduce((a, b) => a + behPts(b), 0), tot = bs.reduce((a, b) => a + mx(b), 0);
+      const def = i === defCtx || earned > 0, op = isOpen('ctx' + i, def);
+      return `<div class="card"><button class="row" style="width:100%" data-a="tog:ctx${i}:${def ? 1 : 0}">${ring(earned / tot, `<span>${earned}</span>`)}<div class="g"><div class="b" style="font-size:16px">${cx}</div>
+          <div class="prog" style="margin:6px 0 4px;height:5px"><i style="width:${earned / tot * 100}%"></i></div><div class="xs mut">${earned} de ${pt(tot)}</div></div><span class="mut" style="font-size:18px;width:14px;text-align:center">${op ? '−' : '+'}</span></button><div ${op ? '' : 'hidden'} style="margin-top:10px">
       ${i === 3 ? `<div class="xs mut" style="margin-bottom:6px">Só fazem sentido se você já tem um plano que precisa deles. Veja as condições antes de decidir.</div>` : ''}
-      ${bs.map(b => { const p = behPts(b), max = mx(b);
-        return `<button class="li" data-a="beh:${b.id}"><div class="g"><b>${b.nome}</b><span>${b.dyn ? `${p} de ${max} fichas` : p ? 'Concluído' : b.need ? 'Se fizer sentido para você' : `Vale ${pt(b.pts)}`}</span></div>${p ? chip(p >= max ? '✓ ' + p : String(p), 'use') : ''}<span class="chev">›</span></button>`; }).join('')}
+      ${bs.map(row).join('')}
     </div></div>`; }).join('')}`;
 }
 
