@@ -18,7 +18,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
 #stage{display:flex;height:100dvh}
 
 /* ---------- Painel da demonstração ---------- */
-#panel{width:340px;flex:none;background:#fff;border-right:1px solid var(--pline);display:flex;flex-direction:column;z-index:30}
+#panel{width:clamp(270px,34vw,340px);flex:none;background:#fff;border-right:1px solid var(--pline);display:flex;flex-direction:column;z-index:30}
 .ph{padding:16px 18px 10px;border-bottom:1px solid var(--pline)}
 .ph h1{font-size:15px;margin:0 0 2px;letter-spacing:-.01em}
 .ph p{margin:0;font-size:12px;color:var(--pmut)}
@@ -184,7 +184,7 @@ h3.sec button{color:var(--ya);font-size:13px;font-weight:600}
 .okc.wait{background:var(--s3);color:var(--ya)} .okc.wait .spin{width:24px;height:24px;border-width:3px}
 .ctr{text-align:center}
 
-@media (max-width:920px){
+@media (max-width:679px){
   #panel{position:fixed;inset:0 auto 0 0;max-width:88vw;transform:translateX(-102%);transition:transform .22s}
   #panel.open{transform:none;box-shadow:0 0 40px rgba(0,0,0,.3)}
   #panelToggle{display:block}
@@ -560,6 +560,14 @@ h3.sec2 span{display:block;font-size:14.5px;color:var(--mut);font-weight:400;mar
 .stack{margin-top:calc(6px + var(--e)/16)}
 .s-shelf .card+.card,.s-shelf .stack+.card{margin-top:calc(6px + var(--e)/24)}
 .s-shelf.scr{padding-bottom:8px}
+.ph{position:relative}
+.pmn{position:absolute;right:12px;top:14px;font-size:12px;font-weight:650;color:var(--pmut);border:1px solid var(--pline);border-radius:999px;padding:4px 10px;background:#fff}
+@media (min-width:680px){
+  body.pmin #panel{display:none}
+  body.pmin #panelToggle{display:block}
+}
+@media (max-width:679px){ .pmn{display:none} }
+@media (min-width:680px){ .ph h1{padding-right:104px} }
 </style>
 </head>
 <body>
@@ -572,7 +580,7 @@ h3.sec2 span{display:block;font-size:14.5px;color:var(--mut);font-weight:400;mar
     </div>
   </main>
 </div>
-<button id="panelToggle" data-a="panel">Demo</button>
+<button id="panelToggle" data-a="panel">Demo ›</button>
 
 <script>
 /* =====================================================================
@@ -1403,7 +1411,7 @@ function renderPanel(){
       <ol>${L.map(([t, d]) => `<li><span class="tag">${t}</span>${d}</li>`).join('')}</ol>`;
   }
   const sc = el.querySelector('.pbody'), st = sc ? sc.scrollTop : 0, same = el.dataset.tab === S.tab;
-  el.innerHTML = `<div class="ph"><h1>Benefícios e Loyalty Digital</h1><p>Protótipo navegável · experiência móvel do app</p></div>
+  el.innerHTML = `<div class="ph"><button class="pmn" data-a="panel" aria-label="Minimizar painel">‹ Minimizar</button><h1>Benefícios e Loyalty Digital</h1><p>Protótipo navegável · experiência móvel do app</p></div>
     <div class="pbody">${body}</div>`;
   el.dataset.tab = S.tab;
   if (same) el.querySelector('.pbody').scrollTop = st;
@@ -1461,7 +1469,10 @@ function act(a){
     case 'ibnotice': S.ibNotice = null; go('fam', 'investback'); S.sel = null; break;
     case 'finish': for (const k in S.active) S.active[k].status = 'active'; S.fx = true; break;
     // painel
-    case 'panel': document.getElementById('panel').classList.toggle('open'); return;
+    case 'panel':   // tela estreita: gaveta por cima; tela larga: recolhe e o app ocupa tudo
+      if (matchMedia('(max-width:679px)').matches) document.getElementById('panel').classList.toggle('open');
+      else document.body.classList.toggle('pmin');
+      return;
     case 'ptab': S.tab = x; break;
     case 'scen': S.scen = x; loadProfile(S.prof); break;
     case 'prof': loadProfile(x); break;
