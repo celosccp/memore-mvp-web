@@ -16,11 +16,10 @@ confirmação, troca, perda de elegibilidade e transição dos R$ 30 mil ganhara
 
 | Área | O que responde |
 | --- | --- |
-| **Resumo** (central) | Quantas fichas tenho, qual é o meu cartão, o que escolhi, qual é o meu próximo passo |
 | **Meu cartão** | O que já está valendo no meu cartão, como chegar ao próximo pacote, em que etapa está o meu pedido |
-| **Usar** (prateleira) | O que posso ativar com fichas, quanto custa, o que cabe no meu saldo |
+| **Usar** | Qual é o meu cartão, o que posso ativar com fichas, quanto custa, o que cabe no meu saldo |
 | **Detalhe do benefício** | Escolha da opção, efeito no saldo, confirmação, troca, desativação |
-| **Juntar** | De onde vieram minhas fichas, o que é recomendado para mim, todas as formas de ganhar |
+| **Juntar** | Minha trilha, o que é recomendado para mim e meu avanço em cada grupo de desafios |
 
 ## Painel da demonstração
 

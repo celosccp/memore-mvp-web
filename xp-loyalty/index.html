@@ -429,7 +429,7 @@ function loadProfile(id){
   const p = PROFILES[id];
   Object.assign(S, { prof:id, auc:p.auc, gasto:p.gasto, done:{}, active:{}, inf:p.inf,
     infVia: p.inf==='active' ? 'patrimonio' : null, goal: p.goal ? {...p.goal} : null,
-    screen:'home', goalWas:false, pk:null, param:null, sel:null, sheet:null, released:0, ibNotice:null, seen:{}, cond:false });
+    screen:'shelf', goalWas:false, pk:null, param:null, sel:null, sheet:null, released:0, ibNotice:null, seen:{}, cond:false });
 }
 
 // ---------- Regras ----------
@@ -597,8 +597,8 @@ function bal(){
 const strip = () => '';
 const canActivate = () => families().some(f => !S.active[f.id] && missing(f.id, f.opts[0].id) === 0)
   || (S.scen === 'B' && !elig() && S.inf === 'none' && available() >= P.infPts);
-const hubTabs = () => `<div class="ttabs">${[['home', 'Resumo'], ['shelf', 'Usar'], ['juntar', 'Juntar']].map(([id, t]) =>
-  `<button class="${S.screen === id ? 'on' : ''}" data-a="go:${id}">${id === 'shelf' && canActivate() ? '<i class="d y"></i>' : ''}${t}</button>`).join('')}</div>`;
+const hubTabs = () => `<div class="ttabs">${[['shelf', 'Usar'], ['juntar', 'Juntar']].map(([id, t]) =>
+  `<button class="${S.screen === id ? 'on' : ''}" data-a="go:${id}">${id === 'shelf' && S.screen !== 'shelf' && canActivate() ? '<i class="d y"></i>' : ''}${t}</button>`).join('')}</div>`;
 
 function banners(){
   const out = [];
@@ -684,10 +684,12 @@ function pkCard(k){
   else if (elig()){ tag = chip('Desbloqueado · você já pode pedir', 'av'); sub = `Liberado pelos seus ${brl(S.auc)} investidos`; }
   else {
     tag = chip(I.lock + ' Bloqueado', 'ghost');
-    const alt = S.scen === 'B' ? ` <span style="color:var(--y);font-weight:600">· ou ${pt(P.infPts)}</span>` : '';
+    const can = S.scen === 'B' && available() >= P.infPts;
+    const alt = S.scen === 'B' && !can ? ` <span style="color:var(--y);font-weight:600">· ou ${pt(P.infPts)} (faltam ${P.infPts - available()})</span>` : '';
+    const ask = can ? `<span class="tb" style="display:inline-block;margin-top:8px" data-a="sheet:infPts">Pedir com ${pt(P.infPts)} ›</span>` : '';
     foot = S.auc >= P.corte * 0.6
-      ? `<div class="prog" style="margin:10px 0 5px"><i style="width:${S.auc / P.corte * 100}%"></i></div><div class="xs mut">Faltam ${brl(P.corte - S.auc)} investidos${alt}</div>`
-      : `<div class="xs mut" style="margin-top:10px">Desbloqueia com ${brl(P.corte)} investidos${alt}</div>`;
+      ? `<div class="prog" style="margin:10px 0 5px"><i style="width:${S.auc / P.corte * 100}%"></i></div><div class="xs mut">Faltam ${brl(P.corte - S.auc)} investidos${alt}</div>${ask}`
+      : `<div class="xs mut" style="margin-top:10px">Desbloqueia com ${brl(P.corte)} investidos${alt}</div>${ask}`;
   }
   return `<button class="pk ${cur ? 'cur' : ''} ${locked ? 'lock' : ''}" data-a="go:pacote">
     <div class="row">${plast(k)}<div class="g"><div class="b" style="font-size:16px;margin-bottom:4px">${cardName(k)}</div>${tag}</div></div>
@@ -699,24 +701,13 @@ function pkCard(k){
     </div>
     <span class="pkl">Ver todos os benefícios do cartão ›</span></button>`;
 }
-function home(){
-  const c = activeCard(), act = Object.keys(S.active);
-  const solo = c === 'infinite';
-  const idx = solo ? 0 : (S.pk ?? 0);
-  return `
-    ${banners()}
-    <h3 class="sec">Seu cartão</h3>
+function cardCarousel(){
+  const solo = activeCard() === 'infinite', idx = solo ? 0 : (S.pk ?? 0);
+  return `<h3 class="sec" style="margin-top:14px">Seu cartão</h3>
     <div class="pks ${solo ? 'solo' : ''}" data-idx="${idx}">${solo ? '' : pkCard('one')}${pkCard('infinite')}</div>
-    ${solo ? '' : `<div class="dots"><i class="${idx === 0 ? 'on' : ''}"></i><i class="${idx === 1 ? 'on' : ''}"></i></div>`}
-
-    <h3 class="sec">Benefícios extras em uso</h3>
-    ${act.length ? `<div class="card">${act.map(fid => { const f = fam(fid), o = optOf(fid, S.active[fid].opt);
-        return `<button class="li" data-a="openfam:${fid}"><div class="ico">${I[fid]}</div><div class="g"><b>${f.nome}</b><span>${o.label} · ${pt(o.price)} em uso</span></div>${optState(f, o)}</button>`; }).join('')}</div>`
-      : `<button class="card sm mut" style="display:block;width:100%" data-a="go:shelf">${total() ? 'Nenhum benefício extra ativo. Suas fichas estão disponíveis.' : 'Benefícios extras aparecem aqui quando você ativar com fichas.'} <span style="color:var(--y);font-weight:600">Ver benefícios ›</span></button>`}
-
-    <h3 class="sec">${S.goal ? 'Sua trilha' : 'Para juntar mais fichas'}<button data-a="go:juntar">Ver tudo</button></h3>
-    ${goalCard()}`;
+    ${solo ? '' : `<div class="dots"><i class="${idx === 0 ? 'on' : ''}"></i><i class="${idx === 1 ? 'on' : ''}"></i></div>`}`;
 }
+const home = () => shelf();
 
 function pacote(){
   const c = activeCard(), ib = investbackNow(), inf = S.inf;
@@ -771,19 +762,9 @@ function pacote(){
 }
 
 function shelf(){
-  let cardSec = '';
-  if (S.scen === 'B' && (!elig() || infByPoints())){
-    const st = S.inf === 'active' ? chip('✓ Ativo', 'ok') : S.inf === 'requested' ? chip('<i class="spin"></i> Em análise', 'y')
-      : available() >= P.infPts ? chip('Disponível', 'av') : chip(`Faltam ${P.infPts - available()}`, 'ghost');
-    cardSec = `<h3 class="sec" style="margin-top:14px">Seu cartão</h3>
-      <div class="card">${S.inf === 'active' ? '' : `<div class="row">${plast('one')}<div class="g"><div class="xs mut b">HOJE VOCÊ TEM</div><div class="b">XP One</div><div class="xs mut">Investback até 1,1%, com fichas</div></div></div>`}
-      <button class="opt" style="${S.inf === 'active' ? 'margin-top:0' : ''}" data-a="${S.inf === 'none' ? (available() >= P.infPts ? 'sheet:infPts' : 'go:pacote') : 'go:pacote'}">${plast('infinite')}<div class="g"><b>XP Infinite</b><span>${S.inf === 'active' ? `Seu cartão atual · ${pt(P.infPts)} em uso` : `${pt(P.infPts)} · Investback de 1% e mais benefícios`}</span></div>${st}</button>
-      <div class="xs mut" style="margin-top:8px">O cartão muda quais opções de Investback turbinado você pode escolher. Decida o cartão primeiro.</div></div>`;
-  }
   const cb = combos();
-  return `${strip()}
-    ${cardSec}
-    <h3 class="sec" ${cardSec ? '' : 'style="margin-top:14px"'}>Benefícios para ativar</h3><div class="xs mut" style="margin:-4px 2px 10px">Use suas fichas nos benefícios que preferir. Uma opção por benefício.</div>
+  return `${cardCarousel()}
+    <h3 class="sec">Benefícios para ativar</h3><div class="xs mut" style="margin:-4px 2px 10px">Use suas fichas nos benefícios que preferir. Uma opção por benefício.</div>
     ${families().map(f => `<div class="card">
       <button class="row" style="width:100%" data-a="openfam:${f.id}"><div class="ico">${I[f.id]}</div><div class="g"><div class="b" style="font-size:16px">${f.nome}</div><div class="xs mut">${f.desc}</div></div><span class="chev mut">›</span></button>
       ${f.id === 'cofrinho' && S.legacy && !S.active.cofrinho ? `<button class="note" style="display:block;width:100%" data-a="sheet:legacy"><b style="color:var(--tx)">${legacyCopy().status}</b> · ${legacyCopy().short} <span style="color:var(--y)">Entender ›</span></button>` : ''}
@@ -845,7 +826,7 @@ function juntar(){
     return `<button class="li" data-a="beh:${b.id}">${mark}<div class="g"><b>${b.nome}</b><span>${sub}</span></div>${right}<span class="chev">›</span></button>`; };
   return `
     ${t === 0 ? `<div class="note" style="margin-top:14px">Fichas vêm do que você faz na XP: guardar, usar o cartão, pagar contas. Comece por um dos desafios abaixo.</div>` : ''}
-    ${sug.length ? `<h3 class="sec" style="margin-top:14px">Sugeridos para você</h3><div class="card">${sug.map(s => `<button class="li" data-a="beh:${s.id}"><div class="g"><b>${s.t}</b><span>${s.d}</span></div>${s.gain ? chip('+' + pt(s.gain), 'ghost') : ''}<span class="chev">›</span></button>`).join('')}</div>` : ''}
+    ${goalCard() ? `<h3 class="sec" style="margin-top:14px">${S.goal ? 'Sua trilha' : 'Sugeridos para você'}</h3>${goalCard()}` : ''}
 
     <h3 class="sec">Seu avanço em cada desafio</h3>
     ${CTX.map((cx, i) => { const bs = list.filter(b => b.ctx === i), earned = bs.reduce((a, b) => a + behPts(b), 0), tot = bs.reduce((a, b) => a + mx(b), 0);
@@ -902,10 +883,10 @@ function sheet(){
     if (!a) h = `<div class="ctr"><div class="okc">✓</div><h2>Benefício desativado</h2><p>${pt(s.back)} voltaram para o seu saldo.</p></div>${saldoRows(0, 0)}<button class="btn" data-a="close">Entendi</button>`;
     else { const f = fam(s.fam), o = optOf(s.fam, a.opt);
       h = a.status === 'processing'
-        ? `<div class="ctr"><div class="okc wait"><i class="spin"></i></div><h2>Ativando ${o.label}</h2><p>Recebemos seu pedido. ${pt(o.price)} já estão em uso. Pode levar alguns instantes e você não precisa esperar nesta tela.</p></div><button class="btn sec" data-a="home">Voltar para o resumo</button>`
+        ? `<div class="ctr"><div class="okc wait"><i class="spin"></i></div><h2>Ativando ${o.label}</h2><p>Recebemos seu pedido. ${pt(o.price)} já estão em uso. Pode levar alguns instantes e você não precisa esperar nesta tela.</p></div><button class="btn sec" data-a="home">Voltar para os benefícios</button>`
         : `${burst()}<div class="ctr"><div class="okc">✓</div><h2>${o.label} ativo</h2><p>${f.nome} já está valendo.</p></div>
            <div class="card"><div class="kv"><span>Em uso neste benefício</span><span>${pt(o.price)}</span></div><div class="kv tot"><span>Disponíveis agora</span><span>${pt(available())}</span></div></div>
-           <button class="btn" data-a="home">Voltar para o resumo</button>${available() ? `<button class="btn ghost" data-a="go:shelf">Escolher outro benefício</button>` : ''}`; }
+           <button class="btn" data-a="home">Voltar para os benefícios</button>${available() ? `<button class="btn ghost" data-a="go:shelf">Escolher outro benefício</button>` : ''}`; }
   }
   else if (s.t === 'deact'){
     const f = fam(s.fam), o = optOf(s.fam, S.active[s.fam].opt);
@@ -969,7 +950,7 @@ function sheet(){
   else if (s.t === 'infAsk'){
     h = `<div class="ctr"><div class="okc wait"><i class="spin"></i></div><h2>Pedido recebido</h2><p>Seu XP Infinite está em análise. Você continua usando o XP One até o novo cartão ser ativado.${infByPoints() ? ` ${pt(P.infPts)} foram reservadas.` : ''}</p></div>
       <div class="card"><div class="steps"><div class="done">Pode pedir</div><div class="now">Pedido em análise</div><div>Cartão ativo</div></div></div>
-      <button class="btn" data-a="home">Voltar para o resumo</button>`;
+      <button class="btn" data-a="home">Voltar para os benefícios</button>`;
   }
   else if (s.t === 'infOn'){
     h = `${burst()}<div class="ctr"><div class="okc">✓</div><h2>Seu XP Infinite está ativo</h2><p>Seu cartão agora é o XP Infinite, com Investback de 1%.</p></div>
@@ -1030,7 +1011,7 @@ function renderPhone(){
   const hadSheet = !!app.querySelector('.ov');
   const cta = isHub && S.screen !== 'shelf' && canActivate() ? `<button class="go" data-a="go:shelf"><span>Você tem benefícios para ativar</span><span>›</span></button>` : '';
   app.innerHTML = `<div class="hd"><button class="back" data-a="back">←</button><h1>${isHub ? 'Loyalty XP Digital' : S.screen === 'fam' ? fam(S.param).nome : 'Meu cartão'}</h1></div>
-    <div class="scr ${key !== lastKey ? 'enter' : ''} ${isHub ? '' : 'sub'}">${isHub ? bal() + cta + hubTabs() : ''}${body}</div>
+    <div class="scr ${key !== lastKey ? 'enter' : ''} ${isHub ? '' : 'sub'}">${isHub ? bal() + banners() + cta + hubTabs() : ''}${body}</div>
     ${S.screen === 'fam' ? famFoot() : ''}
     ${sheet()}`;
   app.querySelector('.scr').scrollTop = st; lastKey = key;
@@ -1191,7 +1172,7 @@ const PRESETS = {
 
 function act(a){
   const [cmd, x, y] = a.split(':');
-  const go = (scr, param) => { S.screen = scr; S.param = param || null; S.sheet = null; };
+  const go = (scr, param) => { S.screen = scr === 'home' ? 'shelf' : scr; S.param = param || null; S.sheet = null; };
   switch (cmd){
     case 'go': go(x); break;
     case 'home': go('home'); break;
@@ -1205,7 +1186,7 @@ function act(a){
     case 'tog': S.open[x] = !(S.open[x] ?? y === '1'); break;
     case 'do': activate(x, y); if (S.goal && S.goal.fam === x && S.goal.opt === y) S.goal = null; S.sheet = {t:'done', fam:x}; break;
     case 'undo': { const back = optOf(x, S.active[x].opt).price; delete S.active[x]; S.sel = null; S.sheet = {t:'done', fam:x, back}; break; }
-    case 'goal': S.goal = {fam:x, opt:y}; S.goalWas = false; go('home'); break;
+    case 'goal': S.goal = {fam:x, opt:y}; S.goalWas = false; go('juntar'); break;
     case 'simbeh': S.done[x] = true; S.fx = true; S.sheet = {t:'behDone', id:x}; break;
     case 'cond': S.cond = true; break;
     case 'noop': break;
