@@ -19,7 +19,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
 
 /* ---------- Painel da demonstração ---------- */
 #panel{width:340px;flex:none;background:#fff;border-right:1px solid var(--pline);display:flex;flex-direction:column;z-index:30}
-.ph{padding:16px 18px 10px}
+.ph{padding:16px 18px 10px;border-bottom:1px solid var(--pline)}
 .ph h1{font-size:15px;margin:0 0 2px;letter-spacing:-.01em}
 .ph p{margin:0;font-size:12px;color:var(--pmut)}
 .ptabs{display:flex;gap:4px;padding:0 14px;border-bottom:1px solid var(--pline)}
@@ -1104,7 +1104,8 @@ function renderPanel(){
       <h2>Simular comportamento</h2>
       <div class="sl"><label>Patrimônio investido <output id="oAuc">${brl(S.auc)}</output></label><input type="range" id="rAuc" min="0" max="100000" step="1000" value="${S.auc}"></div>
       <div class="sl"><label>Gasto mensal no cartão <output id="oGasto">${brl(S.gasto)}</output></label><input type="range" id="rGasto" min="0" max="10000" step="100" value="${S.gasto}"></div>
-      <div class="grid2"><button class="pbtn" data-a="auc30">Chegar a ${brl(P.corte)}</button><button class="pbtn" data-a="prof:${S.prof}">Reiniciar perfil</button></div>
+      ${CTX.map((cx, i) => { const bs = visibleBeh().filter(b => b.ctx === i && !b.dyn); return bs.length ? `<div class="glab">${cx}</div>` + bs.map(b =>
+        `<label class="tog" style="padding:4px 0">${b.sub || b.nome} <span class="hint" style="margin:0 6px 0 auto">+${b.pts}</span><input type="checkbox" data-d="${b.id}" ${S.done[b.id] ? 'checked' : ''}></label>`).join('') : ''; }).join('')}
       <h2>Ir direto a um estado</h2>
       ${[['Saldo', [['welcome','Boas-vindas'],['zero','Zero ficha'],['insuf','Fichas insuficientes']]],
         ['Benefício', [['disp','Disponível'],['proc','Em processamento'],['ativo','Ativo'],['troca','Troca'],['perda','Perda de elegibilidade'],['legado','Cofrinho já ativo']]],
@@ -1133,7 +1134,6 @@ function renderPanel(){
   }
   const sc = el.querySelector('.pbody'), st = sc ? sc.scrollTop : 0, same = el.dataset.tab === S.tab;
   el.innerHTML = `<div class="ph"><h1>Benefícios e Loyalty Digital</h1><p>Protótipo navegável · experiência móvel do app</p></div>
-    <div class="ptabs">${tabs.map(([k, t]) => `<button class="${S.tab === k ? 'on' : ''}" data-a="ptab:${k}">${t}</button>`).join('')}</div>
     <div class="pbody">${body}</div>`;
   el.dataset.tab = S.tab;
   if (same) el.querySelector('.pbody').scrollTop = st;
@@ -1219,7 +1219,8 @@ document.addEventListener('input', e => {
 });
 document.addEventListener('change', e => {
   const t = e.target;
-  if (t.dataset.c){ S[t.dataset.c] = t.checked; render(); }
+  if (t.dataset.d){ S.done[t.dataset.d] = t.checked; render(); }
+  else if (t.dataset.c){ S[t.dataset.c] = t.checked; render(); }
   else if (t.dataset.p){
     const [k, i] = t.dataset.p.split('.'), v = t.type === 'number' ? Math.max(0, +t.value || 0) : t.value.replace(/[<>]/g, '');
     if (i !== undefined) P[k][+i] = v; else P[k] = v;
