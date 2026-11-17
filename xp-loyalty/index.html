@@ -298,6 +298,7 @@ h3.sec button{color:var(--y);font-size:13px;font-weight:600}
 .chip.av{animation:avp 2.4s ease-in-out infinite}
 @keyframes avp{50%{box-shadow:0 0 0 5px rgba(123,227,168,.14)}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+.pks.solo .pk{flex-basis:100%}
 </style>
 </head>
 <body>
@@ -530,7 +531,7 @@ function banners(){
   if (deficit() > 0) B('warn', '!', `Faltam ${pt(deficit())} para manter seus benefícios`, 'Suas fichas diminuíram. Nada muda agora: veja o prazo e suas opções.', 'sheet:loss', 'Ver o que fazer');
   if (cardAtRisk()) B('warn', '!', `Seu patrimônio está abaixo de ${brl(P.corte)}`, 'Seu XP Infinite continua ativo por enquanto. Veja como manter.', 'sheet:lossCard', 'Ver como manter');
   if (S.released) B('ok', '✓', `${pt(S.released)} voltaram para o seu saldo`, `Você chegou a ${brl(P.corte)} investidos. Seu XP Infinite agora vem do seu patrimônio.`, 'sheet:transB', 'Entender a mudança');
-  if (elig() && S.inf === 'none') B('y', '★', 'Você já pode pedir o XP Infinite', `Você chegou a ${brl(P.corte)} investidos. O pedido é feito por você, quando quiser.`, 'go:pacote', 'Ver o pacote e pedir');
+  if (elig() && S.inf === 'none') B('y', '★', 'Você já pode pedir o XP Infinite', `Você chegou a ${brl(P.corte)} investidos. O pedido é feito por você, quando quiser.`, 'go:pacote', 'Ver o cartão e pedir');
   if (S.inf === 'requested') B('', '…', 'XP Infinite em análise', 'Você continua com o XP One até o novo cartão ser ativado.', 'go:pacote', 'Acompanhar');
   if (S.ibNotice) B('', 'i', `${pt(S.ibNotice.price)} voltaram para o seu saldo`, `Seu cartão mudou. ${S.ibNotice.sv ? 'A Sala VIP por fichas' : 'O Investback turbinado de ' + S.ibNotice.label.split(' ')[0]} era do cartão anterior e foi encerrado.`, 'ibnotice', 'Escolher a opção do novo cartão');
   if (S.legacy && !S.active.cofrinho) B('', 'i', 'Seu Cofrinho no novo programa', legacyCopy().short, 'sheet:legacy', 'Entender');
@@ -576,7 +577,7 @@ function welcome(){
     <div class="logo">XP</div>
     <h2>Seu cartão já vem com benefícios. Com fichas, você escolhe mais.</h2>
     <p class="mut" style="margin:8px 0 0">Veja o que já é seu e o que dá para ativar a seguir.</p>
-    ${step(1, 'Seu cartão já está valendo', 'Investback e os demais benefícios do seu pacote não usam fichas.')}
+    ${step(1, 'Seu cartão já está valendo', 'Investback e os demais benefícios do seu cartão não usam fichas.')}
     ${step(2, 'Junte fichas com o que você já faz', 'Usar o cartão, guardar dinheiro, pagar contas. Suas fichas são recalculadas todo mês.')}
     ${step(3, 'Use fichas para ativar benefícios', 'Elas ficam em uso enquanto o benefício estiver ativo e voltam quando você desativa.')}
     <div style="flex:1;min-height:18px"></div>
@@ -589,21 +590,21 @@ function pkCard(k){
   const kv = (a, b) => `<div class="kv"><span>${a}</span><span>${b}</span></div>`;
   let tag, foot = '';
   if (k === 'one'){
-    tag = cur ? chip('Seu pacote', 'y') : chip('Pacote inicial', 'ghost');
+    tag = chip('Incluído · não usa fichas', 'y');
     foot = cur ? kv('Seu mês até aqui', ib.applies ? `≈ ${brl(ib.valor)} de volta` : `faltam ${brl(P.oneMin - S.gasto)} em compras`) : '';
   } else {
     const near = S.auc >= P.corte * 0.6;
-    tag = cur ? chip('Seu pacote', 'y') : S.inf === 'requested' ? chip('<i class="spin"></i> Em análise', 'y') : elig() ? chip('Desbloqueado · você já pode pedir', 'av') : chip(I.lock + ' Bloqueado', 'ghost');
+    tag = cur ? (infByPoints() ? chip(`${pt(P.infPts)} em uso`, 'use') : chip('Incluído · não usa fichas', 'y')) : S.inf === 'requested' ? chip('<i class="spin"></i> Em análise', 'y') : elig() ? chip('Desbloqueado · você já pode pedir', 'av') : chip(I.lock + ' Bloqueado', 'ghost');
     if (cur) foot = kv('Seu mês até aqui', `≈ ${brl(ib.valor)} de volta`) + (infByPoints() ? `<div class="xs mut" style="margin-top:8px">Acesso por fichas: ${P.infPts} em uso até você ter ${brl(P.corte)} investidos.</div>` : '');
     else if (S.inf === 'requested') foot = `<div class="xs mut" style="margin-top:8px">Você segue com o XP One até o novo cartão ser ativado.</div>`;
     else if (elig()) foot = `<div class="xs mut" style="margin-top:8px">Você tem ${brl(S.auc)} investidos. O pedido não usa fichas.</div>`;
     else foot = `<div class="xs mut b" style="margin-top:10px;letter-spacing:.04em">PARA DESBLOQUEAR</div>` + (near ? `<div class="prog"><i style="width:${S.auc / P.corte * 100}%"></i></div><div class="xs mut">Faltam ${brl(P.corte - S.auc)} investidos. Não usa fichas.</div>`
-        : `<div class="xs mut" style="margin-top:4px">Tenha ${brl(P.corte)} investidos. Sem pressa: seu pacote atual já vale hoje.</div>`)
+        : `<div class="xs mut" style="margin-top:4px">Tenha ${brl(P.corte)} investidos. Sem pressa: seu XP One já vale hoje.</div>`)
       + (S.scen === 'B' ? `<div class="xs" style="margin-top:6px;color:var(--y);font-weight:600">${available() >= P.infPts ? `Ou peça agora com ${pt(P.infPts)}` : `Ou com ${pt(P.infPts)} (faltam ${P.infPts - available()})`}</div>` : '');
   }
   const locked = k === 'infinite' && !cur && S.inf === 'none' && !elig();
   return `<button class="pk ${cur ? 'cur' : ''} ${locked ? 'lock' : ''}" data-a="go:pacote">
-    <div class="row">${plast(k)}<div class="g"><div class="b" style="font-size:16px">${cardName(k)}</div><div class="xs mut">${k === 'one' ? `Até ${brl(P.corte)} investidos` : `A partir de ${brl(P.corte)} investidos`}</div></div></div>
+    <div class="row">${plast(k)}<div class="g"><div class="b" style="font-size:16px">${cardName(k)}</div><div class="xs mut">${k === 'one' ? 'Seu cartão de cliente XP Digital' : cur ? (infByPoints() ? 'É seu enquanto as fichas estiverem em uso' : `É seu por ter ${brl(P.corte)} ou mais investidos`) : S.inf === 'requested' ? 'Seu próximo cartão' : elig() ? `Liberado pelos seus ${brl(S.auc)} investidos` : 'O próximo cartão'}</div></div></div>
     <div style="margin:10px 0 2px">${tag}</div>
     ${kv('Investback', k === 'one' ? `0,8% <span class="mut" style="font-weight:400">a partir de ${brl(P.oneMin)}/mês</span>` : (cur ? pct(ib.rate) : '1%'))}
     ${kv('Salas VIP', k === 'one' ? P.salaOne : P.salaInf)}
@@ -612,13 +613,14 @@ function pkCard(k){
 }
 function home(){
   const c = activeCard(), act = Object.keys(S.active);
-  const idx = S.pk ?? (c === 'infinite' ? 1 : 0);
+  const solo = c === 'infinite';
+  const idx = solo ? 0 : (S.pk ?? 0);
   return `
     ${banners()}
-    <h3 class="sec">Pacotes de cartão<span class="xs" style="font-weight:400">arraste para comparar</span></h3>
-    <div class="pks" data-idx="${idx}">${pkCard('one')}${pkCard('infinite')}</div>
-    <div class="dots"><i class="${idx === 0 ? 'on' : ''}"></i><i class="${idx === 1 ? 'on' : ''}"></i></div>
-    <div class="xs mut" style="margin-top:8px">Seu pacote depende de quanto você tem investido. Ele não usa fichas.</div>
+    <h3 class="sec">Seu cartão${solo ? '' : '<span class="xs" style="font-weight:400">arraste para ver o próximo</span>'}</h3>
+    <div class="pks ${solo ? 'solo' : ''}" data-idx="${idx}">${solo ? '' : pkCard('one')}${pkCard('infinite')}</div>
+    ${solo ? '' : `<div class="dots"><i class="${idx === 0 ? 'on' : ''}"></i><i class="${idx === 1 ? 'on' : ''}"></i></div>`}
+    <div class="xs mut" style="margin-top:8px">O cartão é um benefício de cliente XP Digital. ${c === 'infinite' && infByPoints() ? 'Abaixo de ' + brl(P.corte) + ' investidos, o Infinite usa fichas.' : 'Ele vem do que você tem investido e não usa fichas.'}</div>
 
     <h3 class="sec">Benefícios extras em uso</h3>
     ${act.length ? `<div class="card">${act.map(fid => { const f = fam(fid), o = optOf(fid, S.active[fid].opt);
@@ -656,7 +658,7 @@ function pacote(){
   const cmpCur = k => c === k ? 'class="cur"' : '';
   return `
     ${plast(c, true)}
-    <div class="row" style="margin-top:12px"><div class="g"><div class="b" style="font-size:20px">${cardName(c)}</div><div class="sm mut">${c === 'infinite' ? (infByPoints() ? `Acesso por fichas` : `Acesso por patrimônio`) : 'Seu pacote atual'}</div></div>${chip('✓ Ativo', 'ok')}</div>
+    <div class="row" style="margin-top:12px"><div class="g"><div class="b" style="font-size:20px">${cardName(c)}</div><div class="sm mut">${c === 'infinite' ? (infByPoints() ? `É seu enquanto as fichas estiverem em uso` : `É seu por ter ${brl(P.corte)} ou mais investidos`) : 'Seu cartão de cliente XP Digital'}</div></div>${chip('✓ Ativo', 'ok')}</div>
     ${cardAtRisk() ? `<button class="ban warn" data-a="sheet:lossCard"><div class="ic">!</div><div><b>Patrimônio abaixo de ${brl(P.corte)}</b><span>Seu Infinite continua ativo por enquanto.</span><em>Ver como manter ›</em></div></button>` : ''}
 
     <h3 class="sec">O que já está valendo para você</h3>
@@ -673,13 +675,13 @@ function pacote(){
     ${routes}
     ${cta}
 
-    ${accHead('cmp', 'Comparar os dois pacotes')}
+    ${accHead('cmp', 'Comparar os dois cartões')}
     <div class="cmp" ${isOpen('cmp') ? '' : 'hidden'}>
       <div></div><div ${cmpCur('one')}>XP One</div><div ${cmpCur('infinite')}>XP Infinite</div>
       <div>Investback</div><div ${cmpCur('one')}>0,8%<br><span class="xs mut">a partir de ${brl(P.oneMin)}/mês</span></div><div ${cmpCur('infinite')}>1%</div>
       <div>Turbinado com fichas</div><div ${cmpCur('one')}>até 1,1%</div><div ${cmpCur('infinite')}>até 1,5%</div>
       <div>Salas VIP</div><div ${cmpCur('one')}>${P.salaOne}</div><div ${cmpCur('infinite')}>${P.salaInf}</div>
-      <div>Como ter</div><div ${cmpCur('one')}>Pacote inicial</div><div ${cmpCur('infinite')}>${brl(P.corte)} investidos${S.scen === 'B' ? ` ou ${pt(P.infPts)}` : ''}</div>
+      <div>Como ter</div><div ${cmpCur('one')}>Cartão de entrada</div><div ${cmpCur('infinite')}>${brl(P.corte)} investidos${S.scen === 'B' ? ` ou ${pt(P.infPts)}` : ''}</div>
     </div>`;
 }
 
@@ -859,7 +861,7 @@ function sheet(){
   }
   else if (s.t === 'infPts'){
     const ib = S.active.investback && optOf('investback', S.active.investback.opt);
-    h = `<h2>Pedir o XP Infinite com fichas</h2><p>Você troca de pacote: sai do XP One e passa para o XP Infinite.</p>
+    h = `<h2>Pedir o XP Infinite com fichas</h2><p>Você troca de cartão: sai do XP One e passa para o XP Infinite.</p>
       <div class="swap"><div><small>Hoje</small><b>XP One</b><span>Investback 0,8%</span></div><div class="mut">→</div><div class="new"><small style="color:var(--y)">Novo</small><b>XP Infinite</b><span>Investback 1%</span></div></div>
       ${saldoRows(0, P.infPts)}
       <div class="note">As ${pt(P.infPts)} ficam em uso enquanto seu patrimônio estiver abaixo de ${brl(P.corte)}. Quando você chegar lá, as fichas voltam para o seu saldo e o cartão continua com você.</div>
@@ -882,12 +884,12 @@ function sheet(){
       <button class="btn" data-a="home">Voltar para o resumo</button>`;
   }
   else if (s.t === 'infOn'){
-    h = `${burst()}<div class="ctr"><div class="okc">✓</div><h2>Seu XP Infinite está ativo</h2><p>Seu pacote agora é o XP Infinite, com Investback de 1%.</p></div>
+    h = `${burst()}<div class="ctr"><div class="okc">✓</div><h2>Seu XP Infinite está ativo</h2><p>Seu cartão agora é o XP Infinite, com Investback de 1%.</p></div>
       ${S.ibNotice ? `<div class="note">Seu ${S.ibNotice.label} era do XP One e foi encerrado. ${pt(S.ibNotice.price)} voltaram para o saldo.</div>` : ''}
-      <button class="btn" data-a="go:pacote">Ver meu pacote</button><button class="btn ghost" data-a="openfam:investback">Ver Investback turbinado do Infinite</button>`;
+      <button class="btn" data-a="go:pacote">Ver meu cartão</button><button class="btn ghost" data-a="openfam:investback">Ver Investback turbinado do Infinite</button>`;
   }
   else if (s.t === 'infOff'){
-    h = `<h2>Voltar para o XP One?</h2><p>Você deixa o pacote XP Infinite e os ${pt(P.infPts)} voltam para o seu saldo.</p>${saldoRows(P.infPts, 0)}
+    h = `<h2>Voltar para o XP One?</h2><p>Você deixa o XP Infinite e os ${pt(P.infPts)} voltam para o seu saldo.</p>${saldoRows(P.infPts, 0)}
       <div class="premissa">Regras de devolução do cartão e prazos a definir.</div>
       <button class="btn sec" data-a="infoff">Voltar para o XP One</button><button class="btn ghost" data-a="close">Manter o XP Infinite</button>`;
   }
@@ -978,9 +980,9 @@ function renderPhone(){
 }
 
 const HIPOTESES = [
-  ['Pacotes', 'Dois pacotes, XP One e XP Infinite, sem nomes de nível ou segmento. O cliente vê "Seu pacote atual" e "Próximo pacote".'],
+  ['Pacotes', 'Dois pacotes, XP One e XP Infinite, sem nomes de nível ou segmento. Na tela, a palavra é sempre "cartão": o do cliente aparece como "Incluído · não usa fichas", com a razão (cliente XP Digital, ou R$ 30 mil ou mais investidos).'],
   ['Pacotes', 'One: 0,8% de Investback a partir de R$ 2.500 de gasto no mês. Infinite: 1%, sem gasto mínimo. Configuração de fevereiro de 2027.'],
-  ['Pacotes', 'Os dois pacotes aparecem lado a lado em um carrossel no Resumo, com o do cliente marcado como "Seu pacote". Quem está longe do corte (abaixo de 60%) não vê barra de "faltam R$": só a regra, sem cobrança.'],
+  ['Pacotes', 'Quem tem o XP One vê o Infinite ao lado, em carrossel. Quem já tem o Infinite vê só o Infinite. Quem está longe do corte (abaixo de 60%) não vê barra de "faltam R$": só a regra, sem cobrança.'],
   ['Pacotes', 'XP One não inclui sala VIP. Sala VIP por fichas no One (2 acessos por ano por 10 fichas) é uma quarta oferta opcional, desligada por padrão no painel.'],
   ['Pacotes', 'Abaixo do corte, o Infinite aparece bloqueado no carrossel, com o que falta para desbloquear.'],
   ['Pacotes', 'Atingir o corte libera o pedido do Infinite. O cartão só muda depois de pedido, análise e ativação: três estados separados na tela.'],
