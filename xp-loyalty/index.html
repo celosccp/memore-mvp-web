@@ -408,6 +408,28 @@ h3.sec2 span{display:block;font-size:14.5px;color:var(--mut);font-weight:400;mar
 .light .pk.lock .plast{filter:grayscale(1) opacity(.55)}
 .light .gd,.light .hb .bu,.light .hb .ba{box-shadow:none}
 .light .btn:not(.sec):not(.ghost):not(.demo){box-shadow:0 10px 26px rgba(226,177,0,.28)}
+
+/* ===== Réguas ===== */
+:root{--nb:#1e1b17} #phone.light{--nb:#EFEFF3}
+.rs{margin-top:15px;padding-top:13px;border-top:1px solid var(--line)}
+.rh{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px}
+.rh b{font-size:15px} .rh>span{font-size:12px;color:var(--ya);font-weight:650;white-space:nowrap}
+.rg{position:relative}
+.rt{position:absolute;left:calc(50%/var(--n));right:calc(50%/var(--n));top:8px;height:4px;border-radius:2px;background:var(--s3)}
+.rt i{display:block;height:100%;background:var(--y);border-radius:2px;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.rn{display:grid;grid-template-columns:repeat(var(--n),1fr);position:relative}
+.nd{display:flex;flex-direction:column;align-items:center;text-align:center;min-width:0;transition:transform .14s ease}
+.nd:active{transform:scale(.94)}
+.nd i{width:20px;height:20px;border-radius:50%;box-sizing:border-box;background:var(--nb);border:3px solid var(--dim);margin-bottom:7px}
+.nd b{font-size:13px;line-height:1.2;font-weight:650} .nd span{font-size:10.5px;color:var(--mut)}
+.nd.org i{width:12px;height:12px;margin:4px 0 11px;border:0;background:var(--dim)}
+.nd.org b{color:var(--mut);font-weight:500}
+.nd.past i{background:var(--y);border-color:var(--y)}
+.nd.cur i{background:var(--y);border-color:var(--y);box-shadow:0 0 0 5px rgba(255,199,9,.28)}
+.nd.av i{border-color:var(--ok)}
+.nd.no b,.nd.no span{color:var(--dim)}
+.nd.proc i{animation:ndp 1s ease-in-out infinite} @keyframes ndp{50%{box-shadow:0 0 0 9px rgba(255,199,9,.1)}}
+.lk{display:block;width:100%;margin-top:15px;padding-top:13px;border-top:1px solid var(--line)}
 </style>
 </head>
 <body>
@@ -432,7 +454,7 @@ h3.sec2 span{display:block;font-size:14.5px;color:var(--mut);font-weight:400;mar
 const P = {
   corte: 30000,          // corte patrimonial do Infinite
   infPts: 10,            // Infinite por fichas (cenário B)
-  corrPts: 15,           // Corretagem zero, corte único
+  corr: [5, 10, 15],     // Corretagem zero: 3 / 6 / 9 ordens por mês
   cofre: [10, 15, 30],   // Cofre XP Turbo 110/115/125
   ibOne: [5, 10, 15],    // Investback One 0,8 / 1,0 / 1,1 (tudo com fichas)
   ibInf: [10, 15],       // Investback Infinite 1,2 / 1,5
@@ -501,7 +523,7 @@ const IB = { one: () => [ {id:'o08', label:'0,8% de Investback', rate:0.8, price
              infinite: () => [ {id:'i12', label:'1,2% de Investback', rate:1.2, price:P.ibInf[0]}, {id:'i15', label:'1,5% de Investback', rate:1.5, price:P.ibInf[1]} ] };
 // Sala VIP: incluída no Infinite (mínimo de largada) ou só por fichas. O número da opção é o total de acessos por ano.
 const salaBase = card => card === 'infinite' && S.salaMode === 'incluida' ? P.salaIncl : 0;
-const SVALL = { one: [['sv_o2', 2, 10]], infinite_incluida: [['sv_i6', 6, 10], ['sv_i8', 8, 15]], infinite_fichas: [['sv_f4', 4, 10], ['sv_f8', 8, 15]] };
+const SVALL = { one: [['sv_o2', 2, 10], ['sv_o4', 4, 15]], infinite_incluida: [['sv_i6', 6, 10], ['sv_i8', 8, 15]], infinite_fichas: [['sv_f4', 4, 10], ['sv_f8', 8, 15]] };
 const svOpts = key => SVALL[key].map(([id, n, price]) => ({ id, n, price, label: `${n} acessos por ano` }));
 const SV = card => svOpts(card === 'one' ? 'one' : 'infinite_' + S.salaMode);
 function salaNow(card, mine){
@@ -515,7 +537,7 @@ function families(card = activeCard()){
       opts:[ {id:'c110', label:'110% do CDI', price:P.cofre[0]}, {id:'c115', label:'115% do CDI', price:P.cofre[1]}, {id:'c125', label:'125% do CDI', price:P.cofre[2]} ] },
     { id:'investback', nome:'Investback turbinado', desc:'Mais dinheiro de volta nas compras.', card, opts: IB[card]() },
     { id:'corretagem', nome:'Corretagem zero', desc:'Invista na bolsa sem pagar corretagem.',
-      opts:[ {id:'cz', label:'Corretagem zero', price:P.corrPts} ] },
+      opts:[3, 6, 9].map((n, i) => ({ id:'cz' + n, n, label:`${n} ordens por mês`, price:P.corr[i] })) },
     { id:'salavip', nome:'Sala VIP', desc: salaBase(card) ? `Mais acessos a salas VIP, além dos ${salaBase(card)} do seu cartão.` : 'Acessos a salas VIP em aeroportos.', card, opts: SV(card) },
   ];
 }
@@ -826,28 +848,48 @@ function pacote(){
     </div>`;
 }
 
+// régua: uma linha com os pontos da escala; tocar num ponto leva à confirmação
+function regua(f){
+  const a = S.active[f.id], c = activeCard();
+  const has = f.id === 'cofrinho' && S.legacy && !a && S.legRule !== 'migrar';
+  const cur = a ? f.opts.findIndex(o => o.id === a.opt) + 1 : has ? 1 : 0, n = f.opts.length + 1;
+  const origin = f.id === 'investback' ? (baseRate(c) ? pct(baseRate(c)).replace(',0', '') : 'Sem') : f.id === 'salavip' ? (salaBase(c) ? `${salaBase(c)} acessos` : 'Sem acesso') : 'Sem';
+  const short = o => f.id === 'salavip' ? `${o.n} acessos` : f.id === 'corretagem' ? `${o.n} ordens` : o.label.split(' ')[0];
+  return `<div class="rg" style="--n:${n}"><div class="rt"><i style="width:${cur / (n - 1) * 100}%"></i></div><div class="rn">
+    <button class="nd ${cur ? 'past' : 'org'}" ${a ? `data-a="sheet:deact:${f.id}"` : ''}><i></i><b>${origin}</b></button>
+    ${f.opts.map((o, k) => { const i = k + 1, isA = a && a.opt === o.id, m = missing(f.id, o.id);
+      const cls = i < cur ? 'past' : i === cur ? 'cur' + (a && a.status === 'processing' ? ' proc' : '') : m ? 'no' : 'av';
+      return `<button class="nd ${cls}" data-a="${isA ? `sheet:deact:${f.id}` : `sheet:confirm:${f.id}:${o.id}`}"><i></i><b>${short(o)}</b><span>${o.price} fichas</span></button>`; }).join('')}
+  </div></div>`;
+}
+function infRow(){
+  if (activeCard() === 'infinite') return '';
+  const can = S.scen === 'B' && S.inf === 'none' && !elig() && available() >= P.infPts;
+  const right = S.inf === 'requested' ? chip('<i class="spin"></i> Em análise', 'y') : elig() ? chip('Pode pedir ›', 'av')
+    : can ? `<span class="tb" style="margin:0" data-a="sheet:infPts">Pedir com ${pt(P.infPts)} ›</span>` : `<span class="xs mut">Faltam ${brl(P.corte - S.auc)}</span>`;
+  return `<button class="lk" data-a="go:pacote"><div class="row" style="gap:8px">${S.inf === 'none' && !elig() ? `<span class="mut">${I.lock}</span>` : ''}<b class="g" style="font-size:14px">XP Infinite</b>${right}</div>
+    ${S.inf === 'none' && !elig() ? `<div class="prog" style="margin:9px 0 0;height:4px"><i style="width:${S.auc / P.corte * 100}%"></i></div>` : ''}</button>`;
+}
 function shelf(){
-  const cb = combos();
-  return `${cardCarousel()}
-    <h3 class="sec">Benefícios para ativar</h3><div class="xs mut" style="margin:-4px 2px 10px">Use suas fichas nos benefícios que preferir. Uma opção por benefício.</div>
-    ${families().map(f => `<div class="card">
-      <button class="row" style="width:100%" data-a="openfam:${f.id}"><div class="ico">${I[f.id]}</div><div class="g"><div class="b" style="font-size:16px">${f.nome}</div><div class="xs mut">${f.desc}</div></div><span class="chev mut">›</span></button>
-      ${f.id === 'cofrinho' && S.legacy && !S.active.cofrinho ? `<button class="note" style="display:block;width:100%" data-a="sheet:legacy"><b style="color:var(--tx)">${legacyCopy().status}</b> · ${legacyCopy().short} <span style="color:var(--ya)">Entender ›</span></button>` : ''}
-      ${f.opts.length > 1 ? stairs(f, null, 'openfam:' + f.id) : f.opts.map(o => `<button class="opt" data-a="openfam:${f.id}:${o.id}"><div class="g"><b>${o.label}</b><span>${pt(o.price)}</span></div>${optState(f, o)}</button>`).join('')}
-    </div>`).join('')}
-    <div class="xs mut" style="margin:10px 2px">Você pode ter uma opção ativa em cada benefício. As fichas ficam em uso enquanto ela estiver ativa e voltam quando você desativa.</div>
-
-    <h3 class="sec">O que cabe em ${pt(total())}</h3>
-    <div class="card">${cb.length ? cb.map(c => `<div class="li"><div class="g"><b>${[c.inf ? 'XP Infinite' : null, ...c.items.map(i => i.fam === 'Corretagem zero' ? i.fam : i.fam === 'Sala VIP' ? `Sala VIP ${i.n}x` : `${i.fam.split(' ')[0]} ${i.label.split(' ')[0]}`)].filter(Boolean).join(' + ')}</b>
-        <span>${c.inf === false ? 'Com o XP One · ' : c.inf && !c.items.length ? 'Nenhum benefício extra cabe ainda · ' : ''}usa ${pt(c.cost)}${c.left ? `, sobram ${c.left}` : ''}</span></div></div>`).join('')
-      : `<div class="sm mut">Com ${pt(total())} ainda não cabe nenhum benefício. ${(f => `O mais próximo é ${f.nome}, a partir de ${pt(f.opts[0].price)}.`)(families().sort((a, b) => a.opts[0].price - b.opts[0].price)[0])}</div><button class="btn sec" data-a="go:juntar">Ver como ganhar fichas</button>`}</div>`;
+  const c = activeCard(), fs = families(), F = id => fs.find(f => f.id === id);
+  const st = f => { const a = S.active[f.id]; return a ? `<span>${a.status === 'processing' ? 'Ativando…' : 'Em uso · ' + pt(optOf(f.id, a.opt).price)}</span>` : ''; };
+  const sec = (f, t) => `<div class="rs"><div class="rh"><b>${t}</b>${st(f)}</div>${regua(f)}</div>`;
+  const solo = (f, t, unit) => `<div class="card"><div class="rh"><div class="row" style="gap:10px"><div class="ico" style="width:32px;height:32px;border-radius:10px">${I[f.id]}</div><b>${t}</b>${unit ? `<em class="xs mut" style="font-style:normal">${unit}</em>` : ''}</div>${st(f)}</div>${regua(f)}</div>`;
+  return `<div class="card" style="margin-top:14px">
+      <button class="row" style="width:100%" data-a="go:pacote">${plast(c)}<div class="g"><div class="b" style="font-size:17px;margin-bottom:4px">${cardName(c)}</div>${infByPoints() && S.inf === 'active' ? chip(`${pt(P.infPts)} em uso`, 'use') : chip('Incluído · não usa fichas', 'y')}</div><span class="chev mut" style="font-size:20px">›</span></button>
+      ${sec(F('investback'), 'Investback')}
+      ${sec(F('salavip'), 'Salas VIP')}
+      ${infRow()}
+    </div>
+    ${solo(F('cofrinho'), 'Cofre XP', '% do CDI')}
+    ${solo(F('corretagem'), 'Corretagem zero', '')}`;
 }
 
 const FAMINFO = {
   cofrinho: () => [`Vale para o dinheiro guardado no Cofre XP.`, `O Cofre XP só existe com fichas em uso. Não há versão sem Turbo.`],
   investback: () => { const c = activeCard(); return [c === 'one' ? `No XP One, o Investback é ativado com fichas. A taxa escolhida vale para todas as compras.` : `A taxa escolhida é o total do cartão, não um extra. Ex.: 1,2% substitui o 1% de hoje.`, `Vale para as compras no ${cardName(c)}.`, `O valor volta como investimento.`]; },
   salavip: () => [salaBase(activeCard()) ? `O número escolhido é o total do ano, já contando os ${salaBase(activeCard())} acessos do seu cartão.` : `O número escolhido é o total de acessos no ano.`, `Os acessos valem enquanto o benefício estiver em uso.`],
-  corretagem: () => [P.corrCob + '.', `Vale enquanto o benefício estiver ativo.`],
+  corretagem: () => [`O número escolhido é quantas ordens por mês saem sem corretagem.`, P.corrCob + '.', `Vale enquanto o benefício estiver ativo.`],
 };
 
 function famScreen(){
@@ -1126,7 +1168,9 @@ const HIPOTESES = [
   ['Saldo', 'Na troca dentro da família, as fichas da opção atual são liberadas e as da nova entram em uso, em um só passo.'],
   ['Prateleira', 'Cofre XP Turbo 110/115/125% do CDI por 10/15/30 fichas. Não existe Cofre XP sem Turbo.'],
   ['Prateleira', 'Investback turbinado é a taxa total do cartão. One: 0,8%, 1,0% ou 1,1% por 5, 10 ou 15 (os preços de 1,0% e 1,1% subiram 5 fichas para abrir espaço ao 0,8%). Infinite: 1,2% ou 1,5% por 10 ou 15.'],
-  ['Prateleira', 'Corretagem zero em corte único por 15 fichas, com cobertura parametrizável.'],
+  ['Prateleira', 'Corretagem zero em três faixas: 3, 6 ou 9 ordens por mês por 5, 10 ou 15 fichas (ilustrativo).'],
+  ['Prateleira', 'Na aba Usar, cada benefício é uma régua: o cliente toca no ponto que quer e vai direto para a confirmação. Investback e Salas VIP ficam dentro do card do cartão.'],
+  ['Sala VIP', 'No One, a régua vai de sem acesso a 2 ou 4 acessos por ano (10 ou 15 fichas).'],
   ['Prateleira', 'Investback turbinado pertence ao cartão. Se o cartão muda, a opção é encerrada e as fichas voltam ao saldo.'],
   ['Cenário B', 'Infinite por 10 fichas abaixo do corte. As fichas ficam reservadas desde o pedido.'],
   ['Cenário B', 'Ao atingir R$ 30 mil, as fichas do cartão são liberadas automaticamente e o acesso passa a ser por patrimônio.'],
@@ -1194,7 +1238,7 @@ function renderPanel(){
       <h2><button class="h2b" data-a="tog:prem:0">Premissas editáveis <span>${isOpen('prem') ? '−' : '+'}</span></button></h2><div ${isOpen('prem') ? '' : 'hidden'}>
       <label class="fld">Infinite por fichas (B) <input type="number" data-p="infPts" value="${P.infPts}"></label>
       <label class="fld">Corte patrimonial (R$) <input type="number" data-p="corte" step="1000" value="${P.corte}"></label>
-      <label class="fld">Corretagem zero (fichas) <input type="number" data-p="corrPts" value="${P.corrPts}"></label>
+      <label class="fld">Corretagem 3 / 6 / 9 ordens <span><input type="number" data-p="corr.0" value="${P.corr[0]}" style="width:42px"> <input type="number" data-p="corr.1" value="${P.corr[1]}" style="width:42px"> <input type="number" data-p="corr.2" value="${P.corr[2]}" style="width:42px"></span></label>
       <label class="fld">Cofre XP 110 / 115 / 125 <span><input type="number" data-p="cofre.0" value="${P.cofre[0]}" style="width:46px"> <input type="number" data-p="cofre.1" value="${P.cofre[1]}" style="width:46px"> <input type="number" data-p="cofre.2" value="${P.cofre[2]}" style="width:46px"></span></label>
       <label class="fld">Investback One 0,8 / 1,0 / 1,1 <span><input type="number" data-p="ibOne.0" value="${P.ibOne[0]}" style="width:42px"> <input type="number" data-p="ibOne.1" value="${P.ibOne[1]}" style="width:42px"> <input type="number" data-p="ibOne.2" value="${P.ibOne[2]}" style="width:42px"></span></label>
       <label class="fld">Investback Infinite 1,2 / 1,5 <span><input type="number" data-p="ibInf.0" value="${P.ibInf[0]}" style="width:46px"> <input type="number" data-p="ibInf.1" value="${P.ibInf[1]}" style="width:46px"></span></label>
