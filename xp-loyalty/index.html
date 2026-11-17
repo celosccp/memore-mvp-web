@@ -320,6 +320,18 @@ h3.sec button{color:var(--y);font-size:13px;font-weight:600}
 .okc.big{margin-bottom:16px}
 .up{font-style:normal;display:block;font-size:12px;font-weight:650;color:var(--y);margin-top:1px}
 .pk.lock .kv .up{color:var(--y);opacity:.75}
+
+/* ===== Saldo compacto em barra ===== */
+.btop{display:flex;align-items:flex-end;gap:10px}
+.bal .btop .n{font-size:46px;line-height:.95;letter-spacing:-.04em}
+.blab{display:flex;flex-direction:column;padding-bottom:3px;line-height:1.2}
+.blab b{font-size:17px} .blab span{font-size:12.5px;color:var(--mut)}
+.hb{display:flex;gap:3px;height:10px;border-radius:6px;background:rgba(255,255,255,.1);margin:12px 0 10px;overflow:hidden}
+.hb i{border-radius:6px;transition:width .8s cubic-bezier(.2,.8,.2,1);min-width:0}
+.hb .bu{background:var(--y);box-shadow:0 0 12px rgba(255,199,9,.6)} .hb .ba{background:var(--ok);box-shadow:0 0 12px rgba(123,227,168,.55)}
+.leg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:var(--mut)}
+.leg b{color:var(--tx);font-size:13.5px;margin-left:2px}
+.leg button{color:var(--mut)}
 </style>
 </head>
 <body>
@@ -420,7 +432,7 @@ const SV = card => svOpts(card === 'one' ? 'one' : 'infinite_' + S.salaMode);
 function salaNow(card, mine){
   const a = mine && S.active.salavip, base = salaBase(card), opts = SV(card), max = opts[opts.length - 1].n;
   const n = a && a.status === 'active' ? optOf('salavip', a.opt).n : base;
-  return { n, base, max, main: n ? `${n} acessos por ano` : 'Com fichas', up: n >= max ? '' : n ? `até ${max} com fichas` : `até ${max} acessos por ano` };
+  return { n, base, max, main: n ? `${n} acessos por ano` : `Até ${max} acessos por ano`, up: n >= max ? '' : n ? `até ${max} com fichas` : 'com fichas' };
 }
 function families(card = activeCard()){
   return [
@@ -553,19 +565,11 @@ const plast = (c, lg) => `<div class="plast ${c} ${lg ? 'lg' : ''}"><span>${c ==
 const ring = (p, inner = '') => `<div class="ring" style="--p:${Math.round(Math.min(1, p) * 100)}">${inner}</div>`;
 const maxTotal = () => visibleBeh().reduce((a, b) => a + (b.id === 'cartao' ? P.cartaoMax : b.id === 'auc' ? P.aucMax : b.pts), 0);
 function bal(){
-  const t = total(), al = allocated(), av = available(), mx = Math.max(maxTotal(), t, al), L = 460.8, C = 754;
-  const fu = al / mx, fa = av / mx, fe = Math.max(t, al) / mx;
-  const arc = (cls, col, len, off, cap) => `<circle class="${cls}" cx="150" cy="140" r="120" stroke-linecap="${cap ? 'round' : 'butt'}" style="stroke:${col};stroke-dasharray:${(L * len).toFixed(1)} ${C};stroke-dashoffset:${off.toFixed(1)}"/>`;
-  return `<div class="bal"><div class="gauge"><svg viewBox="0 0 300 192" aria-hidden="true">
-      <g transform="rotate(160 150 140)" fill="none" stroke-width="15">
-        <circle cx="150" cy="140" r="120" stroke="rgba(255,255,255,.1)" stroke-linecap="round" stroke-dasharray="${L} ${C}"/>
-        ${arc('ga', 'var(--ok)', fa, -L * fu - (fu && fa ? 4 : 0), !fu && fa)}
-        ${arc('gu', 'var(--y)', fu, 0, fu)}
-        <g class="gd" style="transform:rotate(${(220 * fe).toFixed(1)}deg)"><circle cx="270" cy="140" r="5" fill="#fff" stroke="none"/></g>
-      </g></svg>
-      <div class="gc"><div class="n"><span class="cnt">${t}</span></div><div class="sm mut">de ${mx} fichas possíveis</div></div></div>
-    <div class="split s3"><div><span><i class="d y"></i>Em uso</span><b>${al}</b></div><div><span><i class="d g"></i>Disponíveis</span><b>${av}</b></div><button data-a="go:juntar"><span><i class="d o"></i>A conquistar</span><b>${mx - Math.max(t, al)}</b></button></div>
-    ${t === 0 && al === 0 ? '<div class="xs mut" style="margin-top:10px;text-align:center">Você ainda não tem fichas, e tudo bem: seu cartão já tem benefícios valendo. Fichas servem para ativar benefícios extras.</div>' : ''}</div>`;
+  const t = total(), al = allocated(), av = available(), mx = Math.max(maxTotal(), t, al);
+  return `<div class="bal"><div class="btop"><div class="n"><span class="cnt">${t}</span></div><div class="blab"><b>${t === 1 ? 'ficha' : 'fichas'}</b><span>de ${mx} possíveis</span></div></div>
+    <div class="hb"><i class="bu" style="width:${(al / mx * 100).toFixed(1)}%"></i><i class="ba" style="width:${(av / mx * 100).toFixed(1)}%"></i></div>
+    <div class="leg"><span><i class="d y"></i>Em uso <b>${al}</b></span><span><i class="d g"></i>Disponíveis <b>${av}</b></span><button data-a="go:juntar"><i class="d o"></i>A conquistar <b>${mx - Math.max(t, al)}</b></button></div>
+    ${t === 0 && al === 0 ? '<div class="xs mut" style="margin-top:10px">Você ainda não tem fichas, e tudo bem: seu cartão já tem benefícios valendo. Fichas servem para ativar benefícios extras.</div>' : ''}</div>`;
 }
 const strip = () => '';
 const canActivate = () => families().some(f => !S.active[f.id] && missing(f.id, f.opts[0].id) === 0)
@@ -640,11 +644,11 @@ function pkCard(k){
   let tag, foot = '';
   if (k === 'one'){
     tag = chip('Incluído · não usa fichas', 'y');
-    foot = cur ? kv('Seu mês até aqui', ib.applies ? `≈ ${brl(ib.valor)} de volta` : `faltam ${brl(P.oneMin - S.gasto)} em compras`) : '';
+    foot = '';
   } else {
     const near = S.auc >= P.corte * 0.6;
     tag = cur ? (infByPoints() ? chip(`${pt(P.infPts)} em uso`, 'use') : chip('Incluído · não usa fichas', 'y')) : S.inf === 'requested' ? chip('<i class="spin"></i> Em análise', 'y') : elig() ? chip('Desbloqueado · você já pode pedir', 'av') : chip(I.lock + ' Bloqueado', 'ghost');
-    if (cur) foot = kv('Seu mês até aqui', `≈ ${brl(ib.valor)} de volta`) + (infByPoints() ? `<div class="xs mut" style="margin-top:8px">Acesso por fichas: ${P.infPts} em uso até você ter ${brl(P.corte)} investidos.</div>` : '');
+    if (cur) foot = (infByPoints() ? `<div class="xs mut" style="margin-top:8px">Acesso por fichas: ${P.infPts} em uso até você ter ${brl(P.corte)} investidos.</div>` : '');
     else if (S.inf === 'requested') foot = `<div class="xs mut" style="margin-top:8px">Você segue com o XP One até o novo cartão ser ativado.</div>`;
     else if (elig()) foot = `<div class="xs mut" style="margin-top:8px">Você tem ${brl(S.auc)} investidos. O pedido não usa fichas.</div>`;
     else foot = `<div class="xs mut b" style="margin-top:10px;letter-spacing:.04em">PARA DESBLOQUEAR</div>` + (near ? `<div class="prog"><i style="width:${S.auc / P.corte * 100}%"></i></div><div class="xs mut">Faltam ${brl(P.corte - S.auc)} investidos. Não usa fichas.</div>`
@@ -656,7 +660,7 @@ function pkCard(k){
     <div class="row">${plast(k)}<div class="g"><div class="b" style="font-size:16px">${cardName(k)}</div><div class="xs mut">${k === 'one' ? 'Seu cartão de cliente XP Digital' : cur ? (infByPoints() ? 'É seu enquanto as fichas estiverem em uso' : `É seu por ter ${brl(P.corte)} ou mais investidos`) : S.inf === 'requested' ? 'Seu próximo cartão' : elig() ? `Liberado pelos seus ${brl(S.auc)} investidos` : 'O próximo cartão'}</div></div></div>
     <div style="margin:10px 0 2px">${tag}</div>
     ${kv('Investback', (ibA ? pct(ib.rate) : k === 'one' ? '0,8%' : '1%') + (k === 'one' ? ` <span class="mut" style="font-weight:400">a partir de ${brl(P.oneMin)}/mês</span>` : ''), ibA ? (ib.rate >= ibMax ? 'turbinado com fichas' : `turbinado · até ${pct(ibMax)} com fichas`) : `até ${pct(ibMax)} com fichas`)}
-    ${kv('Salas VIP', sl.main + (sl.base && !(cur && S.active.salavip) ? ` <span class="mut" style="font-weight:400">${P.salaCond}</span>` : ''), sl.up)}
+    ${kv('Salas VIP', sl.main, sl.up)}
     ${foot}
     <div class="sm b" style="color:var(--y);margin-top:12px">${cur ? 'Ver meu cartão ›' : locked ? 'Ver como desbloquear ›' : 'Ver detalhes ›'}</div></button>`;
 }
@@ -666,10 +670,9 @@ function home(){
   const idx = solo ? 0 : (S.pk ?? 0);
   return `
     ${banners()}
-    <h3 class="sec">Seu cartão${solo ? '' : '<span class="xs" style="font-weight:400">arraste para ver o próximo</span>'}</h3>
+    <h3 class="sec">Seu cartão</h3>
     <div class="pks ${solo ? 'solo' : ''}" data-idx="${idx}">${solo ? '' : pkCard('one')}${pkCard('infinite')}</div>
     ${solo ? '' : `<div class="dots"><i class="${idx === 0 ? 'on' : ''}"></i><i class="${idx === 1 ? 'on' : ''}"></i></div>`}
-    <div class="xs mut" style="margin-top:8px">O cartão é um benefício de cliente XP Digital. ${c === 'infinite' && infByPoints() ? 'Abaixo de ' + brl(P.corte) + ' investidos, o Infinite usa fichas.' : 'Ele vem do que você tem investido e não usa fichas.'}</div>
 
     <h3 class="sec">Benefícios extras em uso</h3>
     ${act.length ? `<div class="card">${act.map(fid => { const f = fam(fid), o = optOf(fid, S.active[fid].opt);
@@ -713,8 +716,8 @@ function pacote(){
     <h3 class="sec">O que já está valendo para você</h3>
     <div class="card">
       <div class="kv"><span>Investback</span><span>${pct(ib.rate)} das compras${c === 'one' ? `<br><span class="xs mut" style="font-weight:400">quando você gasta ${brl(P.oneMin)} ou mais no mês</span>` : ''}</span></div>
-      <div class="kv"><span>Seu mês até aqui</span><span>${ib.applies ? `≈ ${brl(ib.valor)} de volta` : `Faltam ${brl(P.oneMin - S.gasto)} em compras`}<br><span class="xs mut" style="font-weight:400">${brl(S.gasto)} em compras</span></span></div>
-      <div class="kv"><span>Salas VIP</span><span>${salaNow(c, true).n ? salaNow(c, true).main : 'Não incluídas'}${salaNow(c, true).up ? `<em class="up">${salaNow(c, true).up}</em>` : ''}${salaBase(c) ? `<br><span class="xs mut" style="font-weight:400">${P.salaCond} (a confirmar)</span>` : ''}</span></div>
+      <div class="kv"><span>Investback deste mês</span><span>${ib.applies ? `≈ ${brl(ib.valor)} de volta` : 'Ainda não vale'}<br><span class="xs mut" style="font-weight:400">${ib.applies ? `${pct(ib.rate)} de ${brl(S.gasto)} em compras` : `faltam ${brl(P.oneMin - S.gasto)} em compras para chegar a ${brl(P.oneMin)}`}</span></span></div>
+      <div class="kv"><span>Salas VIP</span><span>${salaNow(c, true).main}${salaNow(c, true).up ? `<em class="up">${salaNow(c, true).up}</em>` : ''}${salaBase(c) ? `<br><span class="xs mut" style="font-weight:400">${P.salaCond} (a confirmar)</span>` : ''}</span></div>
       ${c === 'infinite' ? `<div class="kv"><span>Benefícios Visa Infinite</span><span>Seguros de viagem e assistências</span></div>` : ''}
       ${S.active.investback ? `<div class="kv"><span>Investback turbinado</span><span>${optOf('investback', S.active.investback.opt).label}<br><span class="xs mut" style="font-weight:400">escolhido com fichas</span></span></div>` : ''}
     </div>
@@ -729,7 +732,7 @@ function pacote(){
       <div></div><div ${cmpCur('one')}>XP One</div><div ${cmpCur('infinite')}>XP Infinite</div>
       <div>Investback</div><div ${cmpCur('one')}>0,8%<br><span class="xs mut">a partir de ${brl(P.oneMin)}/mês</span></div><div ${cmpCur('infinite')}>1%</div>
       <div>Turbinado com fichas</div><div ${cmpCur('one')}>até 1,1%</div><div ${cmpCur('infinite')}>até 1,5%</div>
-      <div>Salas VIP</div><div ${cmpCur('one')}>Com fichas<br><span class="xs mut">${salaNow('one').up}</span></div><div ${cmpCur('infinite')}>${salaNow('infinite').main}<br><span class="xs mut">${salaNow('infinite').up}</span></div>
+      <div>Salas VIP</div><div ${cmpCur('one')}>${salaNow('one').main}<br><span class="xs mut">${salaNow('one').up}</span></div><div ${cmpCur('infinite')}>${salaNow('infinite').main}<br><span class="xs mut">${salaNow('infinite').up}</span></div>
       <div>Como ter</div><div ${cmpCur('one')}>Cartão de entrada</div><div ${cmpCur('infinite')}>${brl(P.corte)} investidos${S.scen === 'B' ? ` ou ${pt(P.infPts)}` : ''}</div>
     </div>`;
 }
@@ -1025,7 +1028,7 @@ function renderPhone(){
   // contador e barra do saldo animam quando o valor muda
   const cnt = app.querySelector('.bal .cnt');
   if (cnt){
-    const els = [['.gu', 'strokeDasharray'], ['.ga', 'strokeDasharray'], ['.ga', 'strokeDashoffset'], ['.gd', 'transform']].map(([q, k]) => [app.querySelector('.bal ' + q), k]);
+    const els = [['.bu', 'width'], ['.ba', 'width']].map(([q, k]) => [app.querySelector('.bal ' + q), k]);
     const now = { t: total(), v: els.map(([el, k]) => el.style[k]) };
     if (prevBal && !matchMedia('(prefers-reduced-motion: reduce)').matches){
       if (prevBal.v.join() !== now.v.join()){ els.forEach(([el, k], n) => { el.style[k] = prevBal.v[n]; }); void cnt.offsetWidth; els.forEach(([el, k], n) => { el.style[k] = now.v[n]; }); }
@@ -1173,7 +1176,7 @@ function act(a){
     case 'go': go(x); break;
     case 'home': go('home'); break;
     case 'back': go(S.screen === 'fam' ? 'shelf' : S.screen === 'pacote' ? 'home' : 'welcome'); break;
-    case 'enter': go('home'); prevBal = { t:0, v:['0 754', '0 754', '0', 'rotate(0deg)'] }; break;
+    case 'enter': go('home'); prevBal = { t:0, v:['0%', '0%'] }; break;
     case 'openfam': go('fam', x); S.sel = y || (S.active[x] ? S.active[x].opt : null); break;
     case 'sel': S.sel = x; break;
     case 'sheet': S.cond = false; S.sheet = x === 'confirm' ? {t:x, fam:y, opt:a.split(':')[3]} : x === 'deact' ? {t:x, fam:y} : {t:x}; break;
