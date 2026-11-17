@@ -43,6 +43,6 @@ acima de R$ 30 mil, até 10), preços da prateleira e Infinite por 10 fichas.
 
 Ilustrativos, criados para o protótipo: Open Finance 3, aporte recorrente 3, previdência 3, pagamentos 2,
 portabilidade de salário 5, câmbio 1, crédito 2, consórcio 2, seguros 2, Seguro Conta e Cartão 1;
-Cofrinho sem Turbo a 100% do CDI; condição de lançamento do Cofrinho a 110% do CDI; carência até 30/04/2027.
+condição de lançamento do Cofrinho a 110% do CDI; carência até 30/04/2027.
 
 Hipóteses e decisões de produto em aberto estão nas abas do painel (`HIPOTESES` e `DECISOES` em `index.html`).
