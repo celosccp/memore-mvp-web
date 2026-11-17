@@ -372,7 +372,7 @@ const P = {
   ciclo: 'mensal',
   salaIncl: 4,           // acessos incluídos no Infinite (modo "incluída")
   salaCond: 'com gasto mínimo no cartão',
-  corrCob: 'Cobertura a confirmar (ex.: ações, FIIs e ETFs pelo app)',
+  corrCob: 'Vale para ações, FIIs e ETFs negociados pelo app',
   legRate: 110, legAte: '30/04/2027',
 };
 
@@ -385,12 +385,12 @@ const PROFILES = {
         resumo: 'R$ 8 mil investidos · zero ficha' },
 };
 
-const CTX = ['Planejamento financeiro', 'Comece a poupar', 'Otimize seu dia a dia', 'Acelere e proteja seus planos'];
+const CTX = ['Planeje sua vida financeira', 'Comece a poupar', 'Otimize seu dia a dia', 'Acelere e proteja seus planos'];
 // pts de comportamentos fora de cartão e patrimônio são ILUSTRATIVOS (régua em calibração)
 const BEH = [
   { id:'of',     ctx:0, nome:'Conectar outras contas', sub:'Open Finance', pts:3, como:'Traga os dados de outros bancos e veja tudo em um só lugar.', esforco:'Leva uns 5 minutos e não tem custo.', cta:'Conectar contas' },
   { id:'auc',    ctx:1, nome:'Patrimônio investido', dyn:true },
-  { id:'aporte', ctx:1, nome:'Aporte recorrente', pts:3, como:'Programe um valor para investir todo mês. Você escolhe quanto e pode mudar quando quiser.', esforco:'A partir de R$ 100 por mês (valor a confirmar).', cta:'Programar aporte' },
+  { id:'aporte', ctx:1, nome:'Aporte recorrente', pts:3, como:'Programe um valor para investir todo mês. Você escolhe quanto e pode mudar quando quiser.', esforco:'A partir de R$ 100 por mês.', cta:'Programar aporte' },
   { id:'prev',   ctx:1, nome:'Previdência', pts:3, como:'Tenha um plano de previdência na XP.', esforco:'Vale para quem já pensa em longo prazo.', cta:'Conhecer previdência' },
   { id:'cartao', ctx:2, nome:'Gasto no cartão', dyn:true },
   { id:'pag',    ctx:2, nome:'Pagar contas pelo app', pts:2, como:'Pague boletos e contas do mês pela conta XP.', esforco:'Você já paga essas contas. Só muda o lugar.', cta:'Pagar uma conta' },
@@ -399,7 +399,7 @@ const BEH = [
   { id:'cred',   ctx:3, nome:'Crédito', pts:2, need:true, como:'Se você já tem um plano que precisa de crédito, contratar na XP também conta fichas.', cta:'Contar o que eu preciso' },
   { id:'cons',   ctx:3, nome:'Consórcio', pts:2, need:true, como:'Se você planeja comprar um bem sem pressa, o consórcio também conta fichas.', cta:'Contar o que eu preciso' },
   { id:'seg',    ctx:3, nome:'Seguros', pts:2, como:'Proteja o que é importante para você: vida, casa ou celular.', esforco:'Compare coberturas e preços antes de decidir.', cta:'Ver seguros' },
-  { id:'segcc',  ctx:3, nome:'Seguro Conta e Cartão', pts:1, optional:true, como:'Proteção para transações na conta e no cartão.', esforco:'Alavanca em avaliação.', cta:'Ver o seguro' },
+  { id:'segcc',  ctx:3, nome:'Seguro Conta e Cartão', pts:1, optional:true, como:'Proteção para transações na conta e no cartão.', esforco:'Contratação pelo app, em poucos passos.', cta:'Ver o seguro' },
 ];
 const beh = id => BEH.find(b => b.id === id);
 
@@ -687,8 +687,7 @@ function home(){
       : `<button class="card sm mut" style="display:block;width:100%" data-a="go:shelf">${total() ? 'Nenhum benefício extra ativo. Suas fichas estão disponíveis.' : 'Benefícios extras aparecem aqui quando você ativar com fichas.'} <span style="color:var(--y);font-weight:600">Ver benefícios ›</span></button>`}
 
     <h3 class="sec">${S.goal ? 'Sua trilha' : 'Para juntar mais fichas'}<button data-a="go:juntar">Ver tudo</button></h3>
-    ${goalCard()}
-    <div class="premissa">Apuração ${P.ciclo} de fichas. Preços e regras em calibração.</div>`;
+    ${goalCard()}`;
 }
 
 function pacote(){
@@ -724,11 +723,10 @@ function pacote(){
     <div class="card">
       <div class="kv"><span>Investback</span><span>${pct(ib.rate)} das compras${c === 'one' ? `<br><span class="xs mut" style="font-weight:400">quando você gasta ${brl(P.oneMin)} ou mais no mês</span>` : ''}</span></div>
       <div class="kv"><span>Investback deste mês</span><span>${ib.applies ? `≈ ${brl(ib.valor)} de volta` : 'Ainda não vale'}<br><span class="xs mut" style="font-weight:400">${ib.applies ? `${pct(ib.rate)} de ${brl(S.gasto)} em compras` : `faltam ${brl(P.oneMin - S.gasto)} em compras para chegar a ${brl(P.oneMin)}`}</span></span></div>
-      <div class="kv"><span>Salas VIP</span><span>${salaNow(c, true).main}${salaNow(c, true).up ? `<em class="up">${salaNow(c, true).up}</em>` : ''}${salaBase(c) ? `<br><span class="xs mut" style="font-weight:400">${P.salaCond} (a confirmar)</span>` : ''}</span></div>
+      <div class="kv"><span>Salas VIP</span><span>${salaNow(c, true).main}${salaNow(c, true).up ? `<em class="up">${salaNow(c, true).up}</em>` : ''}${salaBase(c) ? `<br><span class="xs mut" style="font-weight:400">${P.salaCond}</span>` : ''}</span></div>
       ${c === 'infinite' ? `<div class="kv"><span>Benefícios Visa Infinite</span><span>Seguros de viagem e assistências</span></div>` : ''}
       ${S.active.investback ? `<div class="kv"><span>Investback turbinado</span><span>${optOf('investback', S.active.investback.opt).label}<br><span class="xs mut" style="font-weight:400">escolhido com fichas</span></span></div>` : ''}
     </div>
-    <div class="premissa">Franquias e condições de sala VIP ainda serão confirmadas.</div>
 
     ${stepIdx >= 0 && !(inf === 'active' && !infByPoints() && S.prof === 'p2' && !S.seen.req) ? `<h3 class="sec">Seu XP Infinite</h3><div class="card"><div class="steps">${steps}</div></div>` : ''}
     ${routes}
@@ -768,15 +766,14 @@ function shelf(){
     <h3 class="sec">O que cabe em ${pt(total())}</h3>
     <div class="card">${cb.length ? cb.map(c => `<div class="li"><div class="g"><b>${[c.inf ? 'XP Infinite' : null, ...c.items.map(i => i.fam === 'Corretagem zero' ? i.fam : i.fam === 'Sala VIP' ? `Sala VIP ${i.n}x` : `${i.fam.split(' ')[0]} ${i.label.split(' ')[0]}`)].filter(Boolean).join(' + ')}</b>
         <span>${c.inf === false ? 'Com o XP One · ' : c.inf && !c.items.length ? 'Nenhum benefício extra cabe ainda · ' : ''}usa ${pt(c.cost)}${c.left ? `, sobram ${c.left}` : ''}</span></div></div>`).join('')
-      : `<div class="sm mut">Com ${pt(total())} ainda não cabe nenhum benefício. ${(f => `O mais próximo é ${f.nome}, a partir de ${pt(f.opts[0].price)}.`)(families().filter(f => f.id !== 'investback' || activeCard() === 'infinite' || S.gasto >= P.oneMin).sort((a, b) => a.opts[0].price - b.opts[0].price)[0])}</div><button class="btn sec" data-a="go:juntar">Ver como ganhar fichas</button>`}</div>
-    <div class="premissa">Preços em fichas são ilustrativos.</div>`;
+      : `<div class="sm mut">Com ${pt(total())} ainda não cabe nenhum benefício. ${(f => `O mais próximo é ${f.nome}, a partir de ${pt(f.opts[0].price)}.`)(families().filter(f => f.id !== 'investback' || activeCard() === 'infinite' || S.gasto >= P.oneMin).sort((a, b) => a.opts[0].price - b.opts[0].price)[0])}</div><button class="btn sec" data-a="go:juntar">Ver como ganhar fichas</button>`}</div>`;
 }
 
 const FAMINFO = {
-  cofrinho: () => [`Vale para o dinheiro guardado no Cofrinho.`, `O Cofrinho só existe com fichas em uso. Não há versão sem Turbo.`, `Limite de saldo, duração e renovação: a definir.`],
+  cofrinho: () => [`Vale para o dinheiro guardado no Cofrinho.`, `O Cofrinho só existe com fichas em uso. Não há versão sem Turbo.`],
   investback: () => { const c = activeCard(); return [`A taxa escolhida é o total do cartão, não um extra. Ex.: ${IB[c]()[0].label.split(' ')[0]} substitui os ${pct(baseRate(c))} de hoje.`, c === 'one' ? `Vale quando você gasta ${brl(P.oneMin)} ou mais no mês.` : `Vale para as compras no XP Infinite.`, `O valor volta como investimento.`]; },
-  salavip: () => [salaBase(activeCard()) ? `O número escolhido é o total do ano, já contando os ${salaBase(activeCard())} acessos do seu cartão.` : `O número escolhido é o total de acessos no ano.`, `Os acessos valem enquanto o benefício estiver em uso.`, `Salas, regras de uso e renovação: a definir.`],
-  corretagem: () => [P.corrCob + '.', `Vale enquanto o benefício estiver ativo.`, `Limites de ordens e mercados: a definir.`],
+  salavip: () => [salaBase(activeCard()) ? `O número escolhido é o total do ano, já contando os ${salaBase(activeCard())} acessos do seu cartão.` : `O número escolhido é o total de acessos no ano.`, `Os acessos valem enquanto o benefício estiver em uso.`],
+  corretagem: () => [P.corrCob + '.', `Vale enquanto o benefício estiver ativo.`],
 };
 
 function famScreen(){
@@ -796,8 +793,7 @@ function famScreen(){
 
     ${accHead('rule', 'Regra do benefício')}
     <div class="card sm" ${isOpen('rule') ? '' : 'hidden'}>${FAMINFO[f.id]().map(t => `<div class="kv" style="font-size:13.5px"><span style="color:var(--tx)">${t}</span></div>`).join('')}
-      <div class="kv" style="font-size:13.5px"><span style="color:var(--tx)">As fichas ficam em uso enquanto o benefício estiver ativo. Ao desativar, elas voltam para o seu saldo.</span></div></div>
-    <div class="premissa">Condições operacionais serão confirmadas.</div>`;
+      <div class="kv" style="font-size:13.5px"><span style="color:var(--tx)">As fichas ficam em uso enquanto o benefício estiver ativo. Ao desativar, elas voltam para o seu saldo.</span></div></div>`;
 }
 function famFoot(){
   const f = fam(S.param), a = S.active[f.id];
@@ -833,8 +829,7 @@ function juntar(){
       ${i === 3 ? `<div class="xs mut" style="margin-bottom:6px">Só fazem sentido se você já tem um plano que precisa deles. Veja as condições antes de decidir.</div>` : ''}
       ${bs.map(b => { const p = behPts(b), max = mx(b);
         return `<button class="li" data-a="beh:${b.id}"><div class="g"><b>${b.nome}</b><span>${b.dyn ? `${p} de ${max} fichas` : p ? 'Concluído' : b.need ? 'Se fizer sentido para você' : `Vale ${pt(b.pts)}`}</span></div>${p ? chip(p >= max ? '✓ ' + p : String(p), 'use') : ''}<span class="chev">›</span></button>`; }).join('')}
-    </div></div>`; }).join('')}
-    <div class="premissa">Régua em calibração. Fora de cartão e patrimônio, o número de fichas é ilustrativo.</div>`;
+    </div></div>`; }).join('')}`;
 }
 
 // ---------- Sheets ----------
@@ -891,7 +886,6 @@ function sheet(){
     const f = fam(s.fam), o = optOf(s.fam, S.active[s.fam].opt);
     h = `<h2>Desativar ${f.nome}?</h2><p>Você deixa de ter ${o.label} e as fichas voltam para o seu saldo.</p>
       ${saldoRows(o.price, 0)}
-      <div class="premissa">Prazo de vigência e de liberação das fichas a definir.</div>
       <button class="btn sec" data-a="undo:${s.fam}">Desativar e liberar ${pt(o.price)}</button><button class="btn ghost" data-a="close">Manter ativo</button>`;
   }
   else if (s.t === 'beh'){
@@ -912,7 +906,7 @@ function sheet(){
       body = `<p>${b.como}</p>
         <div class="card"><div class="kv"><span>Vale</span><span>${pt(b.pts)}</span></div>${b.esforco ? `<div class="kv"><span>O que é preciso</span><span>${b.esforco}</span></div>` : ''}<div class="kv"><span>Situação</span><span>${p ? '✓ Concluído' : 'Ainda não feito'}</span></div></div>
         ${b.need ? `<div class="note">${b.nome} é uma decisão importante. Só vale a pena se você já precisa dele: fichas não devem ser o motivo. Antes de qualquer proposta, você conta o que precisa e vê taxas, prazos e custo total.</div>
-          ${S.cond ? `<div class="card" style="margin-top:10px"><div class="xs b mut">CONDIÇÕES DO PRODUTO</div><div class="kv"><span>Taxa e custo total</span><span>a exibir</span></div><div class="kv"><span>Prazo e parcelas</span><span>a exibir</span></div><div class="kv"><span>Análise de capacidade de pagamento</span><span>obrigatória</span></div></div>` : `<button class="btn sec" data-a="cond">Ver condições do produto</button>`}` : ''}
+          ${S.cond ? `<div class="card" style="margin-top:10px"><div class="xs b mut">CONDIÇÕES DO PRODUTO</div><div class="kv"><span>Taxa e custo total</span><span>mostrados antes de contratar</span></div><div class="kv"><span>Prazo e parcelas</span><span>você escolhe na simulação</span></div><div class="kv"><span>Análise de capacidade de pagamento</span><span>obrigatória</span></div></div>` : `<button class="btn sec" data-a="cond">Ver condições do produto</button>`}` : ''}
         ${!p && !b.need ? `<button class="btn" data-a="noop">${b.cta}</button>` : ''}
         ${!p ? `<button class="btn demo" data-a="simbeh:${b.id}">Demo · simular ação concluída (+${b.pts})</button>` : ''}`;
     }
@@ -937,7 +931,6 @@ function sheet(){
       ${saldoRows(0, P.infPts)}
       <div class="note">As ${pt(P.infPts)} ficam em uso enquanto seu patrimônio estiver abaixo de ${brl(P.corte)}. Quando você chegar lá, as fichas voltam para o seu saldo e o cartão continua com você.</div>
       ${ib ? `<div class="note">Seu ${ib.label} é do XP One. Quando o Infinite for ativado, ele é encerrado e os ${pt(ib.price)} voltam para o saldo.</div>` : ''}
-      <div class="premissa">Pedido sujeito a análise. Jornada operacional a confirmar.</div>
       <button class="btn" data-a="infreq:fichas">Pedir o XP Infinite</button><button class="btn ghost" data-a="close">Agora não</button>`;
   }
   else if (s.t === 'infReq'){
@@ -946,7 +939,6 @@ function sheet(){
       <div class="swap"><div><small>Hoje</small><b>XP One</b><span>Investback 0,8%</span></div><div class="mut">→</div><div class="new"><small style="color:var(--y)">Novo</small><b>XP Infinite</b><span>Investback 1%</span></div></div>
       <div class="card"><div class="kv"><span>Fichas usadas</span><span>Nenhuma</span></div><div class="kv"><span>Enquanto o pedido é analisado</span><span>Você segue com o XP One</span></div></div>
       ${ib ? `<div class="note">Seu ${ib.label} é do XP One. Quando o Infinite for ativado, ele é encerrado e os ${pt(ib.price)} voltam para o saldo.</div>` : ''}
-      <div class="premissa">Pedido ou migração sujeitos a análise. Jornada operacional a confirmar.</div>
       <button class="btn" data-a="infreq:patrimonio">Pedir o XP Infinite</button><button class="btn ghost" data-a="close">Agora não</button>`;
   }
   else if (s.t === 'infAsk'){
@@ -961,7 +953,6 @@ function sheet(){
   }
   else if (s.t === 'infOff'){
     h = `<h2>Voltar para o XP One?</h2><p>Você deixa o XP Infinite e os ${pt(P.infPts)} voltam para o seu saldo.</p>${saldoRows(P.infPts, 0)}
-      <div class="premissa">Regras de devolução do cartão e prazos a definir.</div>
       <button class="btn sec" data-a="infoff">Voltar para o XP One</button><button class="btn ghost" data-a="close">Manter o XP Infinite</button>`;
   }
   else if (s.t === 'transB'){
@@ -981,7 +972,6 @@ function sheet(){
       <h3 class="sec" style="margin-top:16px">Opção 2 · Escolher o que manter</h3>
       <div class="card">${infByPoints() ? `<button class="li" data-a="sheet:infOff"><div class="g"><b>XP Infinite</b><span>${pt(P.infPts)} em uso</span></div>${chip('Liberar', 'ghost')}</button>` : ''}
         ${Object.keys(S.active).map(fid => { const o = optOf(fid, S.active[fid].opt); return `<button class="li" data-a="sheet:deact:${fid}"><div class="g"><b>${fam(fid).nome} · ${o.label}</b><span>${pt(o.price)} em uso</span></div>${chip('Liberar', 'ghost')}</button>`; }).join('')}</div>
-      <div class="premissa">Prazo de carência de um ciclo e escolha pelo cliente são propostas. Política em discussão.</div>
       <button class="btn ghost" data-a="close">Fechar</button>`;
   }
   else if (s.t === 'lossCard'){
@@ -989,7 +979,6 @@ function sheet(){
       <div class="card"><div class="kv"><span>Para manter pelo patrimônio</span><span>faltam ${brl(P.corte - S.auc)}</span></div>
       ${S.scen === 'B' ? `<div class="kv"><span>Para manter com fichas</span><span>${pt(P.infPts)}${available() >= P.infPts ? '' : ` (faltam ${P.infPts - available()})`}</span></div>` : ''}
       <div class="kv"><span>Se nada mudar</span><span>Avisamos antes de qualquer alteração no seu cartão</span></div></div>
-      <div class="premissa">Prazo de tolerância e o que acontece com o cartão depois dele: decisão em aberto.</div>
       ${S.scen === 'B' && available() >= P.infPts ? `<button class="btn" data-a="keepinf">Manter com ${pt(P.infPts)}</button>` : ''}
       <button class="btn ${S.scen === 'B' && available() >= P.infPts ? 'ghost' : ''}" data-a="close">Entendi</button>`;
   }
@@ -999,7 +988,6 @@ function sheet(){
       <div class="hero"><small>Sua condição</small><b>${c.status}</b></div>
       <div class="card">${c.muda.map(t => `<div class="kv" style="font-size:13.5px"><span style="color:var(--tx)">${t}</span></div>`).join('')}
         <div class="kv" style="font-size:13.5px"><span style="color:var(--tx)">O dinheiro guardado não muda e continua disponível para você.</span></div></div>
-      <div class="premissa">Uma de três alternativas de transição em análise. Troque no painel da demonstração.</div>
       <button class="btn" data-a="${S.legRule === 'preservar' ? 'openfam:cofrinho:c115' : need ? 'go:juntar' : 'openfam:cofrinho:c110'}">${c.acao}</button><button class="btn ghost" data-a="close">Entendi</button>`;
   }
   return `<div class="ov" data-a="close"><div class="sheet" data-stop>${h}</div></div>`;
