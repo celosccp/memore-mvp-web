@@ -332,6 +332,12 @@ h3.sec button{color:var(--y);font-size:13px;font-weight:600}
 .leg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:var(--mut)}
 .leg b{color:var(--tx);font-size:13.5px;margin-left:2px}
 .leg button{color:var(--mut)}
+.pk{padding:12px}
+.pcs{display:grid;grid-template-columns:1fr 1fr;margin-top:10px;border-top:1px solid var(--line);padding-top:9px}
+.pc{display:flex;flex-direction:column;min-width:0;text-align:left}
+.pc+.pc{border-left:1px solid var(--line);padding-left:12px}
+.pc .pl{font-size:11.5px;color:var(--mut)} .pc b{font-size:14px;line-height:1.3;white-space:nowrap;letter-spacing:-.01em} .pc .pcnd{font-size:11px;color:var(--mut)}
+.pk.lock .pc b{color:var(--mut)}
 </style>
 </head>
 <body>
@@ -639,30 +645,31 @@ function welcome(){
 // ---------- Telas ----------
 function pkCard(k){
   const c = activeCard(), cur = c === k, ib = investbackNow();
-  const kv = (a, b, up) => `<div class="kv"><span>${a}</span><span>${b}${up ? `<em class="up">${up}</em>` : ''}</span></div>`;
+  const col = (lab, val, cond, up) => `<div class="pc"><span class="pl">${lab}</span><b>${val}</b>${cond ? `<span class="pcnd">${cond}</span>` : ''}${up ? `<em class="up">${up}</em>` : ''}</div>`;
   const ibA = cur && S.active.investback && S.active.investback.status === 'active', ibMax = IB[k]()[1].rate, sl = salaNow(k, cur);
-  let tag, foot = '';
-  if (k === 'one'){
-    tag = chip('Incluído · não usa fichas', 'y');
-    foot = '';
-  } else {
-    const near = S.auc >= P.corte * 0.6;
-    tag = cur ? (infByPoints() ? chip(`${pt(P.infPts)} em uso`, 'use') : chip('Incluído · não usa fichas', 'y')) : S.inf === 'requested' ? chip('<i class="spin"></i> Em análise', 'y') : elig() ? chip('Desbloqueado · você já pode pedir', 'av') : chip(I.lock + ' Bloqueado', 'ghost');
-    if (cur) foot = (infByPoints() ? `<div class="xs mut" style="margin-top:8px">Acesso por fichas: ${P.infPts} em uso até você ter ${brl(P.corte)} investidos.</div>` : '');
-    else if (S.inf === 'requested') foot = `<div class="xs mut" style="margin-top:8px">Você segue com o XP One até o novo cartão ser ativado.</div>`;
-    else if (elig()) foot = `<div class="xs mut" style="margin-top:8px">Você tem ${brl(S.auc)} investidos. O pedido não usa fichas.</div>`;
-    else foot = `<div class="xs mut b" style="margin-top:10px;letter-spacing:.04em">PARA DESBLOQUEAR</div>` + (near ? `<div class="prog"><i style="width:${S.auc / P.corte * 100}%"></i></div><div class="xs mut">Faltam ${brl(P.corte - S.auc)} investidos. Não usa fichas.</div>`
-        : `<div class="xs mut" style="margin-top:4px">Tenha ${brl(P.corte)} investidos. Sem pressa: seu XP One já vale hoje.</div>`)
-      + (S.scen === 'B' ? `<div class="xs" style="margin-top:6px;color:var(--y);font-weight:600">${available() >= P.infPts ? `Ou peça agora com ${pt(P.infPts)}` : `Ou com ${pt(P.infPts)} (faltam ${P.infPts - available()})`}</div>` : '');
-  }
   const locked = k === 'infinite' && !cur && S.inf === 'none' && !elig();
+  let tag, sub = '', foot = '';
+  if (k === 'one') tag = chip('Incluído · não usa fichas', 'y');
+  else if (cur){
+    tag = infByPoints() ? chip(`${pt(P.infPts)} em uso`, 'use') : chip('Incluído · não usa fichas', 'y');
+    sub = infByPoints() ? 'É seu enquanto as fichas estiverem em uso' : `É seu por ter ${brl(P.corte)} ou mais investidos`;
+  } else if (S.inf === 'requested'){ tag = chip('<i class="spin"></i> Em análise', 'y'); sub = 'Você segue com o XP One até a ativação'; }
+  else if (elig()){ tag = chip('Desbloqueado · você já pode pedir', 'av'); sub = `Liberado pelos seus ${brl(S.auc)} investidos`; }
+  else {
+    tag = chip(I.lock + ' Bloqueado', 'ghost');
+    const alt = S.scen === 'B' ? ` <span style="color:var(--y);font-weight:600">· ou ${pt(P.infPts)}</span>` : '';
+    foot = S.auc >= P.corte * 0.6
+      ? `<div class="prog" style="margin:10px 0 5px"><i style="width:${S.auc / P.corte * 100}%"></i></div><div class="xs mut">Faltam ${brl(P.corte - S.auc)} investidos${alt}</div>`
+      : `<div class="xs mut" style="margin-top:10px">Desbloqueia com ${brl(P.corte)} investidos${alt}</div>`;
+  }
   return `<button class="pk ${cur ? 'cur' : ''} ${locked ? 'lock' : ''}" data-a="go:pacote">
-    <div class="row">${plast(k)}<div class="g"><div class="b" style="font-size:16px">${cardName(k)}</div><div class="xs mut">${k === 'one' ? '' : cur ? (infByPoints() ? 'É seu enquanto as fichas estiverem em uso' : `É seu por ter ${brl(P.corte)} ou mais investidos`) : S.inf !== 'requested' && elig() ? `Liberado pelos seus ${brl(S.auc)} investidos` : ''}</div></div></div>
-    <div style="margin:10px 0 2px">${tag}</div>
-    ${kv('Investback', (ibA ? pct(ib.rate) : k === 'one' ? '0,8%' : '1%') + (k === 'one' ? ` <span class="mut" style="font-weight:400">a partir de ${brl(P.oneMin)}/mês</span>` : ''), ibA ? (ib.rate >= ibMax ? 'turbinado com fichas' : `turbinado · até ${pct(ibMax)} com fichas`) : `até ${pct(ibMax)} com fichas`)}
-    ${kv('Salas VIP', sl.main, sl.up)}
-    ${foot}
-    <div class="sm b" style="color:var(--y);margin-top:12px">${cur ? 'Ver meu cartão ›' : locked ? 'Ver como desbloquear ›' : 'Ver detalhes ›'}</div></button>`;
+    <div class="row">${plast(k)}<div class="g"><div class="b" style="font-size:16px;margin-bottom:4px">${cardName(k)}</div>${tag}</div><span class="chev mut" style="font-size:20px">›</span></div>
+    ${sub ? `<div class="xs mut" style="margin-top:8px">${sub}</div>` : ''}
+    <div class="pcs">
+      ${col('Investback', ibA ? pct(ib.rate) : k === 'one' ? '0,8%' : '1%', k === 'one' ? `a partir de ${brl(P.oneMin)}/mês` : '', ibA ? (ib.rate >= ibMax ? 'turbinado com fichas' : `até ${pct(ibMax)} com fichas`) : `até ${pct(ibMax)} com fichas`)}
+      ${col('Salas VIP', sl.main.replace(' acessos por ano', ' acessos/ano'), '', sl.up)}
+    </div>
+    ${foot}</button>`;
 }
 function home(){
   const c = activeCard(), act = Object.keys(S.active);
