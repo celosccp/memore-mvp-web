@@ -79,7 +79,7 @@ add('s3',8,"""
     #s3-c{position:absolute;left:660px;top:380px;width:600px;height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
     #s3-k{font-size:34px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#A3A3A8}
     #s3-h{font-size:112px;margin-top:6px;white-space:nowrap}
-    #s3-s{font-size:36px;font-weight:700;color:#FFC709;margin-top:14px}
+    #s3-s{font-size:34px;font-weight:700;color:#FFC709;margin-top:14px;line-height:1.25}
     .s3-d{position:absolute;width:66px;height:66px;border-radius:50%;background:#FFC709;box-shadow:0 0 0 12px #0f0d0a,0 0 46px 10px rgba(255,199,9,.55)}
     .s3-rp{position:absolute;width:66px;height:66px;border-radius:50%;border:4px solid #FFC709;opacity:0}
     .s3-lw{position:absolute;width:540px;height:220px;display:flex;align-items:center}
@@ -96,7 +96,7 @@ add('s3',8,"""
           <circle cx="{CX}" cy="{CY}" r="{R}" stroke="#fff" stroke-opacity=".4" stroke-width="12" stroke-linecap="round" pathLength="100" stroke-dasharray="8 92" transform="rotate(-119 {CX} {CY})"/>
           <circle cx="{CX}" cy="{CY-R}" r="34" fill="#fff" fill-opacity=".22"/><circle cx="{CX}" cy="{CY-R}" r="15" fill="#fff"/>
         </svg>
-        <div id="s3-c"><div id="s3-k">Sua</div><div id="s3-h" class="h">Jornada <span class="y">XP</span></div><div id="s3-s">Mais longe a cada conquista.</div></div>
+        <div id="s3-c"><div id="s3-k">Sua</div><div id="s3-h" class="h">Jornada <span class="y">XP</span></div><div id="s3-s">Mais perto dos seus objetivos<br>a cada avanço.</div></div>
         {orb}
       </div>
     </div>""",
