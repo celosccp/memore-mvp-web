@@ -411,6 +411,32 @@ add('s8',4.6,'''
 ''' + '\n'.join(djs) + '''
       tl.fromTo("#s8-cta", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 1.1);''')
 
+# ---------- som: efeitos nas ações visíveis (sem trilha musical) ----------
+SFX=json.load(open('/tmp/claude-0/-home-user-memore-mvp-web/cb0f6e45-b126-5c62-bffa-408e7affbee5/scratchpad/sfx.json'))
+st={}; _t=0
+for sid,d in SC: st[sid]=_t; _t+=d
+cues=[]
+def cue(t,name,vol): cues.append((round(t,3),name,vol))
+cue(st['s1']+0.45,'impact-bass-1',0.30)                                   # selo XP pousa
+for n_,sid in enumerate(['s3','s4','s5','s6','s7','s8']): cue(st[sid]+0.05,'whoosh-short' if n_%2 else 'whoosh',0.32)   # cortes de cena
+for n_ in range(4): cue(st['s3']+0.7+n_*0.22+0.2,'pop',0.30)              # frentes acendem
+for i_ in range(6): cue(st['s4']+0.6+i_*0.85+0.5,'click-soft' if i_%2 else 'pop',0.42 if i_%2 else 0.30)   # check de cada avanço
+for u in (0.465,0.649,0.857,1.103,1.425,2.2): cue(st['s5']+u,'key-press',3.2)     # rolo passando item a item
+cue(st['s5']+2.9,'click',0.7)                                             # rolo trava no Cofre XP turbinado
+cue(st['s5']+4.75+0.9,'pop',0.45); cue(st['s5']+6.15+0.9,'pop',0.45)       # 110% e 115%
+cue(st['s5']+7.55+0.9,'impact-bass-2',0.42); cue(st['s5']+7.55+0.95,'sparkle',0.5)   # 125%: o ponto alto
+cue(st['s6']+1.5+1.35,'pop',0.38)                                         # fichas chegam ao saldo
+cue(st['s6']+3.4+0.95,'chime',1.4); cue(st['s6']+3.4+0.95,'pop',0.38)      # Investback turbinado
+for m_ in (1.805,3.685,6.741,8.0,11.544,13.401,15.713): cue(st['s7']+0.1+(m_+0.26-1.7)/1.3/1.24,'click-soft',0.6)   # toques reais na gravação
+cue(st['s8']+0.35,'impact-bass-1',0.32); cue(st['s8']+0.55,'sparkle',0.5)   # fecho
+audio=''
+for k,(tc,name,vol) in enumerate(sorted(cues)):
+    m=SFX[name]; start=max(0,tc-m['peak']+0.033)
+    audio+=f'      <audio id="sfx{k}" class="clip" src="assets/sfx/{name}.mp3" data-start="{start:.3f}" data-duration="{min(m["dur"],_t-start):.2f}" data-track-index="{2+k%3}" data-volume="{vol}"></audio>\n'
+# subida de tensão até o 125%, uma vez no filme
+hit=st['s5']+7.55+0.9
+audio+=f'      <audio id="sfxriser" class="clip" src="assets/sfx/riser.mp3" data-start="{hit-1.45:.3f}" data-duration="1.5" data-media-start="1.55" data-fade-in="0.5" data-fade-out="0.08" data-track-index="5" data-volume="0.22"></audio>\n'
+
 t=0; hosts=''
 for sid,d in SC:
     hosts+=f'      <div id="{sid}" data-composition-id="{sid}" data-composition-src="compositions/{sid}.html" data-start="{t}" data-duration="{d}" data-track-index="0" data-track-kind="graphics" data-width="1920" data-height="1080"></div>\n'; t+=d
@@ -429,11 +455,11 @@ open(V+'/index.html','w',encoding='utf-8').write(f'''<!doctype html>
   </head>
   <body>
     <div id="root" data-composition-id="main" data-start="0" data-duration="{t}" data-width="1920" data-height="1080">
-{hosts}    </div>
+{hosts}{audio}    </div>
     <script>
       window.__timelines["main"] = gsap.timeline({{ paused: true }});
     </script>
   </body>
 </html>
 ''')
-print('duracao',t)
+print('duracao',t,'efeitos',len(cues)+1)
