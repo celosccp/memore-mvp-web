@@ -192,7 +192,7 @@ add('s5',12.6,"""
         <div id="s5-t"><span id="s5-tn">Cofre XP</span><em id="s5-te">% do CDI</em></div>
         <div class="s5-chip" id="s5-uso">Em uso <span id="s5-un">0</span></div>
         <div class="s5-chip" id="s5-disp">Disponíveis <span id="s5-dn">15</span></div>
-        <div id="s5-big"><div id="s5-b0">100%</div><div id="s5-b1" class="y">110%</div><div id="s5-b2" class="y">115%</div></div>
+        <div id="s5-big"><div id="s5-b0">100%</div><div id="s5-b1" class="y" data-layout-ignore>110%</div><div id="s5-b2" class="y" data-layout-ignore>115%</div></div>
         <div id="s5-rg"><div id="s5-track"></div><div id="s5-fill"></div>{nodes}</div>
       </div>
       <div id="s5-land">Cofre XP</div>
@@ -264,7 +264,7 @@ inn=''.join(f'<i class="s6-f" id="s6-i{k}" style="left:{WX-13}px;top:{WY-13}px">
 def card(cid,x,name,unit,v0,v1,c0,c1):
     return f"""<div class="s6-c" id="s6-{cid}" style="left:{x}px"><i class="s6-g" id="s6-{cid}g"></i>
         <div class="s6-n">{name}<em>{unit}</em></div>
-        <div class="s6-v"><div id="s6-{cid}v0">{v0}</div><div id="s6-{cid}v1">{v1}</div></div>
+        <div class="s6-v"><div id="s6-{cid}v0">{v0}</div><div id="s6-{cid}v1" data-layout-ignore>{v1}</div></div>
         <div class="s6-ch"><span id="s6-{cid}c0">{c0}</span><span id="s6-{cid}c1">{c1}</span></div></div>"""
 add('s6',8.4,"""
     #s6-all{position:absolute;inset:0}
