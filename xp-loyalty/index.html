@@ -571,6 +571,29 @@ h3.sec2 span{display:block;font-size:14.5px;color:var(--mut);font-weight:400;mar
 .kv span:only-child{max-width:none;flex:1 1 auto;min-width:0}
 .peek .pt{white-space:nowrap}
 .pk2 .chip{flex:none}
+
+/* confirmações enxutas */
+.cf-top{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--mut);font-weight:600}
+.cf-top .ico{width:30px;height:30px;border-radius:10px}
+.cf-big{display:flex;align-items:baseline;gap:10px;margin:10px 0 16px;letter-spacing:-.03em}
+.cf-big b{font-size:44px;line-height:1;font-weight:800}
+.cf-big s{font-size:24px;color:var(--mut);font-weight:700}
+.cf-big i{font-style:normal;font-size:24px;color:var(--mut);animation:nudge 1.2s ease-in-out infinite}
+.cf-big em{font-style:normal;font-size:15px;color:var(--mut);letter-spacing:0}
+@keyframes nudge{50%{transform:translateX(5px)}}
+.cf-fx{display:grid;grid-template-columns:1fr 1fr;margin:18px 0 4px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.cf-fx>div{padding:11px 0} .cf-fx>div+div{padding-left:14px;border-left:1px solid var(--line)}
+.cf-fx span{display:block;font-size:12px;color:var(--mut)} .cf-fx b{font-size:17px}
+.cf-rules{margin:12px 0 6px;padding-left:18px;font-size:12.5px;color:var(--mut);line-height:1.45}
+.cf-rules li{margin-bottom:3px}
+.rg.mv .rt i{width:var(--to);animation:rgmove 1.1s cubic-bezier(.3,.8,.2,1) .25s both}
+@keyframes rgmove{from{width:var(--from)}to{width:var(--to)}}
+.rg.mv .nd{cursor:default}
+.rg.mv .nd.tgt i{animation:tgt 1.1s cubic-bezier(.3,.8,.2,1) .25s both,ndp 1.6s ease-in-out 1.4s infinite}
+@keyframes tgt{0%,70%{background:var(--nb);border-color:var(--dim);box-shadow:none}100%{background:var(--y);border-color:var(--y)}}
+.sheet .rg .nd i{background:#241f19} .light .sheet .rg .nd i{background:#fff}
+.sheet .rg .nd.past i,.sheet .rg .nd.cur i,.light .sheet .rg .nd.past i{background:var(--y);border-color:var(--y)}
+.pbtn.sel{background:var(--ink);color:#fff;border-color:var(--ink)}
 </style>
 </head>
 <body>
@@ -1133,20 +1156,21 @@ function sheet(){
         ${allocated() - (cur ? cur.price : 0) > 0 ? `<div class="note">Você também pode liberar fichas desativando outro benefício ativo.</div>` : ''}
         <button class="btn" data-a="goal:${s.fam}:${s.opt}">${isGoal ? 'Você já segue esta trilha ✓' : 'Seguir esta trilha'}</button>
         <button class="btn ghost" data-a="go:juntar">Ver todas as formas de ganhar fichas</button>`;
-    } else if (cur){
-      h = `<h2>Trocar ${f.nome}</h2><p>Confira a troca antes de confirmar.</p>
-        <div class="swap"><div><small>Atual</small><b>${cur.label}</b><span>${pt(cur.price)}</span></div><div class="mut">→</div><div class="new"><small style="color:var(--ya)">Novo</small><b>${o.label}</b><span>${pt(o.price)}</span></div></div>
-        ${saldoRows(cur.price, o.price)}
-        <div class="note">As ${pt(cur.price)} de ${cur.label} voltam para o saldo e ${pt(o.price)} passam para ${o.label}. Só uma opção de ${f.nome} fica ativa por vez.</div>
-        ${accHead('rule', 'Regra do benefício')}<div class="card sm" ${isOpen('rule') ? '' : 'hidden'}>${FAMINFO[f.id]().map(t => `<div class="kv" style="font-size:13.5px"><span style="color:var(--tx)">${t}</span></div>`).join('')}</div>
-        <button class="btn" data-a="do:${s.fam}:${s.opt}">Confirmar troca</button><button class="btn ghost" data-a="close">Manter como está</button>`;
     } else {
-      h = `<h2>Ativar ${f.nome}</h2><p>Confira antes de confirmar.</p>
-        <div class="hero"><small>Você está ativando</small><b>${o.label}</b><div class="sm mut">${f.id === 'investback' ? (baseRate(activeCard()) ? `No ${cardName(activeCard())}: de ${pct(baseRate(activeCard()))} para ${pct(o.rate)} no total` : `${pct(o.rate)} de volta nas compras do ${cardName(activeCard())}`) : f.desc}</div></div>
-        ${saldoRows(0, o.price)}
-        <div class="note">As fichas ficam em uso enquanto o benefício estiver ativo. Ao desativar, voltam para o seu saldo.</div>
-        ${accHead('rule', 'Regra do benefício')}<div class="card sm" ${isOpen('rule') ? '' : 'hidden'}>${FAMINFO[f.id]().map(t => `<div class="kv" style="font-size:13.5px"><span style="color:var(--tx)">${t}</span></div>`).join('')}</div>
-        <button class="btn" data-a="do:${s.fam}:${s.opt}">Confirmar e ativar</button><button class="btn ghost" data-a="close">Agora não</button>`;
+      const rules = [...FAMINFO[f.id](), 'As fichas ficam em uso enquanto o benefício estiver ativo e voltam quando você desativa.'];
+      const short = x => rgShort(f, x), after = available() + (cur ? cur.price : 0) - o.price;
+      // régua em miniatura: o marcador anda da opção atual até a nova
+      const org = f.id !== 'corretagem', n = f.opts.length + (org ? 1 : 0), ix = x => f.opts.findIndex(y => y.id === x.id) + (org ? 1 : 0);
+      const from = cur ? ix(cur) : 0, to = ix(o), base = rgBase(f, activeCard());
+      const mini = `<div class="rg mv" style="--n:${n};--from:${from / (n - 1) * 100}%;--to:${to / (n - 1) * 100}%"><div class="rt"><i></i></div><div class="rn">
+        ${org ? `<div class="nd past"><i></i><b>${base || (f.id === 'salavip' ? 'Sem acesso' : 'Sem')}</b></div>` : ''}
+        ${f.opts.map(x => `<div class="nd ${ix(x) === to ? 'cur tgt' : ix(x) < to ? 'past' : 'no'}"><i></i><b>${short(x)}</b></div>`).join('')}</div></div>`;
+      h = `<div class="cf-top"><div class="ico">${I[f.id]}</div><span>${f.nome}</span></div>
+        <div class="cf-big">${cur ? `<s>${short(cur)}</s><i>→</i>` : ''}<b>${short(o)}</b></div>
+        ${mini}
+        <div class="cf-fx"><div><span>${cur ? 'Fichas em uso aqui' : 'Usa'}</span><b>${cur ? `${cur.price} → ${o.price}` : pt(o.price)}</b></div><div><span>Ficam disponíveis</span><b>${pt(after)}</b></div></div>
+        <ul class="cf-rules">${rules.map(t => `<li>${t}</li>`).join('')}</ul>
+        <button class="btn" data-a="do:${s.fam}:${s.opt}">${cur ? `Trocar para ${short(o)}` : `Ativar ${short(o)}`}</button><button class="btn ghost" data-a="close">${cur ? 'Manter como está' : 'Agora não'}</button>`;
     }
   }
   else if (s.t === 'done'){
@@ -1243,13 +1267,12 @@ function sheet(){
   }
   else if (s.t === 'loss'){
     const d = deficit();
-    h = `<h2>Faltam ${pt(d)} para manter seus benefícios</h2><p>Suas fichas caíram para ${total()} e você tem ${allocated()} em uso. Isso acontece quando algo que você fazia na XP diminui neste mês.</p>
-      <div class="card"><div class="kv"><span>O que acontece agora</span><span>Nada muda até o fim deste mês</span></div><div class="kv"><span>Depois disso</span><span>Você escolhe o que manter</span></div></div>
-      <h3 class="sec" style="margin-top:16px">Opção 1 · Recuperar ${pt(d)}</h3><div class="card">${sugList(2) || '<div class="sm mut">Volte ao seu nível de uso anterior.</div>'}</div>
-      <h3 class="sec" style="margin-top:16px">Opção 2 · Escolher o que manter</h3>
-      <div class="card">${infByPoints() ? `<button class="li" data-a="sheet:infOff"><div class="g"><b>XP Infinite</b><span>${pt(P.infPts)} em uso</span></div>${chip('Liberar', 'ghost')}</button>` : ''}
-        ${Object.keys(S.active).map(fid => { const o = optOf(fid, S.active[fid].opt); return `<button class="li" data-a="sheet:deact:${fid}"><div class="g"><b>${fam(fid).nome} · ${o.label}</b><span>${pt(o.price)} em uso</span></div>${chip('Liberar', 'ghost')}</button>`; }).join('')}</div>
-      <button class="btn ghost" data-a="close">Fechar</button>`;
+    h = `<h2>Faltam ${pt(d)}</h2><p>Você tem ${pt(total())} e ${allocated()} em uso. Nada muda até o fim do mês.</p>
+      <div class="cf-fx"><div><span>Você tem</span><b>${pt(total())}</b></div><div><span>Em uso</span><b>${pt(allocated())}</b></div></div>
+      <h3 class="sec" style="margin-top:16px">Se preferir, libere um benefício</h3>
+      <div class="card">${infByPoints() ? `<button class="li" data-a="sheet:infOff"><div class="g"><b>Cartão XP Infinite</b></div><span class="rv">Liberar ${P.infPts}</span></button>` : ''}
+        ${Object.keys(S.active).map(fid => { const o = optOf(fid, S.active[fid].opt); return `<button class="li" data-a="sheet:deact:${fid}"><div class="g"><b>${fam(fid).nome} · ${rgShort(fam(fid), o)}</b></div><span class="rv">Liberar ${o.price}</span></button>`; }).join('')}</div>
+      <button class="btn" data-a="go:juntar">Recuperar ${pt(d)}</button><button class="btn ghost" data-a="close">Decidir depois</button>`;
   }
   else if (s.t === 'lossCard'){
     h = `<h2>Seu patrimônio está abaixo de ${brl(P.corte)}</h2><p>Você tem ${brl(S.auc)} investidos. Seu XP Infinite continua ativo e nada muda agora.</p>
@@ -1260,12 +1283,14 @@ function sheet(){
       <button class="btn ${S.scen === 'B' && available() >= P.infPts ? 'ghost' : ''}" data-a="close">Entendi</button>`;
   }
   else if (s.t === 'legacy'){
-    const c = legacyCopy(), need = P.cofre[0] - available() > 0;
-    h = `<h2>Seu Cofre XP na Jornada XP</h2><p>Você já tinha o Cofre XP com ${P.legRate}% do CDI antes da Jornada XP. Veja como fica.</p>
-      <div class="hero"><small>Sua condição</small><b>${c.status}</b></div>
-      <div class="card">${c.muda.map(t => `<div class="kv" style="font-size:13.5px"><span style="color:var(--tx)">${t}</span></div>`).join('')}
-        <div class="kv" style="font-size:13.5px"><span style="color:var(--tx)">O dinheiro guardado não muda e continua disponível para você.</span></div></div>
-      <button class="btn" data-a="${S.legRule === 'preservar' ? 'close' : need ? 'go:juntar' : 'sheet:confirm:cofrinho:c110'}">${c.acao}</button><button class="btn ghost" data-a="close">Entendi</button>`;
+    const need = Math.max(0, P.cofre[0] - available()), r = S.legRule, f = fam('cofrinho');
+    const T = r === 'preservar' ? { big: `${P.legRate}%`, h: 'Seu Cofre XP continua igual', p: `Você já tinha ${P.legRate}% do CDI antes da Jornada XP. Essa taxa segue valendo, sem usar fichas.`, cta: null }
+      : r === 'carencia' ? { big: `${P.legRate}%`, h: `Sua taxa vale até ${P.legAte}`, p: `Depois dessa data, manter ${P.legRate}% do CDI usa ${pt(P.cofre[0])}. ${need ? `Hoje faltam ${pt(need)}.` : 'Você já tem fichas para isso.'}`, cta: need ? ['go:juntar', 'Ver como juntar fichas'] : ['sheet:confirm:cofrinho:c110', `Garantir com ${pt(P.cofre[0])}`] }
+      : { big: `${P.cofBase}%`, h: `Seu Cofre XP agora rende ${P.cofBase}% do CDI`, p: `Para voltar a ${P.legRate}%, use ${pt(P.cofre[0])}. ${need ? `Hoje faltam ${pt(need)}.` : 'Você já tem fichas para isso.'}`, cta: need ? ['go:juntar', 'Ver como juntar fichas'] : ['sheet:confirm:cofrinho:c110', `Voltar a ${P.legRate}% com ${pt(P.cofre[0])}`] };
+    h = `<div class="cf-top"><div class="ico">${I.cofrinho}</div><span>Cofre XP</span></div>
+      <div class="cf-big"><b>${T.big}</b><em>do CDI</em></div>
+      <h2 style="margin-top:6px">${T.h}</h2><p>${T.p} O dinheiro guardado não muda.</p>
+      ${T.cta ? `<button class="btn" data-a="${T.cta[0]}">${T.cta[1]}</button><button class="btn ghost" data-a="close">Entendi</button>` : `<button class="btn" data-a="close">Entendi</button>`}`;
   }
   return `<div class="ov" data-a="close"><div class="sheet" data-stop>${h}</div></div>`;
 }
@@ -1375,6 +1400,7 @@ function renderPanel(){
   if (S.tab === 'demo'){
     const proc = Object.values(S.active).some(a => a.status === 'processing');
     body = `
+      <button class="pbtn ${S.preset ? 'hot' : ''}" data-a="normal" style="margin-bottom:14px">↺ Voltar ao normal<small>Desfaz atalhos e simulações</small></button>
       <h2>Cenário de acesso ao Infinite</h2>
       <div class="seg"><button class="${S.scen === 'A' ? 'on' : ''}" data-a="scen:A">A · Patrimônio</button><button class="${S.scen === 'B' ? 'on' : ''}" data-a="scen:B">B · Patrimônio ou fichas</button></div>
       <p class="hint">Seletor só da demonstração. O cliente verá uma única regra.</p>
@@ -1388,13 +1414,12 @@ function renderPanel(){
       <div class="sl"><label>Gasto mensal no cartão <output id="oGasto">${brl(S.gasto)}</output></label><input type="range" id="rGasto" min="0" max="10000" step="100" value="${S.gasto}"></div>
       ${CTX.map((cx, i) => { const bs = visibleBeh().filter(b => b.ctx === i && !b.dyn); return bs.length ? `<div class="glab">${cx}</div>` + bs.map(b =>
         `<label class="tog" style="padding:4px 0">${b.sub || b.nome} <span class="hint" style="margin:0 6px 0 auto">+${b.pts}</span><input type="checkbox" data-d="${b.id}" ${S.done[b.id] ? 'checked' : ''}></label>`).join('') : ''; }).join('')}
-      <button class="pbtn" style="margin-top:10px" data-a="prof:p1">Reiniciar simulação</button>
       <h2>Ir direto a um estado</h2>
       ${[['Começo', [['welcome','Boas-vindas'],['zero','Zero ficha'],['ativo','Benefício em uso']]],
         ['Ativar e trocar', [['disp','Confirmar ativação'],['proc','Em processamento'],['troca','Confirmar troca'],['insuf','Faltam fichas'],['trilha','Trilha concluída']]],
         ['Cartão XP Infinite', [['bloq','Bloqueado'],['transA','A · chegou a 30 mil'],['infB','B · pedir com fichas'],['transB','B · fichas voltam']]],
         ['Situações de atenção', [['perda','Fichas caíram'],['perdaCard','Patrimônio caiu'],['legado','Cofre XP já ativo']]]]
-        .map(([g, items]) => `<div class="glab">${g}</div><div class="grid2">${items.map(([k, t]) => `<button class="pbtn" data-a="preset:${k}">${t}</button>`).join('')}</div>`).join('')}
+        .map(([g, items]) => `<div class="glab">${g}</div><div class="grid2">${items.map(([k, t]) => `<button class="pbtn ${S.preset === k ? 'sel' : ''}" data-a="preset:${k}">${t}</button>`).join('')}</div>`).join('')}
       <h2>Salas VIP</h2>
       <div class="seg"><button class="${S.salaMode === 'incluida' ? 'on' : ''}" data-a="sala:incluida">Mínimo no cartão</button><button class="${S.salaMode === 'fichas' ? 'on' : ''}" data-a="sala:fichas">Tudo por fichas</button></div>
       <p class="hint">${S.salaMode === 'incluida' ? `O Infinite já vem com ${P.salaIncl} acessos por ano; mais acessos com fichas.` : 'Nenhum cartão inclui sala VIP; todos os acessos vêm de fichas.'}</p>
@@ -1494,7 +1519,11 @@ function act(a){
       S.pk = null; break;
     case 'pk': S.pk = +x; break;
     case 'ctab': S.ctab = +x; break;
-    case 'preset': S.legacy = false; PRESETS[x](); document.getElementById('panel').classList.remove('open'); break;
+    case 'preset': S.legacy = false;
+      if (S.preset === x){ S.preset = null; S.scen = 'A'; loadProfile('p1'); }   // tocar de novo desmarca e volta ao normal
+      else { PRESETS[x](); S.preset = x; }
+      document.getElementById('panel').classList.remove('open'); break;
+    case 'normal': S.preset = null; S.legacy = false; S.scen = 'A'; loadProfile('p1'); break;
   }
   render();
 }
