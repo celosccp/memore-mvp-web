@@ -825,7 +825,7 @@ function banners(){
   if (elig() && S.inf === 'none') B('y', '★', 'Você já pode pedir o Cartão XP Infinite', `Você chegou a ${brl(P.corte)} investidos. O pedido é feito por você, quando quiser.`, 'go:pacote', 'Ver o cartão e pedir');
   if (S.inf === 'requested') B('', '…', 'XP Infinite em análise', 'Você continua com o XP One até o novo cartão ser ativado.', 'go:pacote', 'Acompanhar');
   if (S.ibNotice) B('', 'i', `${pt(S.ibNotice.price)} voltaram para o seu saldo`, `Seu cartão mudou. ${S.ibNotice.sv ? 'A opção de Sala VIP' : 'O Investback turbinado de ' + S.ibNotice.label.split(' ')[0]} era do cartão anterior e foi encerrado.`, 'ibnotice', 'Escolher a opção do novo cartão');
-  if (S.legacy && !S.active.cofrinho) B('', 'i', 'Seu Cofre XP no novo programa', legacyCopy().short, 'sheet:legacy', 'Entender');
+  if (S.legacy && !S.active.cofrinho) B('', 'i', 'Seu Cofre XP na Jornada XP', legacyCopy().short, 'sheet:legacy', 'Entender');
   return out.join('');
 }
 
@@ -873,7 +873,7 @@ function welcome(){
   const waves = Array.from({length: 16}, (_, i) => `<path d="M-20 ${40 + i * 13} C 90 ${-10 + i * 13}, 210 ${110 + i * 11}, 420 ${10 + i * 15}"/>`).join('');
   const step = (n, t, d) => `<div class="row" style="align-items:flex-start;margin-top:18px"><div class="num">${n}</div><div class="g"><div class="b" style="font-size:16px">${t}</div><div class="sm mut" style="margin-top:3px">${d}</div></div></div>`;
   return `<div class="wel"><svg class="art" viewBox="0 0 400 230" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-opacity=".32" stroke-width="1.1">${waves}</svg>
-    <div class="hd" style="padding-left:0"><button class="back" data-a="enter">×</button><h1>Programa de fidelidade</h1></div>
+    <div class="hd" style="padding-left:0"><button class="back" data-a="enter">×</button><h1>Jornada XP</h1></div>
     <div class="logo">XP</div>
     <h2>Seu cartão já vem com benefícios. Com fichas, você escolhe mais.</h2>
     <p class="mut" style="margin:8px 0 0">Veja o que já é seu e o que dá para ativar a seguir.</p>
@@ -1096,7 +1096,7 @@ function juntar(){
   return `
     ${t === 0 ? `<div class="note" style="margin-top:14px">Fichas vêm do que você faz na XP: guardar, usar o cartão, pagar contas. Comece por um dos passos abaixo.</div>` : ''}
 
-    <h3 class="sec" style="margin-top:14px">Sua jornada financeira</h3>
+    <h3 class="sec" style="margin-top:14px">Momentos da sua jornada</h3>
     ${CTX.map((cx, i) => { const bs = list.filter(b => b.ctx === i), earned = bs.reduce((a, b) => a + behPts(b), 0), tot = bs.reduce((a, b) => a + mx(b), 0);
       const def = i === defCtx || earned > 0, op = isOpen('ctx' + i, def);
       return `<div class="card"><button class="row" style="width:100%" data-a="tog:ctx${i}:${def ? 1 : 0}">${ring(earned / tot, `<span>${earned}</span>`)}<div class="g"><div class="b" style="font-size:16px">${cx}</div>
@@ -1261,7 +1261,7 @@ function sheet(){
   }
   else if (s.t === 'legacy'){
     const c = legacyCopy(), need = P.cofre[0] - available() > 0;
-    h = `<h2>Seu Cofre XP no novo programa</h2><p>Você já tinha o Cofre XP com ${P.legRate}% do CDI antes do programa de fichas. Veja como fica.</p>
+    h = `<h2>Seu Cofre XP na Jornada XP</h2><p>Você já tinha o Cofre XP com ${P.legRate}% do CDI antes da Jornada XP. Veja como fica.</p>
       <div class="hero"><small>Sua condição</small><b>${c.status}</b></div>
       <div class="card">${c.muda.map(t => `<div class="kv" style="font-size:13.5px"><span style="color:var(--tx)">${t}</span></div>`).join('')}
         <div class="kv" style="font-size:13.5px"><span style="color:var(--tx)">O dinheiro guardado não muda e continua disponível para você.</span></div></div>
@@ -1281,7 +1281,7 @@ function renderPhone(){
   const body = { home, pacote, shelf, juntar, fam: famScreen }[S.screen]();
   const hadSheet = !!app.querySelector('.ov');
   const cta = isHub && S.screen !== 'shelf' && canActivate() ? `<button class="go" data-a="go:shelf"><span>Você tem benefícios para ativar</span><span>›</span></button>` : '';
-  app.innerHTML = `<div class="hd"><button class="back" data-a="back">←</button><h1>${isHub ? 'Loyalty XP Digital' : S.screen === 'fam' ? fam(S.param).nome : ''}</h1></div>
+  app.innerHTML = `<div class="hd"><button class="back" data-a="back">←</button><h1>${isHub ? 'Jornada XP' : S.screen === 'fam' ? fam(S.param).nome : ''}</h1></div>
     <div class="scr ${key !== lastKey ? 'enter' : ''} ${isHub ? 'hubv' : 'sub'} s-${S.screen}">${isHub ? bal() + banners() + cta + hubTabs() : ''}${body}</div>
     ${S.screen === 'fam' ? famFoot() : ''}
     ${sheet()}`;
@@ -1417,7 +1417,7 @@ function renderPanel(){
       <ol>${L.map(([t, d]) => `<li><span class="tag">${t}</span>${d}</li>`).join('')}</ol>`;
   }
   const sc = el.querySelector('.pbody'), st = sc ? sc.scrollTop : 0, same = el.dataset.tab === S.tab;
-  el.innerHTML = `<div class="ph"><button class="pmn" data-a="panel" aria-label="Minimizar painel">‹ Minimizar</button><h1>Benefícios e Loyalty Digital</h1><p>Protótipo navegável · experiência móvel do app</p></div>
+  el.innerHTML = `<div class="ph"><button class="pmn" data-a="panel" aria-label="Minimizar painel">‹ Minimizar</button><h1>Jornada XP</h1><p>Protótipo navegável · experiência móvel do app</p></div>
     <div class="pbody">${body}</div>`;
   el.dataset.tab = S.tab;
   if (same) el.querySelector('.pbody').scrollTop = st;
