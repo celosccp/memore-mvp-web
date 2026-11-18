@@ -631,6 +631,26 @@ h3.sec2 span{display:block;font-size:14.5px;color:var(--mut);font-weight:400;mar
 #panelToggle{background:#FFC709;color:#000}
 :root{--stage:#E4E3DF}
 @media (min-width:680px){ #panel .ph h1{padding-right:0} .pbrand{padding-right:104px} }
+
+/* ===== Boas-vindas ===== */
+.wel{padding:0 24px 22px}
+.wtop{position:relative;display:flex;align-items:center;gap:10px;padding:8px 0 0;font-weight:700;font-size:15px}
+.wtop .back{margin-left:auto;width:34px;height:34px;border-radius:50%;background:var(--s2);display:grid;place-items:center;font-size:18px}
+.wel .wtop .logo{width:40px;height:34px;border-radius:7px;font-size:15px;margin:0;animation:none;box-shadow:none}
+.wel h2{font-size:34px;line-height:1.08;letter-spacing:-.03em;margin:calc(54px + var(--e)*1.2) 0 0;font-weight:800;text-wrap:balance}
+.wlead{position:relative;font-size:15.5px;line-height:1.45;color:var(--mut);margin:14px 0 0}
+.wpath{position:relative;margin-top:calc(22px + var(--e)/2)}
+.wpath::before{content:"";position:absolute;left:8px;top:10px;bottom:22px;width:3px;border-radius:2px;background:var(--s3)}
+.wpath::after{content:"";position:absolute;left:8px;top:10px;bottom:22px;width:3px;border-radius:2px;background:var(--y);transform-origin:top;animation:wgrow 2.2s cubic-bezier(.3,.7,.2,1) .5s both}
+@keyframes wgrow{from{transform:scaleY(0)}}
+.wst{position:relative;display:flex;gap:14px;align-items:flex-start;padding-bottom:calc(13px + var(--e)/5)}
+.wst i{position:relative;z-index:1;flex:none;width:19px;height:19px;border-radius:50%;margin-top:1px;background:var(--y);box-shadow:0 0 0 4px var(--bk);animation:wdot .45s cubic-bezier(.2,1.5,.4,1) calc(.5s + var(--i)*.55s) both}
+@keyframes wdot{from{background:var(--s3);transform:scale(.55)}}
+.wst b{display:block;font-size:15.5px;line-height:1.25} .wst span{font-size:13px;color:var(--mut)}
+.wfoot{font-size:13px;color:var(--mut);margin:0 0 4px;text-align:center}
+.light .wel .wtop .logo{background:#16161A;color:#fff}
+.wpath::before,.wpath::after{display:none}
+.wst:not(:last-child)::before{content:"";position:absolute;left:8px;top:14px;bottom:-6px;width:3px;border-radius:2px;background:var(--y);transform-origin:top;animation:wgrow .55s ease-out calc(.7s + var(--i)*.55s) both}
 </style>
 </head>
 <body>
@@ -931,17 +951,16 @@ function goalCard(){
 }
 function welcome(){
   const waves = Array.from({length: 16}, (_, i) => `<path d="M-20 ${40 + i * 13} C 90 ${-10 + i * 13}, 210 ${110 + i * 11}, 420 ${10 + i * 15}"/>`).join('');
-  const step = (n, t, d) => `<div class="row" style="align-items:flex-start;margin-top:18px"><div class="num">${n}</div><div class="g"><div class="b" style="font-size:16px">${t}</div><div class="sm mut" style="margin-top:3px">${d}</div></div></div>`;
+  const steps = [['Planeje sua vida financeira', 'Enxergue tudo o que você tem em um só lugar.'], ['Comece a poupar', 'Guarde um pouco todo mês, no seu ritmo.'],
+    ['Otimize seu dia a dia', 'Faça o seu dinheiro do mês render mais.'], ['Acelere e proteja seus planos', 'Dê os passos maiores quando fizer sentido.']];
   return `<div class="wel"><svg class="art" viewBox="0 0 400 230" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-opacity=".32" stroke-width="1.1">${waves}</svg>
-    <div class="hd" style="padding-left:0"><button class="back" data-a="enter">×</button><h1>Jornada XP</h1></div>
-    <div class="logo">XP</div>
-    <h2>Seu cartão já vem com benefícios. Com fichas, você escolhe mais.</h2>
-    <p class="mut" style="margin:8px 0 0">Veja o que já é seu e o que dá para ativar a seguir.</p>
-    ${step(1, 'Seu cartão não usa fichas', 'Ele vem do que você tem investido na XP.')}
-    ${step(2, 'Junte fichas com o que você já faz', 'Usar o cartão, guardar dinheiro, pagar contas. Suas fichas são recalculadas todo mês.')}
-    ${step(3, 'Use fichas para ativar benefícios', 'Elas ficam em uso enquanto o benefício estiver ativo e voltam quando você desativa.')}
-    <div style="flex:1;min-height:18px"></div>
-    <button class="btn" data-a="enter">Acessar o programa</button></div>`;
+    <div class="wtop"><div class="logo">XP</div><span>Jornada XP</span><button class="back" data-a="enter" aria-label="Fechar">×</button></div>
+    <h2>Sua vida financeira, um passo de cada vez.</h2>
+    <p class="wlead">A Jornada XP acompanha você no caminho para investir com autonomia. Cada passo que você dá vira benefício.</p>
+    <div class="wpath">${steps.map(([t, d], i) => `<div class="wst" style="--i:${i}"><i></i><div><b>${t}</b><span>${d}</span></div></div>`).join('')}</div>
+    <div style="flex:1;min-height:14px"></div>
+    <p class="wfoot">Cada passo vale fichas. Com elas, você escolhe os benefícios que quer ativar.</p>
+    <button class="btn" data-a="enter">Começar minha jornada</button></div>`;
 }
 
 // ---------- Telas ----------
