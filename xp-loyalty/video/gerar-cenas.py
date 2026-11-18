@@ -116,31 +116,58 @@ add('s3',8,"""
       });
 """ + chr(10).join(sjs))
 
-# 4 fichas
-add('s4',7,'''
+# 4 fichas: cada avanço solta fichas, que voam até o contador
+A=[('Conectar outras contas',3),('Aporte recorrente',3),('Receber o salário na XP',5),('Usar o cartão no dia a dia',4)]
+NX,NYc,CXL=330,745,1080
+rows4=''; fly4=''; k0=0
+for i_,(t,n) in enumerate(A):
+    y=215+i_*166
+    rows4+=f'<div class="s4-r" id="s4-r{i_}" style="top:{y}px"><i class="s4-ck" id="s4-ck{i_}">✓</i><b>{t}</b><span id="s4-p{i_}">+{n}</span></div>'
+    fly4+=''.join(f'<i class="s4-f" id="s4-f{k0+q}" style="left:{CXL+40}px;top:{y+58}px"></i>' for q in range(n)); k0+=n
+add('s4',8.6,"""
     #s4-all{position:absolute;inset:0}
-    #s4-txt{position:absolute;left:170px;top:150px;width:920px}
+    #s4-txt{position:absolute;left:170px;top:150px;width:860px}
     #s4-h{font-size:96px}
     #s4-num{display:flex;align-items:flex-end;gap:26px;margin-top:70px}
     #s4-n{font-size:260px;font-weight:900;letter-spacing:-.05em;line-height:.85;min-width:300px}
     #s4-u{font-size:60px;font-weight:700;padding-bottom:14px}
-    #s4-bar{height:22px;border-radius:12px;background:rgba(255,255,255,.12);margin-top:40px;overflow:hidden;width:820px}
+    #s4-bar{height:22px;border-radius:12px;background:rgba(255,255,255,.12);margin-top:40px;overflow:hidden;width:760px}
     #s4-fill{height:100%;width:100%;background:#7BE3A8;border-radius:12px;transform-origin:0 50%}
-    #s4-ph{position:absolute;right:210px;top:70px;height:940px;border-radius:64px;box-shadow:0 50px 120px rgba(0,0,0,.6)}
-''','''    <div id="s4-all" class="clip" data-start="0" data-duration="7" data-track-index="0">
+    .s4-r{position:absolute;left:1080px;width:670px;height:142px;border-radius:38px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:26px;padding:0 36px}
+    .s4-r b{flex:1;font-size:42px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+    .s4-r span{font-size:46px;font-weight:900;color:#7BE3A8}
+    .s4-ck{flex:none;width:58px;height:58px;border-radius:50%;background:#FFC709;color:#000;font-style:normal;font-weight:900;font-size:34px;display:flex;align-items:center;justify-content:center}
+    .s4-f{position:absolute;width:26px;height:26px;border-radius:50%;background:#7BE3A8;box-shadow:0 0 22px rgba(123,227,168,.95);opacity:0}
+""",f"""    <div id="s4-all" class="clip" data-start="0" data-duration="8.6" data-track-index="0">
       <div id="s4-txt">
         <div id="s4-h" class="h">Cada avanço na<br>sua jornada vira<br><span class="y">fichas.</span></div>
         <div id="s4-num"><div id="s4-n">0</div><div id="s4-u">fichas</div></div>
         <div id="s4-bar"><div id="s4-fill"></div></div>
       </div>
-      <img id="s4-ph" src="assets/usar.png" alt="">
-    </div>''',
-'''      const c = { v: 0 }, n = document.querySelector("#s4-n");
-      tl.fromTo("#s4-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.2);
-      tl.fromTo("#s4-ph", { opacity: 0, y: 160 }, { opacity: 1, y: 0, duration: 1.1, ease: "power3.out" }, 0.5);
-      tl.fromTo("#s4-num", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 1.2);
-      tl.fromTo(c, { v: 0 }, { v: 15, duration: 2.4, ease: "power2.out", onUpdate: () => { n.textContent = Math.round(c.v); } }, 1.4);
-      tl.fromTo("#s4-fill", { scaleX: 0 }, { scaleX: 0.3, duration: 2.4, ease: "power2.out" }, 1.4);''')
+      {rows4}{fly4}
+    </div>""",
+"""      const A = [3, 3, 5, 4], n = document.querySelector("#s4-n"), NX = 330, NY = 745, SXc = 1120;
+      tl.fromTo("#s4-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.15);
+      tl.fromTo(["#s4-num", "#s4-bar"], { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0.7);
+      tl.fromTo("#s4-fill", { scaleX: 0 }, { scaleX: 0, duration: 0.01 }, 0);
+      let acc = 0, k0 = 0;
+      A.forEach((q, i) => {
+        const t = 1.2 + i * 1.45, y0 = 215 + i * 166 + 71, from = acc, to = acc + q, c = { v: from };
+        tl.fromTo("#s4-r" + i, { opacity: 0, x: 120 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, t);
+        tl.fromTo("#s4-ck" + i, { scale: 0 }, { scale: 1, duration: 0.35, ease: "back.out(3)" }, t + 0.35);
+        tl.fromTo("#s4-p" + i, { scale: 1 }, { scale: 1.35, duration: 0.15, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, t + 0.45);
+        for (let m = 0; m < q; m++) {
+          const id = "#s4-f" + (k0 + m), d = t + 0.5 + m * 0.07;
+          tl.fromTo(id, { x: 0, opacity: 0, scale: 0.4 }, { x: NX - SXc, opacity: 1, scale: 1, duration: 0.6, ease: "power2.in", immediateRender: false }, d);
+          tl.fromTo(id, { y: 0 }, { y: NY - y0, duration: 0.6, ease: "power1.inOut", immediateRender: false }, d);
+          tl.fromTo(id, { opacity: 1 }, { opacity: 0, duration: 0.06, immediateRender: false }, d + 0.6);
+        }
+        const hit = t + 1.1;
+        tl.fromTo(c, { v: from }, { v: to, duration: 0.07 * q + 0.05, ease: "none", immediateRender: false, onUpdate: () => { n.textContent = Math.round(c.v); } }, hit);
+        tl.fromTo("#s4-n", { scale: 1 }, { scale: 1.08, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, hit);
+        tl.fromTo("#s4-fill", { scaleX: from / 51 }, { scaleX: to / 51, duration: 0.4, ease: "power2.out", immediateRender: false }, hit);
+        acc = to; k0 += q;
+      });""")
 
 # 5 régua: o rolo para no Cofre XP, o nome vira o título do cartão e as fichas voam até o ponto escolhido
 REEL=['Investback','Salas VIP','Corretagem zero','Cofre XP']*3
@@ -333,6 +360,27 @@ add('s6',8.4,"""
       tl.fromTo("#s6-bv1", { yPercent: 110 }, { yPercent: 0, duration: 0.45, ease: "back.out(1.8)", immediateRender: false }, hit + 0.1);
       tl.fromTo("#s6-bc0", { opacity: 1 }, { opacity: 0, duration: 0.2 }, hit);
       tl.fromTo("#s6-bc1", { opacity: 0 }, { opacity: 1, duration: 0.25, immediateRender: false }, hit + 0.1);""")
+
+# 7 app: gravação real do protótipo em uso
+W3=['Simples.','Fluida.','Interativa.']
+add('s7',13.4,"""
+    #s7-all{position:absolute;inset:0}
+    #s7-k{position:absolute;left:170px;top:270px;font-size:34px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#A3A3A8}
+    .s7-w{position:absolute;left:170px;font-size:128px}
+    #s7-s{position:absolute;left:170px;top:800px;width:760px;font-size:40px;color:#A3A3A8;line-height:1.3}
+    #s7-ph{position:absolute;left:1180px;top:50px;width:488px;height:980px;border-radius:64px;overflow:hidden;border:10px solid #000;box-shadow:0 0 0 2px rgba(255,255,255,.14),0 50px 120px rgba(0,0,0,.65);background:#000}
+    #s7-v{position:absolute;left:0;top:0;width:468px;height:960px;object-fit:cover}
+""",f"""    <div id="s7-all" class="clip" data-start="0" data-duration="13.4" data-track-index="0">
+      <div id="s7-k">Tudo no app</div>
+      {''.join(f'<div class="s7-w h {"y" if q==2 else ""}" id="s7-w{q}" style="top:{340+q*142}px">{w}</div>' for q,w in enumerate(W3))}
+      <div id="s7-s">Você vê o que tem, escolhe o que quer e muda quando quiser.</div>
+    </div>
+    <div id="s7-ph" data-layout-allow-overflow><video id="s7-v" class="clip" data-start="0.4" data-duration="12.6" data-track-index="1" src="assets/app-demo.mp4" muted playsinline></video></div>""",
+"""      tl.fromTo("#s7-ph", { opacity: 0, y: 140 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 0.1);
+      tl.fromTo("#s7-k", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0.4);
+      [1.0, 4.4, 8.0].forEach((t, q) => tl.fromTo("#s7-w" + q, { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, t));
+      tl.fromTo("#s7-s", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 9.2);
+      tl.fromTo("#s7-ph", { opacity: 1 }, { opacity: 0, duration: 0.45, ease: "power2.in", immediateRender: false }, 12.85);""")
 
 # 8 fecho
 random.seed(7); dots=[]; djs=[]
