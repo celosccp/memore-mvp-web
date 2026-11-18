@@ -170,7 +170,7 @@ add('s4',6.9,"""
       });""")
 
 # 5 régua: o rolo para no Cofre XP, o nome vira o título do cartão e as fichas voam até o ponto escolhido
-REEL=['Investback','Salas VIP','Corretagem zero','Cofre XP']*2
+REEL=['Corretagem zero','Investback turbinado','Mais acessos a salas VIP','Cofre XP turbinado']*2
 reel=''.join(f'<div>{t}</div>' for t in REEL)
 X0,W,NY,SX,SY=322,1276,770,1493,484
 nodes=''.join(f'<div class="s5-n" id="s5-n{i}" style="left:{p}%"><i id="s5-d{i}"></i><b>{t}</b><span>{c}</span></div>' for i,(p,t,c) in enumerate([(0,'100%','Incluído'),(33.333,'110%','10 fichas'),(66.666,'115%','15 fichas'),(100,'125%','30 fichas')]))
@@ -183,7 +183,7 @@ add('s5',10.0,"""
     #s5-all{position:absolute;inset:0}
     #s5-h{position:absolute;left:170px;top:110px;font-size:88px;width:1500px}
     #s5-reel{position:absolute;left:170px;right:170px;top:345px;height:570px;overflow:hidden}
-    #s5-col div,#s5-land{height:190px;line-height:190px;font-size:150px;font-weight:900;letter-spacing:-.04em;white-space:nowrap}
+    #s5-col div,#s5-land{height:190px;line-height:190px;font-size:118px;font-weight:900;letter-spacing:-.04em;white-space:nowrap}
     #s5-col div{color:#77777f}
     .s5-fade{position:absolute;left:0;right:0;height:200px}
     #s5-ft{top:0;background:linear-gradient(#0c0b0b,rgba(12,11,11,0))} #s5-fb{bottom:0;background:linear-gradient(rgba(11,11,12,0),#0b0b0c)}
@@ -216,13 +216,13 @@ add('s5',10.0,"""
       <div class="s5-bar" id="s5-b1l"></div><div class="s5-bar" id="s5-b2l"></div>
       <div id="s5-card">
         <div id="s5-sheen"></div>
-        <div id="s5-t"><span id="s5-tn">Cofre XP</span><em id="s5-te">% do CDI</em></div>
+        <div id="s5-t"><span id="s5-tn">Cofre XP turbinado</span><em id="s5-te">% do CDI</em></div>
         <div class="s5-chip" id="s5-uso">Em uso <span id="s5-un">0</span></div>
         <div class="s5-chip" id="s5-disp">Disponíveis <span id="s5-dn">30</span></div>
         <div id="s5-big"><div id="s5-b0">100%</div><div id="s5-b1" class="y" data-layout-ignore>110%</div><div id="s5-b2" class="y" data-layout-ignore>115%</div><div id="s5-b3" class="y" data-layout-ignore>125%</div></div>
         <div id="s5-rg"><div id="s5-track"></div><div id="s5-fill"></div>{nodes}</div>
       </div>
-      <div id="s5-land">Cofre XP</div>
+      <div id="s5-land">Cofre XP turbinado</div>
       {fly}{fx}
     </div>""",
 """      const X0 = 322, W = 1276, NY = 770, SX = 1493, SY = 484, nodeX = n => X0 + W * n / 3;
@@ -233,7 +233,7 @@ add('s5',10.0,"""
       // 1. rolo: três linhas à vista, só a do meio em foco; gira borrado, desacelera e trava com um tranco
       tl.fromTo("#s5-reel", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 0.25);
       tl.fromTo(".s5-bar", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 0.25);
-      // gira, desacelera até quase parar em "Corretagem zero", hesita e dá o último clique até "Cofre XP"
+      // gira, desacelera até quase parar em "Mais acessos a salas VIP", hesita e dá o último clique até "Cofre XP turbinado"
       tl.fromTo("#s5-col", { y: 190, filter: "blur(10px)" }, { y: 190 - 190 * 6, filter: "blur(0px)", duration: 1.9, ease: "power2.out" }, 0.3);
       tl.fromTo("#s5-col", { y: 190 - 190 * 6 }, { y: 190 - 190 * 6 - 26, duration: 0.3, ease: "sine.inOut", immediateRender: false }, 2.2);
       tl.fromTo("#s5-col", { y: 190 - 190 * 6 - 26 }, { y: 190 - 190 * 7, duration: 0.42, ease: "back.out(2.4)", immediateRender: false }, 2.5);
@@ -245,7 +245,7 @@ add('s5',10.0,"""
       // 2. o nome escolhido encolhe e vira o título do cartão, que se abre a partir da faixa do rolo
       tl.fromTo(".s5-bar", { opacity: 1 }, { opacity: 0, duration: 0.25, immediateRender: false }, 3.55);
       tl.fromTo("#s5-card", { opacity: 0, scaleY: 0.36 }, { opacity: 1, scaleY: 1, duration: 0.55, ease: "power4.out" }, 3.55);
-      tl.fromTo("#s5-land", { x: 0, y: 0, scale: 1, color: "#FFC709" }, { x: 92, y: -83, scale: 0.2933, color: "#F4F4F2", duration: 0.55, ease: "power4.inOut", immediateRender: false }, 3.55);
+      tl.fromTo("#s5-land", { x: 0, y: 0, scale: 1, color: "#FFC709" }, { x: 92, y: -92, scale: 0.3729, color: "#F4F4F2", duration: 0.55, ease: "power4.inOut", immediateRender: false }, 3.55);
       tl.fromTo("#s5-tn", { opacity: 0 }, { opacity: 1, duration: 0.01 }, 4.1);
       tl.fromTo("#s5-land", { opacity: 1 }, { opacity: 0, duration: 0.01, immediateRender: false }, 4.1);
       tl.fromTo("#s5-te", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 4.1);
@@ -316,7 +316,7 @@ add('s6',6.3,"""
     .on{background:#FFC709;color:#000} .off{border:3px solid #6E6E75;color:#A3A3A8;line-height:54px!important}
 """,f"""    <div id="s6-all" class="clip" data-start="0" data-duration="6.3" data-track-index="0">
       <div id="s6-h" class="h">Troque quando quiser.<br><span class="y">As fichas voltam.</span></div>
-      {card('a',170,'Cofre XP','% do CDI','<span class="y">125%</span>','100%','30 fichas em uso','Incluído').replace('id="s6-ac0"','id="s6-ac0" class="on"').replace('id="s6-ac1"','id="s6-ac1" class="off"')}
+      {card('a',170,'Cofre XP','% do CDI','<span class="y">125%</span>','<span class="y">110%</span>','30 fichas em uso','10 fichas em uso').replace('id="s6-ac0"','id="s6-ac0" class="on"').replace('id="s6-ac1"','id="s6-ac1" class="on"')}
       {card('b',1070,'Investback','no cartão','1%','<span class="y">1,5%</span>','Incluído','15 fichas em uso').replace('id="s6-bc0"','id="s6-bc0" class="off"').replace('id="s6-bc1"','id="s6-bc1" class="on"')}
       <div id="s6-w">Disponíveis <span id="s6-wn">0</span></div>
       <i id="s6-rp"></i>
@@ -343,21 +343,20 @@ add('s6',6.3,"""
         tl.fromTo(c, { v: from }, { v: to, duration: 0.75, ease: "none", immediateRender: false, onUpdate: () => { wn.textContent = Math.round(c.v); } }, t);
         tl.fromTo("#s6-w", { scale: 1 }, { scale: 1.08, duration: 0.16, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, t + 0.6); }
 
-      // 1. sai do Cofre XP: o cartão apaga, volta a 100% e as fichas sobem para o saldo
+      // 1. reduz o Cofre XP de 125% para 110%: parte das fichas sobe para o saldo
       const t1 = 1.5;
       tl.fromTo("#s6-a", { scale: 1 }, { scale: 0.97, duration: 0.12, yoyo: true, repeat: 1, immediateRender: false }, t1);
-      tl.fromTo("#s6-ag", { opacity: 1 }, { opacity: 0, duration: 0.35 }, t1);
       tl.fromTo("#s6-av0", { yPercent: 0 }, { yPercent: -110, duration: 0.25, ease: "power2.in" }, t1);
       tl.fromTo("#s6-av1", { yPercent: 110 }, { yPercent: 0, duration: 0.45, ease: "back.out(1.6)", immediateRender: false }, t1 + 0.15);
       tl.fromTo("#s6-ac0", { opacity: 1 }, { opacity: 0, duration: 0.2 }, t1);
       tl.fromTo("#s6-ac1", { opacity: 0 }, { opacity: 1, duration: 0.25, immediateRender: false }, t1 + 0.15);
       fly("#s6-o", WX - LX, WY - CY, t1 + 0.05);
-      count(0, 30, t1 + 0.6);
+      count(0, 20, t1 + 0.6);
 
       // 2. entra no Investback: as fichas descem do saldo, o cartão acende e o número troca
       const t2 = 3.4, hit = t2 + 0.95;
       fly("#s6-i", RX - WX, CY - WY, t2);
-      count(30, 15, t2);
+      count(20, 5, t2);
       tl.fromTo("#s6-bg", { opacity: 0 }, { opacity: 1, duration: 0.2, immediateRender: false }, hit);
       tl.fromTo("#s6-b", { scale: 1 }, { scale: 1.03, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, hit);
       tl.fromTo("#s6-rp", { scale: 1, opacity: 0.9 }, { scale: 5, opacity: 0, duration: 0.7, ease: "power2.out", immediateRender: false }, hit);
