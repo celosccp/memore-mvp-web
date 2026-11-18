@@ -6,36 +6,36 @@
     .y{color:#FFC709}
     .mut{color:#A3A3A8}
 
-    #s3-all{position:absolute;inset:0;padding:96px 150px}
-    #s3-h{font-size:96px}
-    #s3-s{font-size:42px;color:#A3A3A8;margin-top:20px}
-    #s3-grid{position:absolute;left:150px;right:150px;top:420px;bottom:96px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:28px}
-    .s3-c{position:relative;border-radius:40px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.08);padding:38px 46px;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
-    .s3-c i{position:absolute;inset:0;border-radius:38px;border:5px solid #FFC709;background:rgba(255,199,9,.1);opacity:0}
-    .s3-c b{position:relative;font-size:66px;font-weight:900;letter-spacing:-.03em;line-height:1.05}
-    .s3-c span{position:relative;font-size:38px;color:#A3A3A8;margin-top:12px}
+    #s3-all{position:absolute;inset:0}
+    #s3-ring{position:absolute;inset:0;width:100%;height:100%}
+    #s3-c{position:absolute;left:660px;top:390px;width:600px;height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+    #s3-k{font-size:30px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#A3A3A8}
+    #s3-h{font-size:86px;margin-top:10px}
+    .s3-d{position:absolute;width:66px;height:66px;border-radius:50%;background:#FFC709;box-shadow:0 0 0 12px #0f0d0a}
+    .s3-l{position:absolute;width:520px}
+    .s3-l b{display:block;font-size:50px;font-weight:900;letter-spacing:-.03em;line-height:1.06}
+    .s3-l span{display:block;font-size:30px;color:#A3A3A8;margin-top:8px;line-height:1.25}
 </style>
   <div id="root" data-composition-id="s3" data-width="1920" data-height="1080">
     <div class="bg"></div>
     <div id="s3-all" class="clip" data-start="0" data-duration="8" data-track-index="0">
-      <div id="s3-h" class="h">Rumo à sua <span class="y">autonomia financeira.</span></div>
-      <div id="s3-s">Quatro frentes. Comece por onde fizer sentido para você.</div>
-      <div id="s3-grid"><div class="s3-c" id="s3-c0"><i id="s3-g0"></i><b>Planeje sua vida financeira</b><span>Organize contas, gastos e objetivos.</span></div><div class="s3-c" id="s3-c1"><i id="s3-g1"></i><b>Comece a poupar</b><span>Guarde um pouco todo mês, no seu ritmo.</span></div><div class="s3-c" id="s3-c2"><i id="s3-g2"></i><b>Otimize seu dia a dia</b><span>Faça o dinheiro do mês render mais.</span></div><div class="s3-c" id="s3-c3"><i id="s3-g3"></i><b>Acelere e proteja seus planos</b><span>Vá mais longe quando fizer sentido.</span></div></div>
+      <svg id="s3-ring" viewBox="0 0 1920 1080" fill="none"><circle cx="960" cy="540" r="340" stroke="rgba(255,255,255,.14)" stroke-width="8"/><circle id="s3-arc" cx="960" cy="540" r="340" stroke="#FFC709" stroke-width="8" stroke-linecap="round" pathLength="1" stroke-dasharray="1" transform="rotate(-135 960 540)"/></svg>
+      <div id="s3-c"><div id="s3-k">Rumo à sua</div><div id="s3-h" class="h">autonomia<br><span class="y">financeira</span></div></div>
+      <i class="s3-d" id="s3-d0" style="left:687px;top:267px"></i><div class="s3-l" id="s3-l0" style="right:1262px;text-align:right;top:238px"><b>Planeje sua vida financeira</b><span>Organize contas, gastos e objetivos.</span></div><i class="s3-d" id="s3-d1" style="left:1167px;top:267px"></i><div class="s3-l" id="s3-l1" style="left:1262px;text-align:left;top:238px"><b>Comece a poupar</b><span>Guarde um pouco todo mês, no seu ritmo.</span></div><i class="s3-d" id="s3-d2" style="left:1167px;top:747px"></i><div class="s3-l" id="s3-l2" style="left:1262px;text-align:left;top:718px"><b>Otimize seu dia a dia</b><span>Faça o dinheiro do mês render mais.</span></div><i class="s3-d" id="s3-d3" style="left:687px;top:747px"></i><div class="s3-l" id="s3-l3" style="right:1262px;text-align:right;top:718px"><b>Acelere e proteja seus planos</b><span>Vá mais longe quando fizer sentido.</span></div>
     </div>
   </div>
   <script>
     (function(){
       const tl = gsap.timeline({ paused: true });
-      tl.fromTo("#s3-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.15);
-      tl.fromTo("#s3-s", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0.7);
-      const from = [{ x: -120, y: -60 }, { x: 120, y: -60 }, { x: -120, y: 60 }, { x: 120, y: 60 }];
-      for (let i = 0; i < 4; i++) tl.fromTo("#s3-c" + i, { opacity: 0, x: from[i].x, y: from[i].y, scale: 0.9 }, { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.6, ease: "back.out(1.4)" }, 1.0 + i * 0.12);
-      // o destaque passeia fora de ordem: qualquer frente pode ser a primeira
+      tl.fromTo("#s3-c", { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.7, ease: "power3.out" }, 0.2);
+      tl.fromTo("#s3-arc", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.6, ease: "power2.inOut" }, 0.5);
+      // as frentes aparecem fora de ordem: nenhuma é a primeira
       [2, 0, 3, 1].forEach((k, n) => {
-        tl.fromTo("#s3-g" + k, { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "power2.out" }, 2.3 + n * 1.15);
-        tl.fromTo("#s3-c" + k, { scale: 1 }, { scale: 1.04, duration: 0.25, ease: "power2.out", immediateRender: false }, 2.3 + n * 1.15);
-        tl.fromTo("#s3-g" + k, { opacity: 1 }, { opacity: 0, duration: 0.35, immediateRender: false }, 3.15 + n * 1.15);
-        tl.fromTo("#s3-c" + k, { scale: 1.04 }, { scale: 1, duration: 0.35, immediateRender: false }, 3.15 + n * 1.15);
+        tl.fromTo("#s3-d" + k, { scale: 0 }, { scale: 1, duration: 0.45, ease: "back.out(2.4)" }, 1.0 + n * 0.3);
+        tl.fromTo("#s3-l" + k, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 1.1 + n * 0.3);
+      });
+      [1, 3, 0, 2].forEach((k, n) => {
+        tl.fromTo("#s3-d" + k, { scale: 1 }, { scale: 1.3, duration: 0.3, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, 3.2 + n * 0.95);
       });
       tl.fromTo("#s3-all", { opacity: 1 }, { opacity: 0, duration: 0.45, ease: "power2.in" }, 7.45);
       window.__timelines["s3"] = tl;

@@ -54,33 +54,40 @@ add('s2',7,'''
 ''','    <div id="s2-all" class="clip" data-start="0" data-duration="7" data-track-index="0">\n'+''.join(f'      <div class="s2-l h"><span id="s2-w{i}" class="{"y" if i==1 else ""}">{w}</span></div>\n' for i,w in enumerate(words))+'    </div>',
 '''      for (let i = 0; i < 3; i++) tl.fromTo("#s2-w" + i, { yPercent: 110 }, { yPercent: 0, duration: 0.9, ease: "power4.out" }, 0.3 + i * 0.75);''')
 
-# 3 momentos: quatro frentes, sem ordem obrigatória
+# 3 momentos: quatro frentes em órbita do objetivo, sem começo nem fim
 M=[('Planeje sua vida financeira','Organize contas, gastos e objetivos.'),('Comece a poupar','Guarde um pouco todo mês, no seu ritmo.'),('Otimize seu dia a dia','Faça o dinheiro do mês render mais.'),('Acelere e proteja seus planos','Vá mais longe quando fizer sentido.')]
-cards=''.join(f'<div class="s3-c" id="s3-c{i}"><i id="s3-g{i}"></i><b>{t}</b><span>{d}</span></div>' for i,(t,d) in enumerate(M))
+CX,CY,R=960,540,340; D=round(R*0.7071)
+POS=[(-1,-1),(1,-1),(1,1),(-1,1)]   # sentido horário a partir do alto à esquerda
+orb=''
+for i,((t,d),(sx,sy)) in enumerate(zip(M,POS)):
+    x,y=CX+sx*D,CY+sy*D
+    side='left' if sx<0 else 'right'
+    lab=f'right:{1920-x+62}px;text-align:right' if sx<0 else f'left:{x+62}px;text-align:left'
+    orb+=f'<i class="s3-d" id="s3-d{i}" style="left:{x-33}px;top:{y-33}px"></i><div class="s3-l" id="s3-l{i}" style="{lab};top:{y-62}px"><b>{t}</b><span>{d}</span></div>'
 add('s3',8,"""
-    #s3-all{position:absolute;inset:0;padding:96px 150px}
-    #s3-h{font-size:96px}
-    #s3-s{font-size:42px;color:#A3A3A8;margin-top:20px}
-    #s3-grid{position:absolute;left:150px;right:150px;top:420px;bottom:96px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:28px}
-    .s3-c{position:relative;border-radius:40px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.08);padding:38px 46px;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
-    .s3-c i{position:absolute;inset:0;border-radius:38px;border:5px solid #FFC709;background:rgba(255,199,9,.1);opacity:0}
-    .s3-c b{position:relative;font-size:66px;font-weight:900;letter-spacing:-.03em;line-height:1.05}
-    .s3-c span{position:relative;font-size:38px;color:#A3A3A8;margin-top:12px}
+    #s3-all{position:absolute;inset:0}
+    #s3-ring{position:absolute;inset:0;width:100%;height:100%}
+    #s3-c{position:absolute;left:660px;top:390px;width:600px;height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+    #s3-k{font-size:30px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#A3A3A8}
+    #s3-h{font-size:86px;margin-top:10px}
+    .s3-d{position:absolute;width:66px;height:66px;border-radius:50%;background:#FFC709;box-shadow:0 0 0 12px #0f0d0a}
+    .s3-l{position:absolute;width:520px}
+    .s3-l b{display:block;font-size:50px;font-weight:900;letter-spacing:-.03em;line-height:1.06}
+    .s3-l span{display:block;font-size:30px;color:#A3A3A8;margin-top:8px;line-height:1.25}
 """,f"""    <div id="s3-all" class="clip" data-start="0" data-duration="8" data-track-index="0">
-      <div id="s3-h" class="h">Rumo à sua <span class="y">autonomia financeira.</span></div>
-      <div id="s3-s">Quatro frentes. Comece por onde fizer sentido para você.</div>
-      <div id="s3-grid">{cards}</div>
+      <svg id="s3-ring" viewBox="0 0 1920 1080" fill="none"><circle cx="{CX}" cy="{CY}" r="{R}" stroke="rgba(255,255,255,.14)" stroke-width="8"/><circle id="s3-arc" cx="{CX}" cy="{CY}" r="{R}" stroke="#FFC709" stroke-width="8" stroke-linecap="round" pathLength="1" stroke-dasharray="1" transform="rotate(-135 {CX} {CY})"/></svg>
+      <div id="s3-c"><div id="s3-k">Rumo à sua</div><div id="s3-h" class="h">autonomia<br><span class="y">financeira</span></div></div>
+      {orb}
     </div>""",
-"""      tl.fromTo("#s3-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.15);
-      tl.fromTo("#s3-s", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0.7);
-      const from = [{ x: -120, y: -60 }, { x: 120, y: -60 }, { x: -120, y: 60 }, { x: 120, y: 60 }];
-      for (let i = 0; i < 4; i++) tl.fromTo("#s3-c" + i, { opacity: 0, x: from[i].x, y: from[i].y, scale: 0.9 }, { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.6, ease: "back.out(1.4)" }, 1.0 + i * 0.12);
-      // o destaque passeia fora de ordem: qualquer frente pode ser a primeira
+"""      tl.fromTo("#s3-c", { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.7, ease: "power3.out" }, 0.2);
+      tl.fromTo("#s3-arc", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.6, ease: "power2.inOut" }, 0.5);
+      // as frentes aparecem fora de ordem: nenhuma é a primeira
       [2, 0, 3, 1].forEach((k, n) => {
-        tl.fromTo("#s3-g" + k, { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "power2.out" }, 2.3 + n * 1.15);
-        tl.fromTo("#s3-c" + k, { scale: 1 }, { scale: 1.04, duration: 0.25, ease: "power2.out", immediateRender: false }, 2.3 + n * 1.15);
-        tl.fromTo("#s3-g" + k, { opacity: 1 }, { opacity: 0, duration: 0.35, immediateRender: false }, 3.15 + n * 1.15);
-        tl.fromTo("#s3-c" + k, { scale: 1.04 }, { scale: 1, duration: 0.35, immediateRender: false }, 3.15 + n * 1.15);
+        tl.fromTo("#s3-d" + k, { scale: 0 }, { scale: 1, duration: 0.45, ease: "back.out(2.4)" }, 1.0 + n * 0.3);
+        tl.fromTo("#s3-l" + k, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 1.1 + n * 0.3);
+      });
+      [1, 3, 0, 2].forEach((k, n) => {
+        tl.fromTo("#s3-d" + k, { scale: 1 }, { scale: 1.3, duration: 0.3, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, 3.2 + n * 0.95);
       });""")
 
 # 4 fichas
