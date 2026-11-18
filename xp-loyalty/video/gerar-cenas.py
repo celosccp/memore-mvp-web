@@ -45,15 +45,6 @@ add('s1',5,'''
       tl.fromTo("#s1-name", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 1.1);
       tl.fromTo("#s1-art", { opacity: 1 }, { opacity: 0, duration: 0.45 }, 4.45);''')
 
-# 2 mote
-words="Sua vida financeira,|uma conquista|de cada vez.".split('|')
-add('s2',7,'''
-    #s2-all{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 170px}
-    .s2-l{font-size:150px;overflow:hidden;padding-bottom:14px}
-    .s2-l span{display:inline-block}
-''','    <div id="s2-all" class="clip" data-start="0" data-duration="7" data-track-index="0">\n'+''.join(f'      <div class="s2-l h"><span id="s2-w{i}" class="{"y" if i==1 else ""}">{w}</span></div>\n' for i,w in enumerate(words))+'    </div>',
-'''      for (let i = 0; i < 3; i++) tl.fromTo("#s2-w" + i, { yPercent: 110 }, { yPercent: 0, duration: 0.9, ease: "power4.out" }, 0.3 + i * 0.75);''')
-
 # 3 momentos: quatro frentes em órbita da Jornada XP, sem começo nem fim
 M=[('Planeje sua vida financeira','Organize contas, gastos e objetivos.'),('Comece a poupar','Guarde um pouco todo mês, no seu ritmo.'),('Otimize seu dia a dia','Faça o dinheiro do mês render mais.'),('Acelere e proteja seus planos','Vá mais longe quando fizer sentido.')]
 CX,CY,R=960,540,340; D=round(R*0.7071)
