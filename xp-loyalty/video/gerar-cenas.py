@@ -54,41 +54,78 @@ add('s2',7,'''
 ''','    <div id="s2-all" class="clip" data-start="0" data-duration="7" data-track-index="0">\n'+''.join(f'      <div class="s2-l h"><span id="s2-w{i}" class="{"y" if i==1 else ""}">{w}</span></div>\n' for i,w in enumerate(words))+'    </div>',
 '''      for (let i = 0; i < 3; i++) tl.fromTo("#s2-w" + i, { yPercent: 110 }, { yPercent: 0, duration: 0.9, ease: "power4.out" }, 0.3 + i * 0.75);''')
 
-# 3 momentos: quatro frentes em órbita do objetivo, sem começo nem fim
+# 3 momentos: quatro frentes em órbita da Jornada XP, sem começo nem fim
 M=[('Planeje sua vida financeira','Organize contas, gastos e objetivos.'),('Comece a poupar','Guarde um pouco todo mês, no seu ritmo.'),('Otimize seu dia a dia','Faça o dinheiro do mês render mais.'),('Acelere e proteja seus planos','Vá mais longe quando fizer sentido.')]
 CX,CY,R=960,540,340; D=round(R*0.7071)
-POS=[(-1,-1),(1,-1),(1,1),(-1,1)]   # sentido horário a partir do alto à esquerda
+POS=[(-1,-1),(1,-1),(1,1),(-1,1)]
 orb=''
 for i,((t,d),(sx,sy)) in enumerate(zip(M,POS)):
     x,y=CX+sx*D,CY+sy*D
-    side='left' if sx<0 else 'right'
-    lab=f'right:{1920-x+62}px;text-align:right' if sx<0 else f'left:{x+62}px;text-align:left'
-    orb+=f'<i class="s3-d" id="s3-d{i}" style="left:{x-33}px;top:{y-33}px"></i><div class="s3-l" id="s3-l{i}" style="{lab};top:{y-62}px"><b>{t}</b><span>{d}</span></div>'
+    lab=f'right:{1920-x+70}px;text-align:right;justify-content:flex-end' if sx<0 else f'left:{x+70}px;text-align:left'
+    orb+=(f'<i class="s3-rp" id="s3-rp{i}" style="left:{x-33}px;top:{y-33}px"></i><i class="s3-d" id="s3-d{i}" style="left:{x-33}px;top:{y-33}px"></i>'
+          f'<div class="s3-lw" style="{lab};top:{y-110}px"><div class="s3-l" id="s3-l{i}"><b>{t}</b><span>{d}</span></div></div>')
+random.seed(11); stars=''; sjs=[]
+for k in range(46):
+    x,y,z=random.randint(40,1880),random.randint(40,1040),random.choice([3,4,4,6])
+    if abs(x-CX)<330 and abs(y-CY)<200: continue
+    stars+=f'<i class="s3-st" id="s3-st{k}" style="left:{x}px;top:{y}px;width:{z}px;height:{z}px"></i>'
+    sjs.append(f'      tl.fromTo("#s3-st{k}", {{ opacity: 0 }}, {{ opacity: {random.choice([0.35,0.5,0.8])}, duration: {0.6+random.random():.2f}, yoyo: true, repeat: 3, ease: "sine.inOut" }}, {random.random()*1.8:.2f});')
 add('s3',8,"""
     #s3-all{position:absolute;inset:0}
-    #s3-ring{position:absolute;inset:0;width:100%;height:100%}
-    #s3-c{position:absolute;left:660px;top:390px;width:600px;height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-    #s3-k{font-size:30px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#A3A3A8}
-    #s3-h{font-size:86px;margin-top:10px}
-    .s3-d{position:absolute;width:66px;height:66px;border-radius:50%;background:#FFC709;box-shadow:0 0 0 12px #0f0d0a}
-    .s3-l{position:absolute;width:520px}
+    #s3-cam{position:absolute;inset:0}
+    #s3-glow{position:absolute;left:560px;top:140px;width:800px;height:800px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,199,9,.34),rgba(255,199,9,.08) 55%,rgba(255,199,9,0) 100%)}
+    .s3-st{position:absolute;border-radius:50%;background:#FFE27A;opacity:0}
+    .s3-sv{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+    #s3-c{position:absolute;left:660px;top:380px;width:600px;height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+    #s3-k{font-size:30px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#A3A3A8}
+    #s3-h{font-size:112px;margin-top:6px;white-space:nowrap}
+    #s3-s{font-size:36px;font-weight:700;color:#FFC709;margin-top:14px}
+    .s3-d{position:absolute;width:66px;height:66px;border-radius:50%;background:#FFC709;box-shadow:0 0 0 12px #0f0d0a,0 0 46px 10px rgba(255,199,9,.55)}
+    .s3-rp{position:absolute;width:66px;height:66px;border-radius:50%;border:4px solid #FFC709;opacity:0}
+    .s3-lw{position:absolute;width:540px;height:220px;display:flex;align-items:center}
     .s3-l b{display:block;font-size:50px;font-weight:900;letter-spacing:-.03em;line-height:1.06}
     .s3-l span{display:block;font-size:30px;color:#A3A3A8;margin-top:8px;line-height:1.25}
 """,f"""    <div id="s3-all" class="clip" data-start="0" data-duration="8" data-track-index="0">
-      <svg id="s3-ring" viewBox="0 0 1920 1080" fill="none"><circle cx="{CX}" cy="{CY}" r="{R}" stroke="rgba(255,255,255,.14)" stroke-width="8"/><circle id="s3-arc" cx="{CX}" cy="{CY}" r="{R}" stroke="#FFC709" stroke-width="8" stroke-linecap="round" pathLength="1" stroke-dasharray="1" transform="rotate(-135 {CX} {CY})"/></svg>
-      <div id="s3-c"><div id="s3-k">Rumo à sua</div><div id="s3-h" class="h">autonomia<br><span class="y">financeira</span></div></div>
-      {orb}
+      <div id="s3-cam">
+        <div id="s3-glow"></div>
+        {stars}
+        <svg class="s3-sv" id="s3-out" viewBox="0 0 1920 1080" fill="none"><circle cx="{CX}" cy="{CY}" r="455" stroke="rgba(255,255,255,.16)" stroke-width="3" stroke-dasharray="3 26" stroke-linecap="round"/></svg>
+        <svg class="s3-sv" viewBox="0 0 1920 1080" fill="none"><circle cx="{CX}" cy="{CY}" r="{R}" stroke="rgba(255,255,255,.12)" stroke-width="6"/><circle id="s3-arc" cx="{CX}" cy="{CY}" r="{R}" stroke="#FFC709" stroke-width="6" stroke-linecap="round" pathLength="1" stroke-dasharray="1" transform="rotate(-90 {CX} {CY})"/></svg>
+        <svg class="s3-sv" id="s3-comet" viewBox="0 0 1920 1080" fill="none">
+          <circle cx="{CX}" cy="{CY}" r="{R}" stroke="#fff" stroke-opacity=".16" stroke-width="16" stroke-linecap="round" pathLength="100" stroke-dasharray="16 84" transform="rotate(-148 {CX} {CY})"/>
+          <circle cx="{CX}" cy="{CY}" r="{R}" stroke="#fff" stroke-opacity=".4" stroke-width="12" stroke-linecap="round" pathLength="100" stroke-dasharray="8 92" transform="rotate(-119 {CX} {CY})"/>
+          <circle cx="{CX}" cy="{CY-R}" r="34" fill="#fff" fill-opacity=".22"/><circle cx="{CX}" cy="{CY-R}" r="15" fill="#fff"/>
+        </svg>
+        <div id="s3-c"><div id="s3-k">Sua</div><div id="s3-h" class="h">Jornada <span class="y">XP</span></div><div id="s3-s">Evolua no seu ritmo.</div></div>
+        {orb}
+      </div>
     </div>""",
-"""      tl.fromTo("#s3-c", { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.7, ease: "power3.out" }, 0.2);
-      tl.fromTo("#s3-arc", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.6, ease: "power2.inOut" }, 0.5);
-      // as frentes aparecem fora de ordem: nenhuma é a primeira
+"""      gsap.set(["#s3-out", "#s3-comet", "#s3-cam"], { transformOrigin: "960px 540px" });
+      tl.fromTo("#s3-cam", { scale: 0.9 }, { scale: 1.03, duration: 8, ease: "none" }, 0);
+      tl.fromTo("#s3-glow", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 1.2, ease: "power2.out" }, 0);
+      tl.fromTo("#s3-glow", { scale: 1 }, { scale: 1.14, duration: 1.6, yoyo: true, repeat: 3, ease: "sine.inOut", immediateRender: false }, 1.2);
+      tl.fromTo("#s3-k", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0.15);
+      tl.fromTo("#s3-h", { opacity: 0, scale: 0.6, filter: "blur(18px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.7, ease: "back.out(1.6)" }, 0.25);
+      tl.fromTo("#s3-s", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.8);
+      tl.fromTo("#s3-arc", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.3, ease: "power3.inOut" }, 0.4);
+      tl.fromTo("#s3-out", { opacity: 0, rotation: -20 }, { opacity: 1, rotation: 0, duration: 1.2, ease: "power2.out" }, 0.5);
+      tl.fromTo("#s3-out", { rotation: 0 }, { rotation: 40, duration: 6.3, ease: "none", immediateRender: false }, 1.7);
+      // cometa: dá voltas no anel, sem parar em ninguém
+      tl.fromTo("#s3-comet", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 1.5);
+      tl.fromTo("#s3-comet", { rotation: 0 }, { rotation: 620, duration: 6.4, ease: "none" }, 1.5);
+      // as frentes acendem fora de ordem: nenhuma é a primeira
       [2, 0, 3, 1].forEach((k, n) => {
-        tl.fromTo("#s3-d" + k, { scale: 0 }, { scale: 1, duration: 0.45, ease: "back.out(2.4)" }, 1.0 + n * 0.3);
-        tl.fromTo("#s3-l" + k, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 1.1 + n * 0.3);
+        const t = 1.0 + n * 0.28;
+        tl.fromTo("#s3-d" + k, { scale: 0 }, { scale: 1, duration: 0.5, ease: "back.out(2.6)" }, t);
+        tl.fromTo("#s3-rp" + k, { scale: 1, opacity: 0.8 }, { scale: 3.4, opacity: 0, duration: 0.9, ease: "power2.out", immediateRender: false }, t + 0.05);
+        tl.fromTo("#s3-l" + k, { opacity: 0, x: (k === 0 || k === 3) ? 50 : -50 }, { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" }, t + 0.1);
       });
       [1, 3, 0, 2].forEach((k, n) => {
-        tl.fromTo("#s3-d" + k, { scale: 1 }, { scale: 1.3, duration: 0.3, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, 3.2 + n * 0.95);
-      });""")
+        const t = 3.3 + n * 0.95;
+        tl.fromTo("#s3-d" + k, { scale: 1 }, { scale: 1.32, duration: 0.3, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, t);
+        tl.fromTo("#s3-rp" + k, { scale: 1, opacity: 0.7 }, { scale: 3, opacity: 0, duration: 0.8, ease: "power2.out", immediateRender: false }, t);
+      });
+""" + chr(10).join(sjs))
 
 # 4 fichas
 add('s4',7,'''

@@ -7,36 +7,107 @@
     .mut{color:#A3A3A8}
 
     #s3-all{position:absolute;inset:0}
-    #s3-ring{position:absolute;inset:0;width:100%;height:100%}
-    #s3-c{position:absolute;left:660px;top:390px;width:600px;height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-    #s3-k{font-size:30px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#A3A3A8}
-    #s3-h{font-size:86px;margin-top:10px}
-    .s3-d{position:absolute;width:66px;height:66px;border-radius:50%;background:#FFC709;box-shadow:0 0 0 12px #0f0d0a}
-    .s3-l{position:absolute;width:520px}
+    #s3-cam{position:absolute;inset:0}
+    #s3-glow{position:absolute;left:560px;top:140px;width:800px;height:800px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,199,9,.34),rgba(255,199,9,.08) 55%,rgba(255,199,9,0) 100%)}
+    .s3-st{position:absolute;border-radius:50%;background:#FFE27A;opacity:0}
+    .s3-sv{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+    #s3-c{position:absolute;left:660px;top:380px;width:600px;height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+    #s3-k{font-size:30px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#A3A3A8}
+    #s3-h{font-size:112px;margin-top:6px;white-space:nowrap}
+    #s3-s{font-size:36px;font-weight:700;color:#FFC709;margin-top:14px}
+    .s3-d{position:absolute;width:66px;height:66px;border-radius:50%;background:#FFC709;box-shadow:0 0 0 12px #0f0d0a,0 0 46px 10px rgba(255,199,9,.55)}
+    .s3-rp{position:absolute;width:66px;height:66px;border-radius:50%;border:4px solid #FFC709;opacity:0}
+    .s3-lw{position:absolute;width:540px;height:220px;display:flex;align-items:center}
     .s3-l b{display:block;font-size:50px;font-weight:900;letter-spacing:-.03em;line-height:1.06}
     .s3-l span{display:block;font-size:30px;color:#A3A3A8;margin-top:8px;line-height:1.25}
 </style>
   <div id="root" data-composition-id="s3" data-width="1920" data-height="1080">
     <div class="bg"></div>
     <div id="s3-all" class="clip" data-start="0" data-duration="8" data-track-index="0">
-      <svg id="s3-ring" viewBox="0 0 1920 1080" fill="none"><circle cx="960" cy="540" r="340" stroke="rgba(255,255,255,.14)" stroke-width="8"/><circle id="s3-arc" cx="960" cy="540" r="340" stroke="#FFC709" stroke-width="8" stroke-linecap="round" pathLength="1" stroke-dasharray="1" transform="rotate(-135 960 540)"/></svg>
-      <div id="s3-c"><div id="s3-k">Rumo à sua</div><div id="s3-h" class="h">autonomia<br><span class="y">financeira</span></div></div>
-      <i class="s3-d" id="s3-d0" style="left:687px;top:267px"></i><div class="s3-l" id="s3-l0" style="right:1262px;text-align:right;top:238px"><b>Planeje sua vida financeira</b><span>Organize contas, gastos e objetivos.</span></div><i class="s3-d" id="s3-d1" style="left:1167px;top:267px"></i><div class="s3-l" id="s3-l1" style="left:1262px;text-align:left;top:238px"><b>Comece a poupar</b><span>Guarde um pouco todo mês, no seu ritmo.</span></div><i class="s3-d" id="s3-d2" style="left:1167px;top:747px"></i><div class="s3-l" id="s3-l2" style="left:1262px;text-align:left;top:718px"><b>Otimize seu dia a dia</b><span>Faça o dinheiro do mês render mais.</span></div><i class="s3-d" id="s3-d3" style="left:687px;top:747px"></i><div class="s3-l" id="s3-l3" style="right:1262px;text-align:right;top:718px"><b>Acelere e proteja seus planos</b><span>Vá mais longe quando fizer sentido.</span></div>
+      <div id="s3-cam">
+        <div id="s3-glow"></div>
+        <i class="s3-st" id="s3-st0" style="left:966px;top:926px;width:6px;height:6px"></i><i class="s3-st" id="s3-st1" style="left:418px;top:863px;width:6px;height:6px"></i><i class="s3-st" id="s3-st3" style="left:225px;top:591px;width:3px;height:3px"></i><i class="s3-st" id="s3-st4" style="left:1379px;top:796px;width:4px;height:4px"></i><i class="s3-st" id="s3-st5" style="left:161px;top:76px;width:4px;height:4px"></i><i class="s3-st" id="s3-st7" style="left:1103px;top:279px;width:4px;height:4px"></i><i class="s3-st" id="s3-st8" style="left:1381px;top:324px;width:6px;height:6px"></i><i class="s3-st" id="s3-st9" style="left:1489px;top:300px;width:4px;height:4px"></i><i class="s3-st" id="s3-st10" style="left:1193px;top:824px;width:3px;height:3px"></i><i class="s3-st" id="s3-st11" style="left:176px;top:1021px;width:3px;height:3px"></i><i class="s3-st" id="s3-st12" style="left:147px;top:521px;width:6px;height:6px"></i><i class="s3-st" id="s3-st13" style="left:1329px;top:243px;width:4px;height:4px"></i><i class="s3-st" id="s3-st14" style="left:879px;top:816px;width:3px;height:3px"></i><i class="s3-st" id="s3-st15" style="left:162px;top:516px;width:6px;height:6px"></i><i class="s3-st" id="s3-st16" style="left:1082px;top:235px;width:4px;height:4px"></i><i class="s3-st" id="s3-st17" style="left:901px;top:257px;width:3px;height:3px"></i><i class="s3-st" id="s3-st19" style="left:471px;top:231px;width:6px;height:6px"></i><i class="s3-st" id="s3-st20" style="left:339px;top:258px;width:6px;height:6px"></i><i class="s3-st" id="s3-st21" style="left:1740px;top:343px;width:6px;height:6px"></i><i class="s3-st" id="s3-st22" style="left:1343px;top:288px;width:3px;height:3px"></i><i class="s3-st" id="s3-st23" style="left:300px;top:1022px;width:6px;height:6px"></i><i class="s3-st" id="s3-st24" style="left:1324px;top:197px;width:4px;height:4px"></i><i class="s3-st" id="s3-st25" style="left:428px;top:202px;width:4px;height:4px"></i><i class="s3-st" id="s3-st26" style="left:1276px;top:120px;width:6px;height:6px"></i><i class="s3-st" id="s3-st27" style="left:562px;top:284px;width:6px;height:6px"></i><i class="s3-st" id="s3-st28" style="left:1045px;top:340px;width:4px;height:4px"></i><i class="s3-st" id="s3-st30" style="left:613px;top:257px;width:4px;height:4px"></i><i class="s3-st" id="s3-st31" style="left:952px;top:295px;width:3px;height:3px"></i><i class="s3-st" id="s3-st32" style="left:1211px;top:1036px;width:4px;height:4px"></i><i class="s3-st" id="s3-st34" style="left:1248px;top:75px;width:3px;height:3px"></i><i class="s3-st" id="s3-st35" style="left:108px;top:61px;width:3px;height:3px"></i><i class="s3-st" id="s3-st36" style="left:319px;top:114px;width:3px;height:3px"></i><i class="s3-st" id="s3-st37" style="left:1549px;top:794px;width:4px;height:4px"></i><i class="s3-st" id="s3-st38" style="left:199px;top:932px;width:6px;height:6px"></i><i class="s3-st" id="s3-st39" style="left:1319px;top:718px;width:6px;height:6px"></i><i class="s3-st" id="s3-st40" style="left:204px;top:132px;width:3px;height:3px"></i><i class="s3-st" id="s3-st41" style="left:835px;top:996px;width:6px;height:6px"></i><i class="s3-st" id="s3-st42" style="left:1102px;top:808px;width:3px;height:3px"></i><i class="s3-st" id="s3-st43" style="left:511px;top:1020px;width:3px;height:3px"></i><i class="s3-st" id="s3-st44" style="left:1035px;top:301px;width:3px;height:3px"></i><i class="s3-st" id="s3-st45" style="left:454px;top:570px;width:4px;height:4px"></i>
+        <svg class="s3-sv" id="s3-out" viewBox="0 0 1920 1080" fill="none"><circle cx="960" cy="540" r="455" stroke="rgba(255,255,255,.16)" stroke-width="3" stroke-dasharray="3 26" stroke-linecap="round"/></svg>
+        <svg class="s3-sv" viewBox="0 0 1920 1080" fill="none"><circle cx="960" cy="540" r="340" stroke="rgba(255,255,255,.12)" stroke-width="6"/><circle id="s3-arc" cx="960" cy="540" r="340" stroke="#FFC709" stroke-width="6" stroke-linecap="round" pathLength="1" stroke-dasharray="1" transform="rotate(-90 960 540)"/></svg>
+        <svg class="s3-sv" id="s3-comet" viewBox="0 0 1920 1080" fill="none">
+          <circle cx="960" cy="540" r="340" stroke="#fff" stroke-opacity=".16" stroke-width="16" stroke-linecap="round" pathLength="100" stroke-dasharray="16 84" transform="rotate(-148 960 540)"/>
+          <circle cx="960" cy="540" r="340" stroke="#fff" stroke-opacity=".4" stroke-width="12" stroke-linecap="round" pathLength="100" stroke-dasharray="8 92" transform="rotate(-119 960 540)"/>
+          <circle cx="960" cy="200" r="34" fill="#fff" fill-opacity=".22"/><circle cx="960" cy="200" r="15" fill="#fff"/>
+        </svg>
+        <div id="s3-c"><div id="s3-k">Sua</div><div id="s3-h" class="h">Jornada <span class="y">XP</span></div><div id="s3-s">Evolua no seu ritmo.</div></div>
+        <i class="s3-rp" id="s3-rp0" style="left:687px;top:267px"></i><i class="s3-d" id="s3-d0" style="left:687px;top:267px"></i><div class="s3-lw" style="right:1270px;text-align:right;justify-content:flex-end;top:190px"><div class="s3-l" id="s3-l0"><b>Planeje sua vida financeira</b><span>Organize contas, gastos e objetivos.</span></div></div><i class="s3-rp" id="s3-rp1" style="left:1167px;top:267px"></i><i class="s3-d" id="s3-d1" style="left:1167px;top:267px"></i><div class="s3-lw" style="left:1270px;text-align:left;top:190px"><div class="s3-l" id="s3-l1"><b>Comece a poupar</b><span>Guarde um pouco todo mês, no seu ritmo.</span></div></div><i class="s3-rp" id="s3-rp2" style="left:1167px;top:747px"></i><i class="s3-d" id="s3-d2" style="left:1167px;top:747px"></i><div class="s3-lw" style="left:1270px;text-align:left;top:670px"><div class="s3-l" id="s3-l2"><b>Otimize seu dia a dia</b><span>Faça o dinheiro do mês render mais.</span></div></div><i class="s3-rp" id="s3-rp3" style="left:687px;top:747px"></i><i class="s3-d" id="s3-d3" style="left:687px;top:747px"></i><div class="s3-lw" style="right:1270px;text-align:right;justify-content:flex-end;top:670px"><div class="s3-l" id="s3-l3"><b>Acelere e proteja seus planos</b><span>Vá mais longe quando fizer sentido.</span></div></div>
+      </div>
     </div>
   </div>
   <script>
     (function(){
       const tl = gsap.timeline({ paused: true });
-      tl.fromTo("#s3-c", { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.7, ease: "power3.out" }, 0.2);
-      tl.fromTo("#s3-arc", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.6, ease: "power2.inOut" }, 0.5);
-      // as frentes aparecem fora de ordem: nenhuma é a primeira
+      gsap.set(["#s3-out", "#s3-comet", "#s3-cam"], { transformOrigin: "960px 540px" });
+      tl.fromTo("#s3-cam", { scale: 0.9 }, { scale: 1.03, duration: 8, ease: "none" }, 0);
+      tl.fromTo("#s3-glow", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 1.2, ease: "power2.out" }, 0);
+      tl.fromTo("#s3-glow", { scale: 1 }, { scale: 1.14, duration: 1.6, yoyo: true, repeat: 3, ease: "sine.inOut", immediateRender: false }, 1.2);
+      tl.fromTo("#s3-k", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0.15);
+      tl.fromTo("#s3-h", { opacity: 0, scale: 0.6, filter: "blur(18px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.7, ease: "back.out(1.6)" }, 0.25);
+      tl.fromTo("#s3-s", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.8);
+      tl.fromTo("#s3-arc", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.3, ease: "power3.inOut" }, 0.4);
+      tl.fromTo("#s3-out", { opacity: 0, rotation: -20 }, { opacity: 1, rotation: 0, duration: 1.2, ease: "power2.out" }, 0.5);
+      tl.fromTo("#s3-out", { rotation: 0 }, { rotation: 40, duration: 6.3, ease: "none", immediateRender: false }, 1.7);
+      // cometa: dá voltas no anel, sem parar em ninguém
+      tl.fromTo("#s3-comet", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 1.5);
+      tl.fromTo("#s3-comet", { rotation: 0 }, { rotation: 620, duration: 6.4, ease: "none" }, 1.5);
+      // as frentes acendem fora de ordem: nenhuma é a primeira
       [2, 0, 3, 1].forEach((k, n) => {
-        tl.fromTo("#s3-d" + k, { scale: 0 }, { scale: 1, duration: 0.45, ease: "back.out(2.4)" }, 1.0 + n * 0.3);
-        tl.fromTo("#s3-l" + k, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 1.1 + n * 0.3);
+        const t = 1.0 + n * 0.28;
+        tl.fromTo("#s3-d" + k, { scale: 0 }, { scale: 1, duration: 0.5, ease: "back.out(2.6)" }, t);
+        tl.fromTo("#s3-rp" + k, { scale: 1, opacity: 0.8 }, { scale: 3.4, opacity: 0, duration: 0.9, ease: "power2.out", immediateRender: false }, t + 0.05);
+        tl.fromTo("#s3-l" + k, { opacity: 0, x: (k === 0 || k === 3) ? 50 : -50 }, { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" }, t + 0.1);
       });
       [1, 3, 0, 2].forEach((k, n) => {
-        tl.fromTo("#s3-d" + k, { scale: 1 }, { scale: 1.3, duration: 0.3, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, 3.2 + n * 0.95);
+        const t = 3.3 + n * 0.95;
+        tl.fromTo("#s3-d" + k, { scale: 1 }, { scale: 1.32, duration: 0.3, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, t);
+        tl.fromTo("#s3-rp" + k, { scale: 1, opacity: 0.7 }, { scale: 3, opacity: 0, duration: 0.8, ease: "power2.out", immediateRender: false }, t);
       });
+      tl.fromTo("#s3-st0", { opacity: 0 }, { opacity: 0.5, duration: 1.11, yoyo: true, repeat: 3, ease: "sine.inOut" }, 1.06);
+      tl.fromTo("#s3-st1", { opacity: 0 }, { opacity: 0.8, duration: 1.21, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.34);
+      tl.fromTo("#s3-st3", { opacity: 0 }, { opacity: 0.8, duration: 1.58, yoyo: true, repeat: 3, ease: "sine.inOut" }, 1.74);
+      tl.fromTo("#s3-st4", { opacity: 0 }, { opacity: 0.8, duration: 0.62, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.95);
+      tl.fromTo("#s3-st5", { opacity: 0 }, { opacity: 0.35, duration: 1.20, yoyo: true, repeat: 3, ease: "sine.inOut" }, 1.40);
+      tl.fromTo("#s3-st7", { opacity: 0 }, { opacity: 0.5, duration: 0.60, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.15);
+      tl.fromTo("#s3-st8", { opacity: 0 }, { opacity: 0.8, duration: 1.60, yoyo: true, repeat: 3, ease: "sine.inOut" }, 1.51);
+      tl.fromTo("#s3-st9", { opacity: 0 }, { opacity: 0.35, duration: 1.11, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.05);
+      tl.fromTo("#s3-st10", { opacity: 0 }, { opacity: 0.5, duration: 0.71, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.52);
+      tl.fromTo("#s3-st11", { opacity: 0 }, { opacity: 0.8, duration: 0.60, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.38);
+      tl.fromTo("#s3-st12", { opacity: 0 }, { opacity: 0.8, duration: 1.00, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.13);
+      tl.fromTo("#s3-st13", { opacity: 0 }, { opacity: 0.5, duration: 0.69, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.60);
+      tl.fromTo("#s3-st14", { opacity: 0 }, { opacity: 0.35, duration: 0.85, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.18);
+      tl.fromTo("#s3-st15", { opacity: 0 }, { opacity: 0.35, duration: 1.28, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.34);
+      tl.fromTo("#s3-st16", { opacity: 0 }, { opacity: 0.5, duration: 1.24, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.21);
+      tl.fromTo("#s3-st17", { opacity: 0 }, { opacity: 0.5, duration: 1.46, yoyo: true, repeat: 3, ease: "sine.inOut" }, 1.75);
+      tl.fromTo("#s3-st19", { opacity: 0 }, { opacity: 0.8, duration: 1.24, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.18);
+      tl.fromTo("#s3-st20", { opacity: 0 }, { opacity: 0.5, duration: 0.61, yoyo: true, repeat: 3, ease: "sine.inOut" }, 1.10);
+      tl.fromTo("#s3-st21", { opacity: 0 }, { opacity: 0.35, duration: 0.67, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.38);
+      tl.fromTo("#s3-st22", { opacity: 0 }, { opacity: 0.8, duration: 0.97, yoyo: true, repeat: 3, ease: "sine.inOut" }, 1.12);
+      tl.fromTo("#s3-st23", { opacity: 0 }, { opacity: 0.8, duration: 0.74, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.69);
+      tl.fromTo("#s3-st24", { opacity: 0 }, { opacity: 0.35, duration: 1.42, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.45);
+      tl.fromTo("#s3-st25", { opacity: 0 }, { opacity: 0.8, duration: 1.55, yoyo: true, repeat: 3, ease: "sine.inOut" }, 1.59);
+      tl.fromTo("#s3-st26", { opacity: 0 }, { opacity: 0.35, duration: 0.70, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.07);
+      tl.fromTo("#s3-st27", { opacity: 0 }, { opacity: 0.5, duration: 1.02, yoyo: true, repeat: 3, ease: "sine.inOut" }, 1.63);
+      tl.fromTo("#s3-st28", { opacity: 0 }, { opacity: 0.8, duration: 1.58, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.23);
+      tl.fromTo("#s3-st30", { opacity: 0 }, { opacity: 0.8, duration: 0.62, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.48);
+      tl.fromTo("#s3-st31", { opacity: 0 }, { opacity: 0.35, duration: 0.78, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.66);
+      tl.fromTo("#s3-st32", { opacity: 0 }, { opacity: 0.35, duration: 0.96, yoyo: true, repeat: 3, ease: "sine.inOut" }, 1.60);
+      tl.fromTo("#s3-st34", { opacity: 0 }, { opacity: 0.5, duration: 1.51, yoyo: true, repeat: 3, ease: "sine.inOut" }, 1.26);
+      tl.fromTo("#s3-st35", { opacity: 0 }, { opacity: 0.5, duration: 0.67, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.56);
+      tl.fromTo("#s3-st36", { opacity: 0 }, { opacity: 0.5, duration: 1.15, yoyo: true, repeat: 3, ease: "sine.inOut" }, 1.33);
+      tl.fromTo("#s3-st37", { opacity: 0 }, { opacity: 0.5, duration: 0.95, yoyo: true, repeat: 3, ease: "sine.inOut" }, 1.23);
+      tl.fromTo("#s3-st38", { opacity: 0 }, { opacity: 0.35, duration: 1.46, yoyo: true, repeat: 3, ease: "sine.inOut" }, 1.03);
+      tl.fromTo("#s3-st39", { opacity: 0 }, { opacity: 0.5, duration: 1.18, yoyo: true, repeat: 3, ease: "sine.inOut" }, 1.10);
+      tl.fromTo("#s3-st40", { opacity: 0 }, { opacity: 0.5, duration: 1.48, yoyo: true, repeat: 3, ease: "sine.inOut" }, 1.31);
+      tl.fromTo("#s3-st41", { opacity: 0 }, { opacity: 0.5, duration: 1.06, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.97);
+      tl.fromTo("#s3-st42", { opacity: 0 }, { opacity: 0.5, duration: 1.20, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.87);
+      tl.fromTo("#s3-st43", { opacity: 0 }, { opacity: 0.5, duration: 1.38, yoyo: true, repeat: 3, ease: "sine.inOut" }, 1.19);
+      tl.fromTo("#s3-st44", { opacity: 0 }, { opacity: 0.5, duration: 0.90, yoyo: true, repeat: 3, ease: "sine.inOut" }, 1.22);
+      tl.fromTo("#s3-st45", { opacity: 0 }, { opacity: 0.5, duration: 1.26, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.80);
       tl.fromTo("#s3-all", { opacity: 1 }, { opacity: 0, duration: 0.45, ease: "power2.in" }, 7.45);
       window.__timelines["s3"] = tl;
     })();
