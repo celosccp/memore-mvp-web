@@ -33,7 +33,7 @@ O perímetro inicial é XP B2C e XP B2B. Rico fica fora desta versão. Os result
 
 Use fórmulas curtas e divida as contas em colunas auxiliares com nomes claros. Por exemplo, para AUC, calcule em etapas a parcela acima do piso, os blocos completos, as fichas brutas e as fichas após o teto.
 
-Calcule cada resultado intermediário uma vez e reutilize a célula ou coluna. Evite repetir buscas de parâmetros dentro de várias fórmulas. Traga os parâmetros para uma área de apoio e use referências absolutas ou nomes definidos.
+Calcule cada resultado intermediário uma vez e reutilize a célula ou coluna. Evite repetir buscas de parâmetros dentro de várias fórmulas. Traga os parâmetros para uma área de apoio e use referências absolutas.
 
 Use tabelas e intervalos limitados às linhas existentes. Evite referências a colunas inteiras, fórmulas matriciais extensas, funções voláteis como INDIRETO e DESLOC e cadeias longas de condições. Evite vínculos externos e dependências circulares. Use validação de dados para escolhas.
 
@@ -42,6 +42,79 @@ Reserve formatação condicional para o painel e indicadores de erro. Nas bases,
 Para consolidar resultados, avalie tabelas dinâmicas onde forem adequadas. Indique quando exigirem atualização. Os controles principais de cenário devem recalcular os resultados que dependem deles de forma compreensível.
 
 Antes de replicar fórmulas na base completa, valide o fluxo com um pequeno conjunto de linhas. Depois aplique à população inteira. Ao concluir cada etapa, registre os testes que passaram e os dados ainda pendentes.
+
+## Padrões de template e design
+
+Siga as práticas dos padrões de modelagem mais usados (FAST Standard e Financial Modelling Code do ICAEW). Aplique o mesmo padrão em todas as abas, desde a primeira etapa, para que qualquer pessoa entenda o arquivo sem explicação.
+
+**Tipos de célula, sempre distinguíveis**
+
+Marque o tipo com preenchimento, e não só com a cor da fonte, para funcionar em projetor e para quem não distingue cores.
+
+| Tipo | Aparência | Uso |
+| --- | --- | --- |
+| Entrada editável | Preenchimento amarelo-claro, fonte azul | Parâmetros e premissas que a pessoa pode mudar |
+| Fórmula | Sem preenchimento, fonte preta | Todo cálculo |
+| Vínculo de outra aba | Sem preenchimento, fonte verde | Valor trazido sem transformação |
+| Dado importado | Preenchimento cinza-claro | Base de outubro e conferências do Databricks |
+| Premissa pendente | Preenchimento laranja-claro e a palavra "Pendente" na coluna de status | Valor provisório ou a confirmar |
+| Verificação | Verde quando passa, vermelho quando falha | Células de teste e reconciliação |
+
+Coloque a legenda desses tipos na aba Instruções. Use no máximo seis a oito cores no arquivo inteiro. Dê às guias a cor do seu tipo: entradas, cálculos, saídas e testes.
+
+**Entradas**
+
+* Cada entrada existe em um único lugar. Todo cálculo que precisa dela aponta para essa célula.
+* Nenhum número digitado dentro de fórmula. Pisos, passos, tetos, preços e percentuais ficam sempre em células de entrada.
+* Cada entrada tem, na mesma linha: rótulo, unidade, valor, valor inicial de referência, fonte, data e status (confirmado ou pendente).
+* Use validação de dados em toda entrada: lista para escolhas, limites mínimo e máximo para números, com mensagem de entrada explicando o que se espera.
+* Reúna os controles de cenário em um bloco só, no topo da aba de parâmetros, e repita o estado atual deles no topo do painel, por vínculo.
+* Proteja as abas deixando desbloqueadas apenas as células de entrada, sem senha.
+
+**Layout**
+
+* Nenhuma célula mesclada. Para centralizar um título sobre várias colunas, use "Centralizar na seleção".
+* Mesma estrutura de colunas em todas as abas de cálculo: rótulo, unidade, observação e depois os valores, sempre nas mesmas posições.
+* Uma fórmula por linha: a mesma fórmula do início ao fim do bloco, sem exceções no meio. Se uma coluna precisar de regra diferente, crie outra linha.
+* O cálculo flui de cima para baixo e da esquerda para a direita; as abas seguem a ordem entradas, cálculos, saídas, testes.
+* Nada de linhas ou colunas ocultas. Para recolher detalhe, use agrupamento, que deixa visível que há algo ali.
+* Sem linhas ou colunas em branco dentro de tabelas. Cabeçalho em uma única linha, com nomes únicos e sem quebra de linha.
+* Congele painéis em cabeçalhos e rótulos. Deixe o cursor em A1 e o mesmo zoom em todas as abas ao salvar.
+* Linhas de grade desligadas no painel e nas abas de entrada; ligadas nas bases.
+
+**Fórmulas**
+
+* Curtas o bastante para serem lidas de uma vez. Se precisar rolar a barra de fórmulas, quebre em etapas.
+* Evite SE aninhado em mais de dois níveis; prefira tabela de faixas com busca.
+* Para buscas, use PROCX ou ÍNDICE com CORRESP, nunca PROCV com número de coluna fixo.
+* Não esconda erros com SEERRO genérico. Trate só o caso esperado e deixe os demais aparecerem.
+* Prefira referências diretas a células. Use nomes definidos apenas para os controles de cenário, liste-os na aba Instruções e não crie nomes para intervalos de cálculo.
+* Adote uma convenção de sinal e registre-a: custos e fichas em uso como valores positivos, com o rótulo dizendo o que é.
+
+**Formatos de número**
+
+* Fichas como inteiros. Reais sem centavos nos agregados e com centavos só em valores por conta. Percentuais com uma casa decimal.
+* Separador de milhar sempre. Zero exibido como traço. Negativos com sinal de menos e em vermelho.
+* A unidade vai na coluna de unidade ou no cabeçalho, nunca digitada junto do número. Nenhum número guardado como texto.
+
+**Tabelas e bases**
+
+* Importe as bases como Tabelas do Excel com nomes claros, por exemplo `tbBaseB2C` e `tbBaseB2B`, sem linha de total dentro da tabela.
+* Não altere os dados importados. Toda correção ou classificação entra em colunas auxiliares ao lado, identificadas como cálculo.
+
+**Verificações visíveis**
+
+* Cada teste da aba Testes devolve 1 quando passa e 0 quando falha, com a descrição ao lado.
+* Uma célula de verificação geral soma as falhas. Mostre o resultado dela no topo de todas as abas, como "OK" ou "ERRO", para que um problema nunca passe despercebido.
+* Inclua verificações estruturais: nenhuma célula mesclada, nenhuma célula com erro, nenhum vínculo externo, totais da população reconciliados.
+
+**Documentação dentro do arquivo**
+
+A aba Instruções traz: objetivo do modelo, como usar em três ou quatro passos, legenda de cores, lista das abas com o que cada uma faz, nomes definidos, convenções de sinal e unidade, versão, data, autor, registro de mudanças, pendências e limitações conhecidas.
+
+**Painel**
+
+Poucos gráficos, cada um com título que diz a conclusão, eixos rotulados e a fonte dos dados. Sem efeitos 3D. Paleta sóbria em preto, cinza e amarelo. Defina a área de impressão para caber em uma página em paisagem.
 
 ## Estrutura sugerida
 
@@ -254,5 +327,6 @@ Com os parâmetros iniciais e todos os demais campos zerados:
 * Com Cofre XP 115% ativo (15 fichas em uso), reduzir o TPV para R$ 4.000 leva o total a 8 fichas e gera déficit de 7, sinalizado.
 * O máximo de fichas possível no Simulado, com os parâmetros iniciais, é a soma dos tetos das alavancas ligadas; confira o valor contra a soma manual.
 * Os totais da população devem reconciliar com as contagens e controles importados.
+* Verificações estruturais: nenhuma célula mesclada, nenhuma célula com erro, nenhum vínculo externo e nenhuma constante numérica dentro de fórmula.
 
 Ao final de cada etapa, mostre o que foi construído, os testes realizados e os insumos pendentes. Mantenha o cálculo organizado em passos curtos, com prioridade para desempenho, rastreabilidade e clareza.
