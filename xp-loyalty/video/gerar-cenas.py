@@ -366,17 +366,17 @@ add('s6',6.3,"""
       tl.fromTo("#s6-bc1", { opacity: 0 }, { opacity: 1, duration: 0.25, immediateRender: false }, hit + 0.1);""")
 
 # 7 app: gravação real do protótipo em uso
-W3=['Simples.','Fluida.','Interativa.']
+W3=['Simples.','Personalizada.','Interativa.']
 add('s7',10.4,"""
     #s7-all{position:absolute;inset:0}
     #s7-k{position:absolute;left:170px;top:270px;font-size:34px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#A3A3A8}
-    .s7-w{position:absolute;left:170px;font-size:128px}
+    .s7-w{position:absolute;left:170px;font-size:112px;white-space:nowrap}
     #s7-s{position:absolute;left:170px;top:800px;width:760px;font-size:40px;color:#A3A3A8;line-height:1.3}
     #s7-ph{position:absolute;left:1180px;top:50px;width:488px;height:980px;border-radius:64px;overflow:hidden;border:10px solid #000;box-shadow:0 0 0 2px rgba(255,255,255,.14),0 50px 120px rgba(0,0,0,.65);background:#000}
     #s7-v{position:absolute;left:0;top:0;width:468px;height:960px;object-fit:cover}
 """,f"""    <div id="s7-all" class="clip" data-start="0" data-duration="10.4" data-track-index="0">
       <div id="s7-k">Tudo no app</div>
-      {''.join(f'<div class="s7-w h {"y" if q==2 else ""}" id="s7-w{q}" style="top:{340+q*142}px">{w}</div>' for q,w in enumerate(W3))}
+      {''.join(f'<div class="s7-w h {"y" if q==2 else ""}" id="s7-w{q}" style="top:{350+q*130}px">{w}</div>' for q,w in enumerate(W3))}
       <div id="s7-s">Você vê o que tem, escolhe o que quer e muda quando quiser.</div>
     </div>
     <div id="s7-ph" data-layout-allow-overflow><video id="s7-v" class="clip" data-start="0.1" data-duration="10.2" data-playback-rate="1.24" data-track-index="1" src="assets/app-demo.mp4" muted playsinline></video></div>""",
