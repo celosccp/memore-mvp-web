@@ -593,7 +593,44 @@ h3.sec2 span{display:block;font-size:14.5px;color:var(--mut);font-weight:400;mar
 @keyframes tgt{0%,70%{background:var(--nb);border-color:var(--dim);box-shadow:none}100%{background:var(--y);border-color:var(--y)}}
 .sheet .rg .nd i{background:#241f19} .light .sheet .rg .nd i{background:#fff}
 .sheet .rg .nd.past i,.sheet .rg .nd.cur i,.light .sheet .rg .nd.past i{background:var(--y);border-color:var(--y)}
-.pbtn.sel{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+
+/* ===== Painel da demonstração no visual XP: preto, amarelo e pílulas ===== */
+#panel{background:#0B0B0C;color:#F4F4F2;border-right:1px solid #232327;--pmut:#9A9AA2;--pline:#2A2A2F;--ink:#F4F4F2}
+#panel .ph{border-bottom:1px solid #232327;padding:16px 18px 14px;background:radial-gradient(120% 140% at 0% 0%,rgba(255,199,9,.16),transparent 60%)}
+.pbrand{display:flex;align-items:center;gap:11px}
+.pbrand i{font-style:normal;width:38px;height:32px;border-radius:7px;background:#fff;color:#111;font-weight:900;font-size:15px;letter-spacing:-.04em;display:grid;place-items:center;flex:none}
+#panel .ph h1{font-size:16px;padding-right:0;margin:0} #panel .ph p{color:#9A9AA2}
+#panel .pmn{background:transparent;border-color:#3A3A40;color:#C9C9CF}
+#panel .pbody h2{color:#FFC709;font-size:11px;letter-spacing:.09em;margin:22px 0 10px}
+#panel .pbody h2:first-of-type{margin-top:6px}
+#panel .h2b{color:#FFC709}
+#panel .seg{background:#1A1A1D;border-radius:999px;padding:4px}
+#panel .seg button{border-radius:999px;color:#9A9AA2;padding:9px 6px}
+#panel .seg button.on{background:#FFC709;color:#000}
+#panel .hint,#panel .glab{color:#8A8A92}
+#panel .pbtn{background:#1A1A1D;border:1px solid transparent;border-radius:14px;color:#F4F4F2;padding:10px 12px}
+#panel .pbtn small{color:#8A8A92}
+#panel .pbtn:active{transform:scale(.97)}
+#panel .pbtn.psel{background:#FFC709;color:#000;border-color:#FFC709}
+#panel .pbtn.hot{background:transparent;border-color:#FFC709;color:#FFC709}
+#panel .pbtn[data-a="normal"]{border-radius:999px;text-align:center;border-color:#3A3A40}
+#panel .pbtn[data-a="normal"].hot{border-color:#FFC709}
+#panel .sl{background:#141416;border-radius:16px;padding:11px 13px 6px;margin-bottom:8px}
+#panel .sl output{color:#FFC709}
+#panel input[type=range]{accent-color:#FFC709}
+#panel .tog{border-top:1px solid #1E1E22}
+#panel .glab+.tog{border-top:0}
+#panel .tog input{accent-color:#FFC709;width:19px;height:19px}
+#panel .tog .hint{color:#FFC709;font-weight:650}
+#panel .fld input{background:#1A1A1D;border:1px solid #2A2A2F;color:#F4F4F2;border-radius:10px}
+#panel .fld span{display:flex;gap:4px;flex:none}
+#panel .fld span input{width:40px!important;padding:6px 4px;text-align:center}
+#panel .fld input:focus{outline:2px solid #FFC709;outline-offset:1px}
+#panel .pbody{scrollbar-width:thin;scrollbar-color:#2A2A2F transparent}
+#panelToggle{background:#FFC709;color:#000}
+:root{--stage:#E4E3DF}
+@media (min-width:680px){ #panel .ph h1{padding-right:0} .pbrand{padding-right:104px} }
 </style>
 </head>
 <body>
@@ -1419,7 +1456,7 @@ function renderPanel(){
         ['Ativar e trocar', [['disp','Confirmar ativação'],['proc','Em processamento'],['troca','Confirmar troca'],['insuf','Faltam fichas'],['trilha','Trilha concluída']]],
         ['Cartão XP Infinite', [['bloq','Bloqueado'],['transA','A · chegou a 30 mil'],['infB','B · pedir com fichas'],['transB','B · fichas voltam']]],
         ['Situações de atenção', [['perda','Fichas caíram'],['perdaCard','Patrimônio caiu'],['legado','Cofre XP já ativo']]]]
-        .map(([g, items]) => `<div class="glab">${g}</div><div class="grid2">${items.map(([k, t]) => `<button class="pbtn ${S.preset === k ? 'sel' : ''}" data-a="preset:${k}">${t}</button>`).join('')}</div>`).join('')}
+        .map(([g, items]) => `<div class="glab">${g}</div><div class="grid2">${items.map(([k, t]) => `<button class="pbtn ${S.preset === k ? 'psel' : ''}" data-a="preset:${k}">${t}</button>`).join('')}</div>`).join('')}
       <h2>Salas VIP</h2>
       <div class="seg"><button class="${S.salaMode === 'incluida' ? 'on' : ''}" data-a="sala:incluida">Mínimo no cartão</button><button class="${S.salaMode === 'fichas' ? 'on' : ''}" data-a="sala:fichas">Tudo por fichas</button></div>
       <p class="hint">${S.salaMode === 'incluida' ? `O Infinite já vem com ${P.salaIncl} acessos por ano; mais acessos com fichas.` : 'Nenhum cartão inclui sala VIP; todos os acessos vêm de fichas.'}</p>
@@ -1442,7 +1479,7 @@ function renderPanel(){
       <ol>${L.map(([t, d]) => `<li><span class="tag">${t}</span>${d}</li>`).join('')}</ol>`;
   }
   const sc = el.querySelector('.pbody'), st = sc ? sc.scrollTop : 0, same = el.dataset.tab === S.tab;
-  el.innerHTML = `<div class="ph"><button class="pmn" data-a="panel" aria-label="Minimizar painel">‹ Minimizar</button><h1>Jornada XP</h1><p>Protótipo navegável · experiência móvel do app</p></div>
+  el.innerHTML = `<div class="ph"><button class="pmn" data-a="panel" aria-label="Minimizar painel">‹ Minimizar</button><div class="pbrand"><i>XP</i><div><h1>Jornada XP</h1><p>Painel da demonstração</p></div></div></div>
     <div class="pbody">${body}</div>`;
   el.dataset.tab = S.tab;
   if (same) el.querySelector('.pbody').scrollTop = st;
