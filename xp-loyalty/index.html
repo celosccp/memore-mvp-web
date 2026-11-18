@@ -1237,7 +1237,7 @@ function sheet(){
     if (!a) h = `<div class="ctr"><div class="okc">✓</div><h2>Benefício desativado</h2><p>${pt(s.back)} voltaram para o seu saldo.</p></div>${saldoRows(0, 0)}<button class="btn" data-a="close">Entendi</button>`;
     else { const f = fam(s.fam), o = optOf(s.fam, a.opt);
       h = a.status === 'processing'
-        ? `<div class="ctr"><div class="okc wait"><i class="spin"></i></div><h2>Ativando ${o.label}</h2><p>Recebemos seu pedido. ${pt(o.price)} já estão em uso. Pode levar alguns instantes e você não precisa esperar nesta tela.</p></div><button class="btn sec" data-a="home">Voltar para os benefícios</button>`
+        ? `<div class="ctr"><div class="okc wait"><i class="spin"></i></div><h2>Ativando ${o.label}</h2><p>Recebemos seu pedido. ${pt(o.price)} já estão em uso. É rápido.</p></div><button class="btn sec" data-a="home">Voltar para os benefícios</button>`
         : `${burst()}<div class="ctr"><div class="okc">✓</div><h2>${o.label} ativo</h2><p>${f.nome} já está valendo.</p></div>
            <div class="card"><div class="kv"><span>Em uso neste benefício</span><span>${pt(o.price)}</span></div><div class="kv tot"><span>Disponíveis agora</span><span>${pt(available())}</span></div></div>
            <button class="btn" data-a="home">Voltar para os benefícios</button>${available() ? `<button class="btn ghost" data-a="go:shelf">Escolher outro benefício</button>` : ''}`; }
@@ -1513,7 +1513,7 @@ function render(){ document.getElementById('phone').classList.toggle('light', S.
 // ---------- Ações ----------
 function activate(famId, optId, hold){
   S.active[famId] = { opt: optId, status: 'processing' };
-  if (!hold) timers.push(setTimeout(() => { const a = S.active[famId]; if (a && a.opt === optId){ a.status = 'active'; S.fx = true; render(); } }, 2600));
+  if (!hold) timers.push(setTimeout(() => { const a = S.active[famId]; if (a && a.opt === optId){ a.status = 'active'; S.fx = true; render(); } }, 1100));
 }
 function setInfActive(){ S.fx = true; S.inf = 'active'; S.pk = null; S.seen.req = true; reconcile(); S.sheet = S.released ? {t:'transB'} : {t:'infOn'}; }
 
