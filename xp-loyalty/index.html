@@ -690,11 +690,11 @@ const P = {
 };
 
 const PROFILES = {
-  p1: { nome: 'Marina', auc: 25000, gasto: 7500, rec: ['of','aporte','sal','pag'], inf: 'none',
+  p1: { nome: 'Marina', auc: 25000, gasto: 7500, rec: ['of','plan','aporte','sal','pag','pfm'], inf: 'none',
         resumo: 'R$ 25 mil investidos · R$ 7.500/mês no cartão' },
-  p2: { nome: 'Rafael', auc: 40000, gasto: 400, rec: ['cartao','of','aporte','auc'], inf: 'active',
+  p2: { nome: 'Rafael', auc: 40000, gasto: 400, rec: ['cartao','of','plan','aporte','auc','pfm'], inf: 'active',
         resumo: 'R$ 40 mil investidos · pouco uso dos demais produtos', goal: {fam:'cofrinho', opt:'c110'} },
-  p3: { nome: 'Jô', auc: 8000, gasto: 300, rec: ['of','pag','aporte','sal'], inf: 'none',
+  p3: { nome: 'Jô', auc: 8000, gasto: 300, rec: ['of','plan','pag','aporte','sal','pfm'], inf: 'none',
         resumo: 'R$ 8 mil investidos · zero ficha' },
 };
 
@@ -702,6 +702,8 @@ const CTX = ['Planeje sua vida financeira', 'Comece a poupar', 'Otimize seu dia 
 // pts de comportamentos fora de cartão e patrimônio são ILUSTRATIVOS (régua em calibração)
 const BEH = [
   { id:'of',     ctx:0, nome:'Conectar outras contas', sub:'Open Finance', pts:3, como:'Traga os dados de outros bancos e veja tudo em um só lugar.', esforco:'Leva uns 5 minutos e não tem custo.', cta:'Conectar contas' },
+  { id:'plan',   ctx:0, nome:'Fazer seu planejamento financeiro', sub:'Planejamento financeiro', pts:3, como:'Defina seus objetivos e veja quanto guardar por mês para chegar lá.', esforco:'Uns 10 minutos, pelo app. Você ajusta quando quiser.', cta:'Montar meu planejamento' },
+  { id:'pfm',    ctx:0, nome:'Organizar seus gastos', sub:'Gestão financeira no app', pts:2, soon:true, como:'Acompanhe para onde vai o seu dinheiro e receba alertas sobre os seus gastos.', esforco:'Ative os alertas uma vez. O app acompanha por você.', cta:'Ativar alertas' },
   { id:'auc',    ctx:1, nome:'Patrimônio investido', dyn:true },
   { id:'aporte', ctx:1, nome:'Aporte recorrente', pts:3, como:'Programe um valor para investir todo mês. Você escolhe quanto e pode mudar quando quiser.', esforco:'A partir de R$ 100 por mês.', cta:'Programar aporte' },
   { id:'prev',   ctx:1, nome:'Previdência', pts:3, como:'Tenha um plano de previdência na XP.', esforco:'Vale para quem já pensa em longo prazo.', cta:'Conhecer previdência' },
@@ -717,7 +719,7 @@ const BEH = [
 const beh = id => BEH.find(b => b.id === id);
 
 // ---------- Estado ----------
-const S = { scen:'A', prof:'p1', tab:'demo', legacy:false, legRule:'preservar', segcc:false, salaMode:'incluida', theme:'light', open:{} };
+const S = { scen:'A', prof:'p1', tab:'demo', legacy:false, legRule:'preservar', segcc:false, salaMode:'incluida', pfm:false, theme:'light', open:{} };
 let timers = [];
 
 function loadProfile(id){
@@ -738,7 +740,7 @@ const elig = () => S.auc >= P.corte;
 const ptsCartao = () => Math.min(Math.floor(S.gasto / P.cartaoPor), P.cartaoMax);
 const ptsAuc    = () => Math.min(Math.max(Math.floor((S.auc - P.corte) / P.aucBloco), 0), P.aucMax);
 function behPts(b){ return b.id==='cartao' ? ptsCartao() : b.id==='auc' ? ptsAuc() : (S.done[b.id] ? b.pts : 0); }
-const visibleBeh = () => BEH.filter(b => !b.optional || S.segcc);
+const visibleBeh = () => BEH.filter(b => (!b.optional || S.segcc) && (!b.soon || S.pfm));
 const total = () => visibleBeh().reduce((s,b) => s + behPts(b), 0);
 
 const IB = { one: () => [ {id:'o08', label:'0,8% de Investback', rate:0.8, price:P.ibOne[0]}, {id:'o10', label:'1,0% de Investback', rate:1.0, price:P.ibOne[1]}, {id:'o11', label:'1,1% de Investback', rate:1.1, price:P.ibOne[2]} ],
@@ -951,7 +953,7 @@ function goalCard(){
 }
 function welcome(){
   const waves = Array.from({length: 16}, (_, i) => `<path d="M-20 ${40 + i * 13} C 90 ${-10 + i * 13}, 210 ${110 + i * 11}, 420 ${10 + i * 15}"/>`).join('');
-  const steps = [['Planeje sua vida financeira', 'Enxergue tudo o que você tem em um só lugar.'], ['Comece a poupar', 'Guarde um pouco todo mês, no seu ritmo.'],
+  const steps = [['Planeje sua vida financeira', 'Organize suas contas, seus gastos e seus objetivos.'], ['Comece a poupar', 'Guarde um pouco todo mês, no seu ritmo.'],
     ['Otimize seu dia a dia', 'Faça o seu dinheiro do mês render mais.'], ['Acelere e proteja seus planos', 'Vá mais longe quando fizer sentido para você.']];
   return `<div class="wel"><svg class="art" viewBox="0 0 400 230" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-opacity=".32" stroke-width="1.1">${waves}</svg>
     <div class="wtop"><div class="logo">XP</div><span>Jornada XP</span><button class="back" data-a="enter" aria-label="Fechar">×</button></div>
@@ -1182,6 +1184,7 @@ function juntar(){
           <div class="prog" style="margin:6px 0 4px;height:5px"><i style="width:${earned / tot * 100}%"></i></div><div class="xs mut">${earned} de ${pt(tot)}</div></div><span class="mut" style="font-size:18px;width:14px;text-align:center">${op ? '−' : '+'}</span></button><div ${op ? '' : 'hidden'} style="margin-top:10px">
       ${i === 3 ? `<div class="xs mut" style="margin-bottom:6px">Só fazem sentido se você já tem um plano que precisa deles. Veja as condições antes de decidir.</div>` : ''}
       ${bs.map(row).join('')}
+      ${i === 0 && !S.pfm ? `<div class="li" style="opacity:.6"><i class="mk off"></i><div class="g"><b>Organizar seus gastos</b><span>Gestão financeira no app</span></div>${chip('Em breve', 'ghost')}</div>` : ''}
     </div></div>`; }).join('')}
     ${goalCard() ? `<h3 class="sec">${S.goal ? 'Sua trilha recomendada' : 'Sugeridos para você'}</h3>${goalCard()}` : ''}`;
 }
@@ -1424,6 +1427,7 @@ const HIPOTESES = [
   ['Cofre XP', 'Quem já tinha Cofre XP antes do Loyalty entra com 110% do CDI. Três alternativas de transição: preservar sem fichas, carência até 30/04/2027, ou migração imediata para fichas.'],
   ['Recomendação', 'A ordem das sugestões é definida por perfil. Crédito e consórcio nunca aparecem como sugestão: só no catálogo, com a necessidade antes e as condições à vista.'],
   ['Vocabulário', 'Na aba Juntar, os quatro grupos são momentos da jornada financeira e cada item é uma ação que, concluída, vira conquista. "Desafio" e "passo" saíram ("passo" remete ao programa do Itaú); "trilha" fica reservada ao caminho até um benefício.'],
+  ['Régua', '"Planeje sua vida financeira" tem três ações: Open Finance (3 fichas), planejamento financeiro (3) e gestão de gastos pelo PFM 3.0 (2). O PFM aparece como "Em breve" e só vale fichas quando ligado no painel. Valores ilustrativos.'],
   ['Trilha', 'O cliente pode seguir a trilha de um benefício e acompanhar no resumo quanto falta e quais ações sugeridas levam até lá.'],
   ['Vocabulário', 'Das telas de Design: fichas (evita confusão com os pontos do cartão), Em uso e Disponíveis, Juntar e Usar, trilha para desbloquear.'],
   ['Vocabulário', 'Mantidos do briefing e diferentes das telas: taxas 110/115/125% e preços 10/15/30 (telas: 110% por 5 e 120% por 15), Infinite por 10 fichas (telas: 15), quatro contextos de earn (telas: seis).'],
@@ -1470,6 +1474,7 @@ function renderPanel(){
       <div class="sl"><label>Gasto mensal no cartão <output id="oGasto">${brl(S.gasto)}</output></label><input type="range" id="rGasto" min="0" max="10000" step="100" value="${S.gasto}"></div>
       ${CTX.map((cx, i) => { const bs = visibleBeh().filter(b => b.ctx === i && !b.dyn); return bs.length ? `<div class="glab">${cx}</div>` + bs.map(b =>
         `<label class="tog" style="padding:4px 0">${b.sub || b.nome} <span class="hint" style="margin:0 6px 0 auto">+${b.pts}</span><input type="checkbox" data-d="${b.id}" ${S.done[b.id] ? 'checked' : ''}></label>`).join('') : ''; }).join('')}
+      <label class="tog" style="margin-top:6px">PFM 3.0 já disponível <input type="checkbox" data-c="pfm" ${S.pfm ? 'checked' : ''}></label>
       <h2>Ir direto a um estado</h2>
       ${[['Começo', [['welcome','Boas-vindas'],['zero','Zero ficha'],['ativo','Benefício em uso']]],
         ['Ativar e trocar', [['disp','Confirmar ativação'],['proc','Em processamento'],['troca','Confirmar troca'],['insuf','Faltam fichas'],['trilha','Trilha concluída']]],
