@@ -128,9 +128,9 @@ add('s3',8,"""
 # 4 fichas
 add('s4',7,'''
     #s4-all{position:absolute;inset:0}
-    #s4-txt{position:absolute;left:170px;top:210px;width:920px}
-    #s4-h{font-size:104px}
-    #s4-num{display:flex;align-items:flex-end;gap:26px;margin-top:90px}
+    #s4-txt{position:absolute;left:170px;top:150px;width:920px}
+    #s4-h{font-size:96px}
+    #s4-num{display:flex;align-items:flex-end;gap:26px;margin-top:70px}
     #s4-n{font-size:260px;font-weight:900;letter-spacing:-.05em;line-height:.85;min-width:300px}
     #s4-u{font-size:60px;font-weight:700;padding-bottom:14px}
     #s4-bar{height:22px;border-radius:12px;background:rgba(255,255,255,.12);margin-top:40px;overflow:hidden;width:820px}
@@ -138,7 +138,7 @@ add('s4',7,'''
     #s4-ph{position:absolute;right:210px;top:70px;height:940px;border-radius:64px;box-shadow:0 50px 120px rgba(0,0,0,.6)}
 ''','''    <div id="s4-all" class="clip" data-start="0" data-duration="7" data-track-index="0">
       <div id="s4-txt">
-        <div id="s4-h" class="h">Cada conquista<br>vira <span class="y">fichas.</span></div>
+        <div id="s4-h" class="h">Cada avanço na<br>sua jornada vira<br><span class="y">fichas.</span></div>
         <div id="s4-num"><div id="s4-n">0</div><div id="s4-u">fichas</div></div>
         <div id="s4-bar"><div id="s4-fill"></div></div>
       </div>
@@ -266,21 +266,82 @@ add('s5',12.6,"""
       allocate(1, 4.9, 0, 10, 0, 10, 15, 5);
       allocate(2, 8.0, 10, 5, 10, 15, 5, 0);""")
 
-# 6 trocar
-add('s6',7,'''
+# 6 trocar: um benefício sai, as fichas voltam para o saldo e vão para outro
+LX,RX,CYc,WX,WY=510,1410,740,960,452
+out=''.join(f'<i class="s6-f" id="s6-o{k}" style="left:{LX-13}px;top:{CYc-13}px"></i>' for k in range(10))
+inn=''.join(f'<i class="s6-f" id="s6-i{k}" style="left:{WX-13}px;top:{WY-13}px"></i>' for k in range(10))
+def card(cid,x,name,unit,v0,v1,c0,c1):
+    return f"""<div class="s6-c" id="s6-{cid}" style="left:{x}px"><i class="s6-g" id="s6-{cid}g"></i>
+        <div class="s6-n">{name}<em>{unit}</em></div>
+        <div class="s6-v"><div id="s6-{cid}v0">{v0}</div><div id="s6-{cid}v1">{v1}</div></div>
+        <div class="s6-ch"><span id="s6-{cid}c0">{c0}</span><span id="s6-{cid}c1">{c1}</span></div></div>"""
+add('s6',8.4,"""
     #s6-all{position:absolute;inset:0}
-    #s6-h{position:absolute;left:170px;top:300px;width:900px;font-size:104px}
-    #s6-s{position:absolute;left:170px;top:680px;font-size:44px;color:#A3A3A8;width:820px;line-height:1.3}
-    #s6-ph{position:absolute;right:210px;top:70px;height:940px;border-radius:64px;box-shadow:0 50px 120px rgba(0,0,0,.6)}
-''','''    <div id="s6-all" class="clip" data-start="0" data-duration="7" data-track-index="0">
+    #s6-h{position:absolute;left:170px;top:100px;font-size:88px;width:1500px}
+    #s6-w{position:absolute;left:740px;top:400px;width:440px;height:104px;border-radius:999px;border:4px solid #7BE3A8;color:#7BE3A8;font-size:42px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:16px;background:#0f1512}
+    #s6-wn{font-size:60px;font-weight:900;color:#F4F4F2;min-width:76px;text-align:center}
+    .s6-c{position:absolute;top:570px;width:680px;height:350px;border-radius:48px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.1);padding:40px 50px;overflow:hidden}
+    .s6-g{position:absolute;inset:0;border-radius:46px;border:5px solid #FFC709;background:rgba(255,199,9,.1)}
+    .s6-n{position:relative;font-size:42px;font-weight:700}
+    .s6-n em{font-style:normal;font-weight:400;color:#A3A3A8;margin-left:16px}
+    .s6-v{position:relative;height:140px;margin-top:10px;overflow:hidden}
+    .s6-v div{position:absolute;left:0;top:0;font-size:128px;font-weight:900;letter-spacing:-.04em;line-height:140px;white-space:nowrap}
+    .s6-ch{position:relative;height:60px;margin-top:22px}
+    .s6-ch span{position:absolute;left:0;top:0;height:60px;line-height:60px;border-radius:999px;padding:0 28px;font-size:30px;font-weight:700;white-space:nowrap}
+    .s6-f{position:absolute;width:26px;height:26px;border-radius:50%;background:#7BE3A8;box-shadow:0 0 22px rgba(123,227,168,.95);opacity:0}
+    #s6-rp{position:absolute;left:"""+str(RX-60)+"""px;top:"""+str(CYc-60)+"""px;width:120px;height:120px;border-radius:50%;border:6px solid #FFC709;opacity:0}
+    .on{background:#FFC709;color:#000} .off{border:3px solid #6E6E75;color:#A3A3A8;line-height:54px!important}
+""",f"""    <div id="s6-all" class="clip" data-start="0" data-duration="8.4" data-track-index="0">
       <div id="s6-h" class="h">Troque quando quiser.<br><span class="y">As fichas voltam.</span></div>
-      <div id="s6-s">Investback, Salas VIP, Cofre XP e Corretagem zero, cada um na sua régua.</div>
-      <img id="s6-ph" src="assets/usar-ativo.png" alt="">
-    </div>''',
-'''      tl.fromTo("#s6-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.2);
-      tl.fromTo("#s6-ph", { opacity: 0, y: 160, scale: 1 }, { opacity: 1, y: 0, scale: 1, duration: 1.0, ease: "power3.out" }, 0.4);
-      tl.fromTo("#s6-s", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 1.6);
-      tl.fromTo("#s6-ph", { scale: 1 }, { scale: 1.06, duration: 4.6, ease: "none", immediateRender: false }, 1.6);''')
+      {card('a',170,'Cofre XP','% do CDI','<span class="y">110%</span>','100%','10 fichas em uso','Incluído').replace('id="s6-ac0"','id="s6-ac0" class="on"').replace('id="s6-ac1"','id="s6-ac1" class="off"')}
+      {card('b',1070,'Investback','no cartão','<span class="mut">Sem</span>','<span class="y">1,0%</span>','10 fichas','10 fichas em uso').replace('id="s6-bc0"','id="s6-bc0" class="off"').replace('id="s6-bc1"','id="s6-bc1" class="on"')}
+      <div id="s6-w">Disponíveis <span id="s6-wn">5</span></div>
+      <i id="s6-rp"></i>
+      {out}{inn}
+    </div>""",
+"""      const LX = 510, RX = 1410, CY = 740, WX = 960, WY = 452, wn = document.querySelector("#s6-wn");
+      tl.fromTo("#s6-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.15);
+      tl.fromTo("#s6-a", { opacity: 0, y: 70 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.5);
+      tl.fromTo("#s6-b", { opacity: 0, y: 70 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.62);
+      tl.fromTo("#s6-w", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(2)" }, 0.85);
+      // estados iniciais do que entra depois
+      tl.fromTo(["#s6-av1", "#s6-bv1"], { yPercent: 110 }, { yPercent: 110, duration: 0.01 }, 0);
+      tl.fromTo(["#s6-ac1", "#s6-bc1", "#s6-bg"], { opacity: 0 }, { opacity: 0, duration: 0.01 }, 0);
+
+      function fly(prefix, dx, dy, t) {
+        for (let k = 0; k < 10; k++) {
+          const id = prefix + k, d = t + k * 0.05, sx = ((k % 5) - 2) * 26, sy = (k < 5 ? -1 : 1) * 16;
+          tl.fromTo(id, { x: sx, opacity: 0, scale: 0.4 }, { x: dx, opacity: 1, scale: 1, duration: 0.7, ease: "power2.inOut", immediateRender: false }, d);
+          tl.fromTo(id, { y: sy }, { y: dy, duration: 0.7, ease: dy < 0 ? "power2.out" : "power2.in", immediateRender: false }, d);
+          tl.fromTo(id, { opacity: 1 }, { opacity: 0, duration: 0.06, immediateRender: false }, d + 0.7);
+        }
+      }
+      function count(from, to, t) { const c = { v: from };
+        tl.fromTo(c, { v: from }, { v: to, duration: 0.75, ease: "none", immediateRender: false, onUpdate: () => { wn.textContent = Math.round(c.v); } }, t);
+        tl.fromTo("#s6-w", { scale: 1 }, { scale: 1.08, duration: 0.16, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, t + 0.6); }
+
+      // 1. sai do Cofre XP: o cartão apaga, volta a 100% e as fichas sobem para o saldo
+      const t1 = 2.2;
+      tl.fromTo("#s6-a", { scale: 1 }, { scale: 0.97, duration: 0.12, yoyo: true, repeat: 1, immediateRender: false }, t1);
+      tl.fromTo("#s6-ag", { opacity: 1 }, { opacity: 0, duration: 0.35 }, t1);
+      tl.fromTo("#s6-av0", { yPercent: 0 }, { yPercent: -110, duration: 0.25, ease: "power2.in" }, t1);
+      tl.fromTo("#s6-av1", { yPercent: 110 }, { yPercent: 0, duration: 0.45, ease: "back.out(1.6)", immediateRender: false }, t1 + 0.15);
+      tl.fromTo("#s6-ac0", { opacity: 1 }, { opacity: 0, duration: 0.2 }, t1);
+      tl.fromTo("#s6-ac1", { opacity: 0 }, { opacity: 1, duration: 0.25, immediateRender: false }, t1 + 0.15);
+      fly("#s6-o", WX - LX, WY - CY, t1 + 0.05);
+      count(5, 15, t1 + 0.6);
+
+      // 2. entra no Investback: as fichas descem do saldo, o cartão acende e o número troca
+      const t2 = 4.6, hit = t2 + 0.95;
+      fly("#s6-i", RX - WX, CY - WY, t2);
+      count(15, 5, t2);
+      tl.fromTo("#s6-bg", { opacity: 0 }, { opacity: 1, duration: 0.2, immediateRender: false }, hit);
+      tl.fromTo("#s6-b", { scale: 1 }, { scale: 1.03, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, hit);
+      tl.fromTo("#s6-rp", { scale: 1, opacity: 0.9 }, { scale: 5, opacity: 0, duration: 0.7, ease: "power2.out", immediateRender: false }, hit);
+      tl.fromTo("#s6-bv0", { yPercent: 0 }, { yPercent: -110, duration: 0.22, ease: "power2.in" }, hit - 0.05);
+      tl.fromTo("#s6-bv1", { yPercent: 110 }, { yPercent: 0, duration: 0.45, ease: "back.out(1.8)", immediateRender: false }, hit + 0.1);
+      tl.fromTo("#s6-bc0", { opacity: 1 }, { opacity: 0, duration: 0.2 }, hit);
+      tl.fromTo("#s6-bc1", { opacity: 0 }, { opacity: 1, duration: 0.25, immediateRender: false }, hit + 0.1);""")
 
 # 8 fecho
 random.seed(7); dots=[]; djs=[]
