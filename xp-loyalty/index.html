@@ -712,7 +712,7 @@ const BEH = [
   { id:'cred',   ctx:3, nome:'Crédito', pts:2, need:true, como:'Se você já tem um plano que precisa de crédito, contratar na XP também conta fichas.', cta:'Contar o que eu preciso' },
   { id:'cons',   ctx:3, nome:'Consórcio', pts:2, need:true, como:'Se você planeja comprar um bem sem pressa, o consórcio também conta fichas.', cta:'Contar o que eu preciso' },
   { id:'seg',    ctx:3, nome:'Seguros', pts:2, como:'Proteja o que é importante para você: vida, casa ou celular.', esforco:'Compare coberturas e preços antes de decidir.', cta:'Ver seguros' },
-  { id:'segcc',  ctx:3, nome:'Seguro Conta e Cartão', pts:1, optional:true, como:'Proteção para transações na conta e no cartão.', esforco:'Contratação pelo app, em poucos passos.', cta:'Ver o seguro' },
+  { id:'segcc',  ctx:3, nome:'Seguro Conta e Cartão', pts:1, optional:true, como:'Proteção para transações na conta e no cartão.', esforco:'Contratação rápida, direto pelo app.', cta:'Ver o seguro' },
 ];
 const beh = id => BEH.find(b => b.id === id);
 
@@ -820,7 +820,7 @@ function trailCheck(){
   S.goalWas = met;
   if (fire){ S.sheet = {t:'trailDone'}; S.fx = true; renderPhone(); }
 }
-// sugestões de próximo passo, na ordem pensada para o perfil
+// sugestões de próxima ação, na ordem pensada para o perfil
 function suggestions(n = 3){
   const out = [];
   for (const id of PROFILES[S.prof].rec){
@@ -952,14 +952,14 @@ function goalCard(){
 function welcome(){
   const waves = Array.from({length: 16}, (_, i) => `<path d="M-20 ${40 + i * 13} C 90 ${-10 + i * 13}, 210 ${110 + i * 11}, 420 ${10 + i * 15}"/>`).join('');
   const steps = [['Planeje sua vida financeira', 'Enxergue tudo o que você tem em um só lugar.'], ['Comece a poupar', 'Guarde um pouco todo mês, no seu ritmo.'],
-    ['Otimize seu dia a dia', 'Faça o seu dinheiro do mês render mais.'], ['Acelere e proteja seus planos', 'Dê os passos maiores quando fizer sentido.']];
+    ['Otimize seu dia a dia', 'Faça o seu dinheiro do mês render mais.'], ['Acelere e proteja seus planos', 'Vá mais longe quando fizer sentido para você.']];
   return `<div class="wel"><svg class="art" viewBox="0 0 400 230" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-opacity=".32" stroke-width="1.1">${waves}</svg>
     <div class="wtop"><div class="logo">XP</div><span>Jornada XP</span><button class="back" data-a="enter" aria-label="Fechar">×</button></div>
-    <h2>Sua vida financeira, um passo de cada vez.</h2>
-    <p class="wlead">A Jornada XP acompanha você no caminho para o sucesso financeiro. Cada passo que você dá vira benefício.</p>
+    <h2>Sua vida financeira, uma conquista de cada vez.</h2>
+    <p class="wlead">A Jornada XP acompanha você no caminho para o sucesso financeiro. Cada avanço seu vira benefício.</p>
     <div class="wpath">${steps.map(([t, d], i) => `<div class="wst" style="--i:${i}"><i></i><div><b>${t}</b><span>${d}</span></div></div>`).join('')}</div>
     <div style="flex:1;min-height:14px"></div>
-    <p class="wfoot">Cada passo vale fichas. Com elas, você escolhe os benefícios que quer ativar.</p>
+    <p class="wfoot">Cada conquista vale fichas. Com elas, você escolhe os benefícios que quer ativar.</p>
     <button class="btn" data-a="enter">Começar minha jornada</button></div>`;
 }
 
@@ -1173,7 +1173,7 @@ function juntar(){
     const right = b.dyn ? `<span class="rv ${p ? 'on' : ''}">${p} de ${max}</span>` : full ? `<span class="rv on">${pt(p)}</span>` : b.need ? '' : `<span class="rv">+${b.pts}</span>`;
     return `<button class="li" data-a="beh:${b.id}">${mark}<div class="g"><b>${b.nome}</b><span>${sub}</span></div>${right}<span class="chev">›</span></button>`; };
   return `
-    ${t === 0 ? `<div class="note" style="margin-top:14px">Fichas vêm do que você faz na XP: guardar, usar o cartão, pagar contas. Comece por um dos passos abaixo.</div>` : ''}
+    ${t === 0 ? `<div class="note" style="margin-top:14px">Fichas vêm do que você faz na XP: guardar, usar o cartão, pagar contas. Comece por uma das ações abaixo.</div>` : ''}
 
     <h3 class="sec" style="margin-top:14px">Momentos da sua jornada</h3>
     ${CTX.map((cx, i) => { const bs = list.filter(b => b.ctx === i), earned = bs.reduce((a, b) => a + behPts(b), 0), tot = bs.reduce((a, b) => a + mx(b), 0);
@@ -1277,7 +1277,7 @@ function sheet(){
   }
   else if (s.t === 'behDone'){
     const b = beh(s.id), g = S.goal && fam(S.goal.fam) ? { f: fam(S.goal.fam), o: optOf(S.goal.fam, S.goal.opt), m: missing(S.goal.fam, S.goal.opt) } : null;
-    h = `${burst()}<div class="ctr"><div class="okc">✓</div><h2>+${pt(b.pts)}</h2><p>Passo concluído: ${b.nome}.</p></div>
+    h = `${burst()}<div class="ctr"><div class="okc">✓</div><h2>+${pt(b.pts)}</h2><p>Conquista: ${b.nome}.</p></div>
       ${g && g.m ? `<div class="card"><div class="row">${ring((g.o.price - g.m) / g.o.price, `<span>${Math.round((g.o.price - g.m) / g.o.price * 100)}%</span>`)}<div class="g"><div class="xs mut b">SUA TRILHA RECOMENDADA</div><div class="b">${g.f.nome} · ${g.o.label}</div><div class="xs mut">Faltam ${pt(g.m)}.</div></div></div></div>` : ''}
       <button class="btn" data-a="close">Continuar</button>`;
   }
@@ -1410,7 +1410,7 @@ const HIPOTESES = [
   ['Fichas', 'Apuração mensal: o saldo total é recalculado a cada ciclo conforme o comportamento. Não há acúmulo nem validade no protótipo.'],
   ['Saldo', 'O medidor mostra as fichas do cliente contra o total possível (48 na régua ilustrativa): em uso, disponíveis e a conquistar. O total é a soma dos tetos de todos os desafios e muda com a calibração.'],
   ['Saldo', 'Fichas travadas: ficam em uso enquanto o benefício está ativo e voltam ao desativar. Uma opção ativa por família.'],
-  ['Saldo', 'Na troca dentro da família, as fichas da opção atual são liberadas e as da nova entram em uso, em um só passo.'],
+  ['Saldo', 'Na troca dentro da família, as fichas da opção atual são liberadas e as da nova entram em uso, de uma vez só.'],
   ['Prateleira', 'Cofre XP Turbo 110/115/125% do CDI por 10/15/30 fichas. Sem fichas, o Cofre XP rende 100% do CDI, já incluído.'],
   ['Prateleira', 'Investback turbinado é a taxa total do cartão. One: 0,8%, 1,0% ou 1,1% por 5, 10 ou 15 (os preços de 1,0% e 1,1% subiram 5 fichas para abrir espaço ao 0,8%). Infinite: 1,2% ou 1,5% por 10 ou 15.'],
   ['Prateleira', 'Corretagem zero em três faixas, todas com fichas: 3, 6 ou 9 ordens por mês por 5, 10 ou 15 fichas (ilustrativo). Nenhuma ordem é incluída.'],
@@ -1423,8 +1423,8 @@ const HIPOTESES = [
   ['Elegibilidade', 'Queda de patrimônio com Infinite ativo: o cartão segue ativo, com aviso prévio antes de qualquer mudança. No B, pode manter com fichas.'],
   ['Cofre XP', 'Quem já tinha Cofre XP antes do Loyalty entra com 110% do CDI. Três alternativas de transição: preservar sem fichas, carência até 30/04/2027, ou migração imediata para fichas.'],
   ['Recomendação', 'A ordem das sugestões é definida por perfil. Crédito e consórcio nunca aparecem como sugestão: só no catálogo, com a necessidade antes e as condições à vista.'],
-  ['Vocabulário', 'Na aba Juntar, os quatro grupos são momentos da jornada financeira e cada item é um passo. "Desafio" saiu; "trilha" fica reservada ao caminho até um benefício.'],
-  ['Trilha', 'O cliente pode seguir a trilha de um benefício e acompanhar no resumo quanto falta e quais passos sugeridos levam até lá.'],
+  ['Vocabulário', 'Na aba Juntar, os quatro grupos são momentos da jornada financeira e cada item é uma ação que, concluída, vira conquista. "Desafio" e "passo" saíram ("passo" remete ao programa do Itaú); "trilha" fica reservada ao caminho até um benefício.'],
+  ['Trilha', 'O cliente pode seguir a trilha de um benefício e acompanhar no resumo quanto falta e quais ações sugeridas levam até lá.'],
   ['Vocabulário', 'Das telas de Design: fichas (evita confusão com os pontos do cartão), Em uso e Disponíveis, Juntar e Usar, trilha para desbloquear.'],
   ['Vocabulário', 'Mantidos do briefing e diferentes das telas: taxas 110/115/125% e preços 10/15/30 (telas: 110% por 5 e 120% por 15), Infinite por 10 fichas (telas: 15), quatro contextos de earn (telas: seis).'],
 ];
