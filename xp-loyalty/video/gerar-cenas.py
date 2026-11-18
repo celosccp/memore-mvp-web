@@ -117,13 +117,13 @@ add('s3',6.2,"""
 """ + chr(10).join(sjs))
 
 # 4 fichas: cada avanço solta fichas, que voam até o contador
-A=[('Conectar outras contas',3),('Aporte recorrente',3),('Receber o salário na XP',5),('Usar o cartão no dia a dia',4)]
+A=[('Usar o cartão no dia a dia',15),('Receber o salário na XP',5),('Conectar outras contas',3),('Aporte recorrente',3),('Planejamento financeiro',3),('Câmbio',1)]
 NX,NYc,CXL=330,745,1080
 rows4=''; fly4=''; k0=0
 for i_,(t,n) in enumerate(A):
-    y=215+i_*166
+    y=150+i_*132
     rows4+=f'<div class="s4-r" id="s4-r{i_}" style="top:{y}px"><i class="s4-ck" id="s4-ck{i_}">✓</i><b>{t}</b><span id="s4-p{i_}">+{n}</span></div>'
-    fly4+=''.join(f'<i class="s4-f" id="s4-f{k0+q}" style="left:{CXL+40}px;top:{y+58}px"></i>' for q in range(n)); k0+=n
+    fly4+=''.join(f'<i class="s4-f" id="s4-f{k0+q}" style="left:{CXL+40}px;top:{y+43}px"></i>' for q in range(n)); k0+=n
 add('s4',6.9,"""
     #s4-all{position:absolute;inset:0}
     #s4-txt{position:absolute;left:170px;top:150px;width:860px}
@@ -133,10 +133,10 @@ add('s4',6.9,"""
     #s4-u{font-size:60px;font-weight:700;padding-bottom:14px}
     #s4-bar{height:22px;border-radius:12px;background:rgba(255,255,255,.12);margin-top:40px;overflow:hidden;width:760px}
     #s4-fill{height:100%;width:100%;background:#7BE3A8;border-radius:12px;transform-origin:0 50%}
-    .s4-r{position:absolute;left:1080px;width:670px;height:142px;border-radius:38px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:26px;padding:0 36px}
-    .s4-r b{flex:1;font-size:42px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
-    .s4-r span{font-size:46px;font-weight:900;color:#7BE3A8}
-    .s4-ck{flex:none;width:58px;height:58px;border-radius:50%;background:#FFC709;color:#000;font-style:normal;font-weight:900;font-size:34px;display:flex;align-items:center;justify-content:center}
+    .s4-r{position:absolute;left:1080px;width:670px;height:112px;border-radius:32px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:26px;padding:0 36px}
+    .s4-r b{flex:1;font-size:38px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+    .s4-r span{font-size:42px;font-weight:900;color:#7BE3A8}
+    .s4-ck{flex:none;width:50px;height:50px;border-radius:50%;background:#FFC709;color:#000;font-style:normal;font-weight:900;font-size:30px;display:flex;align-items:center;justify-content:center}
     .s4-f{position:absolute;width:26px;height:26px;border-radius:50%;background:#7BE3A8;box-shadow:0 0 22px rgba(123,227,168,.95);opacity:0}
 """,f"""    <div id="s4-all" class="clip" data-start="0" data-duration="6.9" data-track-index="0">
       <div id="s4-txt">
@@ -146,40 +146,40 @@ add('s4',6.9,"""
       </div>
       {rows4}{fly4}
     </div>""",
-"""      const A = [3, 3, 5, 4], n = document.querySelector("#s4-n"), NX = 330, NY = 745, SXc = 1120;
+"""      const A = [15, 5, 3, 3, 3, 1], n = document.querySelector("#s4-n"), NX = 330, NY = 745, SXc = 1120;
       tl.fromTo("#s4-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.05);
       tl.fromTo(["#s4-num", "#s4-bar"], { opacity: 0 }, { opacity: 1, duration: 0.35 }, 0.35);
       tl.fromTo("#s4-fill", { scaleX: 0 }, { scaleX: 0, duration: 0.01 }, 0);
       let acc = 0, k0 = 0;
       A.forEach((q, i) => {
-        const t = 0.7 + i * 1.2, y0 = 215 + i * 166 + 71, from = acc, to = acc + q, c = { v: from };
+        const t = 0.6 + i * 0.85, y0 = 150 + i * 132 + 56, from = acc, to = acc + q, c = { v: from };
         tl.fromTo("#s4-r" + i, { opacity: 0, x: 120 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, t);
         tl.fromTo("#s4-ck" + i, { scale: 0 }, { scale: 1, duration: 0.35, ease: "back.out(3)" }, t + 0.35);
         tl.fromTo("#s4-p" + i, { scale: 1 }, { scale: 1.35, duration: 0.15, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, t + 0.45);
         for (let m = 0; m < q; m++) {
-          const id = "#s4-f" + (k0 + m), d = t + 0.5 + m * 0.07;
+          const id = "#s4-f" + (k0 + m), d = t + 0.4 + m * 0.03;
           tl.fromTo(id, { x: 0, opacity: 0, scale: 0.4 }, { x: NX - SXc, opacity: 1, scale: 1, duration: 0.6, ease: "power2.in", immediateRender: false }, d);
           tl.fromTo(id, { y: 0 }, { y: NY - y0, duration: 0.6, ease: "power1.inOut", immediateRender: false }, d);
           tl.fromTo(id, { opacity: 1 }, { opacity: 0, duration: 0.06, immediateRender: false }, d + 0.6);
         }
-        const hit = t + 1.1;
-        tl.fromTo(c, { v: from }, { v: to, duration: 0.07 * q + 0.05, ease: "none", immediateRender: false, onUpdate: () => { n.textContent = Math.round(c.v); } }, hit);
+        const hit = t + 1.0;
+        tl.fromTo(c, { v: from }, { v: to, duration: 0.03 * q + 0.05, ease: "none", immediateRender: false, onUpdate: () => { n.textContent = Math.round(c.v); } }, hit);
         tl.fromTo("#s4-n", { scale: 1 }, { scale: 1.08, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, hit);
         tl.fromTo("#s4-fill", { scaleX: from / 51 }, { scaleX: to / 51, duration: 0.4, ease: "power2.out", immediateRender: false }, hit);
         acc = to; k0 += q;
       });""")
 
 # 5 régua: o rolo para no Cofre XP, o nome vira o título do cartão e as fichas voam até o ponto escolhido
-REEL=['Investback','Salas VIP','Corretagem zero','Cofre XP']*3
+REEL=['Investback','Salas VIP','Corretagem zero','Cofre XP']*2
 reel=''.join(f'<div>{t}</div>' for t in REEL)
 X0,W,NY,SX,SY=322,1276,770,1493,484
 nodes=''.join(f'<div class="s5-n" id="s5-n{i}" style="left:{p}%"><i id="s5-d{i}"></i><b>{t}</b><span>{c}</span></div>' for i,(p,t,c) in enumerate([(0,'100%','Incluído'),(33.333,'110%','10 fichas'),(66.666,'115%','15 fichas'),(100,'125%','30 fichas')]))
-fly=''.join(f'<i class="s5-f" id="s5-f{k}"></i>' for k in range(15))
+fly=''.join(f'<i class="s5-f" id="s5-f{k}"></i>' for k in range(30))
 fx=''
-for n in (1,2):
+for n in (1,2,3):
     x=round(X0+W*n/3)
     fx+=f'<i class="s5-rp" id="s5-rp{n}" style="left:{x-28}px;top:{NY-28}px"></i>'+''.join(f'<i class="s5-k" id="s5-k{n}-{k}" style="left:{x-6}px;top:{NY-6}px"></i>' for k in range(12))
-add('s5',9.9,"""
+add('s5',10.0,"""
     #s5-all{position:absolute;inset:0}
     #s5-h{position:absolute;left:170px;top:110px;font-size:88px;width:1500px}
     #s5-reel{position:absolute;left:170px;right:170px;top:345px;height:570px;overflow:hidden}
@@ -210,7 +210,7 @@ add('s5',9.9,"""
     .s5-f{position:absolute;left:"""+str(SX-11)+"""px;top:"""+str(SY-11)+"""px;width:26px;height:26px;border-radius:50%;background:#7BE3A8;box-shadow:0 0 22px rgba(123,227,168,.95);opacity:0}
     .s5-rp{position:absolute;width:56px;height:56px;border-radius:50%;border:5px solid #FFC709;opacity:0}
     .s5-k{position:absolute;width:12px;height:12px;border-radius:50%;background:#FFC709;opacity:0}
-""",f"""    <div id="s5-all" class="clip" data-start="0" data-duration="9.9" data-track-index="0">
+""",f"""    <div id="s5-all" class="clip" data-start="0" data-duration="10.0" data-track-index="0">
       <div id="s5-h" class="h">Com fichas, você escolhe<br>o que <span class="y">turbinar.</span></div>
       <div id="s5-reel" data-layout-allow-overflow><div id="s5-col">{reel}</div><div class="s5-fade" id="s5-ft"></div><div class="s5-fade" id="s5-fb"></div></div>
       <div class="s5-bar" id="s5-b1l"></div><div class="s5-bar" id="s5-b2l"></div>
@@ -218,8 +218,8 @@ add('s5',9.9,"""
         <div id="s5-sheen"></div>
         <div id="s5-t"><span id="s5-tn">Cofre XP</span><em id="s5-te">% do CDI</em></div>
         <div class="s5-chip" id="s5-uso">Em uso <span id="s5-un">0</span></div>
-        <div class="s5-chip" id="s5-disp">Disponíveis <span id="s5-dn">15</span></div>
-        <div id="s5-big"><div id="s5-b0">100%</div><div id="s5-b1" class="y" data-layout-ignore>110%</div><div id="s5-b2" class="y" data-layout-ignore>115%</div></div>
+        <div class="s5-chip" id="s5-disp">Disponíveis <span id="s5-dn">30</span></div>
+        <div id="s5-big"><div id="s5-b0">100%</div><div id="s5-b1" class="y" data-layout-ignore>110%</div><div id="s5-b2" class="y" data-layout-ignore>115%</div><div id="s5-b3" class="y" data-layout-ignore>125%</div></div>
         <div id="s5-rg"><div id="s5-track"></div><div id="s5-fill"></div>{nodes}</div>
       </div>
       <div id="s5-land">Cofre XP</div>
@@ -233,33 +233,37 @@ add('s5',9.9,"""
       // 1. rolo: três linhas à vista, só a do meio em foco; gira borrado, desacelera e trava com um tranco
       tl.fromTo("#s5-reel", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 0.25);
       tl.fromTo(".s5-bar", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 0.25);
-      tl.fromTo("#s5-col", { y: 190, filter: "blur(14px)" }, { y: 190 - 190 * 11, filter: "blur(0px)", duration: 1.75, ease: "back.out(0.9)" }, 0.3);
-      tl.fromTo("#s5-land", { opacity: 0 }, { opacity: 1, duration: 0.01 }, 2.05);
-      tl.fromTo("#s5-land", { scale: 1.12 }, { scale: 1, duration: 0.3, ease: "back.out(3)" }, 2.05);
-      tl.fromTo("#s5-col", { opacity: 1 }, { opacity: 0, duration: 0.01, immediateRender: false }, 2.05);
-      tl.fromTo("#s5-reel", { opacity: 1 }, { opacity: 0, duration: 0.2, immediateRender: false }, 2.15);
+      // gira, desacelera até quase parar em "Corretagem zero", hesita e dá o último clique até "Cofre XP"
+      tl.fromTo("#s5-col", { y: 190, filter: "blur(10px)" }, { y: 190 - 190 * 6, filter: "blur(0px)", duration: 1.9, ease: "power2.out" }, 0.3);
+      tl.fromTo("#s5-col", { y: 190 - 190 * 6 }, { y: 190 - 190 * 6 - 26, duration: 0.3, ease: "sine.inOut", immediateRender: false }, 2.2);
+      tl.fromTo("#s5-col", { y: 190 - 190 * 6 - 26 }, { y: 190 - 190 * 7, duration: 0.42, ease: "back.out(2.4)", immediateRender: false }, 2.5);
+      tl.fromTo("#s5-land", { opacity: 0 }, { opacity: 1, duration: 0.01 }, 2.95);
+      tl.fromTo("#s5-land", { scale: 1.12 }, { scale: 1, duration: 0.3, ease: "back.out(3)" }, 2.95);
+      tl.fromTo("#s5-col", { opacity: 1 }, { opacity: 0, duration: 0.01, immediateRender: false }, 2.95);
+      tl.fromTo("#s5-reel", { opacity: 1 }, { opacity: 0, duration: 0.2, immediateRender: false }, 3.05);
 
       // 2. o nome escolhido encolhe e vira o título do cartão, que se abre a partir da faixa do rolo
-      tl.fromTo(".s5-bar", { opacity: 1 }, { opacity: 0, duration: 0.25, immediateRender: false }, 2.65);
-      tl.fromTo("#s5-card", { opacity: 0, scaleY: 0.36 }, { opacity: 1, scaleY: 1, duration: 0.55, ease: "power4.out" }, 2.65);
-      tl.fromTo("#s5-land", { x: 0, y: 0, scale: 1, color: "#FFC709" }, { x: 92, y: -83, scale: 0.2933, color: "#F4F4F2", duration: 0.55, ease: "power4.inOut", immediateRender: false }, 2.65);
-      tl.fromTo("#s5-tn", { opacity: 0 }, { opacity: 1, duration: 0.01 }, 3.2);
-      tl.fromTo("#s5-land", { opacity: 1 }, { opacity: 0, duration: 0.01, immediateRender: false }, 3.2);
-      tl.fromTo("#s5-te", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 3.2);
-      tl.fromTo("#s5-track", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 3.0);
-      for (let i = 0; i < 4; i++) tl.fromTo("#s5-n" + i, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(2)" }, 3.1 + i * 0.07);
-      tl.fromTo("#s5-b0", { yPercent: 110 }, { yPercent: 0, duration: 0.5, ease: "back.out(1.5)" }, 3.15);
-      tl.fromTo(["#s5-uso", "#s5-disp"], { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out", stagger: 0.1 }, 3.3);
-      tl.fromTo("#s5-d0", unlit, lit, 3.65);
+      tl.fromTo(".s5-bar", { opacity: 1 }, { opacity: 0, duration: 0.25, immediateRender: false }, 3.55);
+      tl.fromTo("#s5-card", { opacity: 0, scaleY: 0.36 }, { opacity: 1, scaleY: 1, duration: 0.55, ease: "power4.out" }, 3.55);
+      tl.fromTo("#s5-land", { x: 0, y: 0, scale: 1, color: "#FFC709" }, { x: 92, y: -83, scale: 0.2933, color: "#F4F4F2", duration: 0.55, ease: "power4.inOut", immediateRender: false }, 3.55);
+      tl.fromTo("#s5-tn", { opacity: 0 }, { opacity: 1, duration: 0.01 }, 4.1);
+      tl.fromTo("#s5-land", { opacity: 1 }, { opacity: 0, duration: 0.01, immediateRender: false }, 4.1);
+      tl.fromTo("#s5-te", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 4.1);
+      tl.fromTo("#s5-track", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 3.9);
+      for (let i = 0; i < 4; i++) tl.fromTo("#s5-n" + i, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(2)" }, 4.0 + i * 0.07);
+      tl.fromTo("#s5-b0", { yPercent: 110 }, { yPercent: 0, duration: 0.5, ease: "back.out(1.5)" }, 4.05);
+      tl.fromTo(["#s5-uso", "#s5-disp"], { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out", stagger: 0.1 }, 4.2);
+      tl.fromTo("#s5-d0", unlit, lit, 4.55);
       tl.fromTo("#s5-fill", { scaleX: 0 }, { scaleX: 0, duration: 0.01 }, 0);
       tl.fromTo("#s5-b1", { yPercent: 110 }, { yPercent: 110, duration: 0.01 }, 0);
       tl.fromTo("#s5-b2", { yPercent: 110 }, { yPercent: 110, duration: 0.01 }, 0);
+      tl.fromTo("#s5-b3", { yPercent: 110 }, { yPercent: 110, duration: 0.01 }, 0);
       tl.fromTo("#s5-sheen", { x: -400, skewX: -20 }, { x: -400, skewX: -20, duration: 0.01 }, 0);
 
       // 3. alocar: as fichas disponíveis voam até o ponto, a barra avança e o impacto troca o número
       function allocate(n, t, first, count, usoFrom, usoTo, dispFrom, dispTo) {
         for (let i = 0; i < count; i++) {
-          const id = "#s5-f" + (first + i), d = t + i * 0.055;
+          const id = "#s5-f" + (first + i), d = t + i * (count > 10 ? 0.035 : 0.055);
           tl.fromTo(id, { x: 0, opacity: 0, scale: 0.4 }, { x: nodeX(n) - SX, opacity: 1, scale: 1, duration: 0.7, ease: "power1.inOut", immediateRender: false }, d);
           tl.fromTo(id, { y: 0 }, { y: NY - SY, duration: 0.7, ease: "power2.in", immediateRender: false }, d);
           tl.fromTo(id, { opacity: 1 }, { opacity: 0, duration: 0.06, immediateRender: false }, d + 0.7);
@@ -281,8 +285,9 @@ add('s5',9.9,"""
         tl.fromTo("#s5-b" + n, { yPercent: 110 }, { yPercent: 0, duration: 0.45, ease: "back.out(1.8)", immediateRender: false }, hit + 0.1);
         tl.fromTo("#s5-uso", { scale: 1 }, { scale: 1.1, duration: 0.14, yoyo: true, repeat: 1, immediateRender: false }, hit);
       }
-      allocate(1, 4.1, 0, 10, 0, 10, 15, 5);
-      allocate(2, 6.6, 10, 5, 10, 15, 5, 0);""")
+      allocate(1, 4.75, 0, 10, 0, 10, 30, 20);
+      allocate(2, 6.15, 10, 5, 10, 15, 20, 15);
+      allocate(3, 7.55, 15, 15, 15, 30, 15, 0);""")
 
 # 6 trocar: um benefício sai, as fichas voltam para o saldo e vão para outro
 LX,RX,CYc,WX,WY=510,1410,740,960,452
@@ -311,9 +316,9 @@ add('s6',6.3,"""
     .on{background:#FFC709;color:#000} .off{border:3px solid #6E6E75;color:#A3A3A8;line-height:54px!important}
 """,f"""    <div id="s6-all" class="clip" data-start="0" data-duration="6.3" data-track-index="0">
       <div id="s6-h" class="h">Troque quando quiser.<br><span class="y">As fichas voltam.</span></div>
-      {card('a',170,'Cofre XP','% do CDI','<span class="y">110%</span>','100%','10 fichas em uso','Incluído').replace('id="s6-ac0"','id="s6-ac0" class="on"').replace('id="s6-ac1"','id="s6-ac1" class="off"')}
-      {card('b',1070,'Investback','no cartão','<span class="mut">Sem</span>','<span class="y">1,0%</span>','10 fichas','10 fichas em uso').replace('id="s6-bc0"','id="s6-bc0" class="off"').replace('id="s6-bc1"','id="s6-bc1" class="on"')}
-      <div id="s6-w">Disponíveis <span id="s6-wn">5</span></div>
+      {card('a',170,'Cofre XP','% do CDI','<span class="y">125%</span>','100%','30 fichas em uso','Incluído').replace('id="s6-ac0"','id="s6-ac0" class="on"').replace('id="s6-ac1"','id="s6-ac1" class="off"')}
+      {card('b',1070,'Investback','no cartão','1%','<span class="y">1,5%</span>','Incluído','15 fichas em uso').replace('id="s6-bc0"','id="s6-bc0" class="off"').replace('id="s6-bc1"','id="s6-bc1" class="on"')}
+      <div id="s6-w">Disponíveis <span id="s6-wn">0</span></div>
       <i id="s6-rp"></i>
       {out}{inn}
     </div>""",
@@ -347,12 +352,12 @@ add('s6',6.3,"""
       tl.fromTo("#s6-ac0", { opacity: 1 }, { opacity: 0, duration: 0.2 }, t1);
       tl.fromTo("#s6-ac1", { opacity: 0 }, { opacity: 1, duration: 0.25, immediateRender: false }, t1 + 0.15);
       fly("#s6-o", WX - LX, WY - CY, t1 + 0.05);
-      count(5, 15, t1 + 0.6);
+      count(0, 30, t1 + 0.6);
 
       // 2. entra no Investback: as fichas descem do saldo, o cartão acende e o número troca
       const t2 = 3.4, hit = t2 + 0.95;
       fly("#s6-i", RX - WX, CY - WY, t2);
-      count(15, 5, t2);
+      count(30, 15, t2);
       tl.fromTo("#s6-bg", { opacity: 0 }, { opacity: 1, duration: 0.2, immediateRender: false }, hit);
       tl.fromTo("#s6-b", { scale: 1 }, { scale: 1.03, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, hit);
       tl.fromTo("#s6-rp", { scale: 1, opacity: 0.9 }, { scale: 5, opacity: 0, duration: 0.7, ease: "power2.out", immediateRender: false }, hit);

@@ -28,13 +28,13 @@
       <div id="s6-h" class="h">Troque quando quiser.<br><span class="y">As fichas voltam.</span></div>
       <div class="s6-c" id="s6-a" style="left:170px"><i class="s6-g" id="s6-ag"></i>
         <div class="s6-n">Cofre XP<em>% do CDI</em></div>
-        <div class="s6-v"><div id="s6-av0"><span class="y">110%</span></div><div id="s6-av1" data-layout-ignore>100%</div></div>
-        <div class="s6-ch"><span id="s6-ac0" class="on">10 fichas em uso</span><span id="s6-ac1" class="off">Incluído</span></div></div>
+        <div class="s6-v"><div id="s6-av0"><span class="y">125%</span></div><div id="s6-av1" data-layout-ignore>100%</div></div>
+        <div class="s6-ch"><span id="s6-ac0" class="on">30 fichas em uso</span><span id="s6-ac1" class="off">Incluído</span></div></div>
       <div class="s6-c" id="s6-b" style="left:1070px"><i class="s6-g" id="s6-bg"></i>
         <div class="s6-n">Investback<em>no cartão</em></div>
-        <div class="s6-v"><div id="s6-bv0"><span class="mut">Sem</span></div><div id="s6-bv1" data-layout-ignore><span class="y">1,0%</span></div></div>
-        <div class="s6-ch"><span id="s6-bc0" class="off">10 fichas</span><span id="s6-bc1" class="on">10 fichas em uso</span></div></div>
-      <div id="s6-w">Disponíveis <span id="s6-wn">5</span></div>
+        <div class="s6-v"><div id="s6-bv0">1%</div><div id="s6-bv1" data-layout-ignore><span class="y">1,5%</span></div></div>
+        <div class="s6-ch"><span id="s6-bc0" class="off">Incluído</span><span id="s6-bc1" class="on">15 fichas em uso</span></div></div>
+      <div id="s6-w">Disponíveis <span id="s6-wn">0</span></div>
       <i id="s6-rp"></i>
       <i class="s6-f" id="s6-o0" style="left:497px;top:727px"></i><i class="s6-f" id="s6-o1" style="left:497px;top:727px"></i><i class="s6-f" id="s6-o2" style="left:497px;top:727px"></i><i class="s6-f" id="s6-o3" style="left:497px;top:727px"></i><i class="s6-f" id="s6-o4" style="left:497px;top:727px"></i><i class="s6-f" id="s6-o5" style="left:497px;top:727px"></i><i class="s6-f" id="s6-o6" style="left:497px;top:727px"></i><i class="s6-f" id="s6-o7" style="left:497px;top:727px"></i><i class="s6-f" id="s6-o8" style="left:497px;top:727px"></i><i class="s6-f" id="s6-o9" style="left:497px;top:727px"></i><i class="s6-f" id="s6-i0" style="left:947px;top:439px"></i><i class="s6-f" id="s6-i1" style="left:947px;top:439px"></i><i class="s6-f" id="s6-i2" style="left:947px;top:439px"></i><i class="s6-f" id="s6-i3" style="left:947px;top:439px"></i><i class="s6-f" id="s6-i4" style="left:947px;top:439px"></i><i class="s6-f" id="s6-i5" style="left:947px;top:439px"></i><i class="s6-f" id="s6-i6" style="left:947px;top:439px"></i><i class="s6-f" id="s6-i7" style="left:947px;top:439px"></i><i class="s6-f" id="s6-i8" style="left:947px;top:439px"></i><i class="s6-f" id="s6-i9" style="left:947px;top:439px"></i>
     </div>
@@ -72,12 +72,12 @@
       tl.fromTo("#s6-ac0", { opacity: 1 }, { opacity: 0, duration: 0.2 }, t1);
       tl.fromTo("#s6-ac1", { opacity: 0 }, { opacity: 1, duration: 0.25, immediateRender: false }, t1 + 0.15);
       fly("#s6-o", WX - LX, WY - CY, t1 + 0.05);
-      count(5, 15, t1 + 0.6);
+      count(0, 30, t1 + 0.6);
 
       // 2. entra no Investback: as fichas descem do saldo, o cartão acende e o número troca
       const t2 = 3.4, hit = t2 + 0.95;
       fly("#s6-i", RX - WX, CY - WY, t2);
-      count(15, 5, t2);
+      count(30, 15, t2);
       tl.fromTo("#s6-bg", { opacity: 0 }, { opacity: 1, duration: 0.2, immediateRender: false }, hit);
       tl.fromTo("#s6-b", { scale: 1 }, { scale: 1.03, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, hit);
       tl.fromTo("#s6-rp", { scale: 1, opacity: 0.9 }, { scale: 5, opacity: 0, duration: 0.7, ease: "power2.out", immediateRender: false }, hit);
