@@ -111,9 +111,14 @@ add('s4',7,'''
 
 # 5 regua
 nodes=''.join(f'<div class="s5-n" style="left:{p}%"><i id="s5-d{i}"></i><b>{t}</b><span id="s5-s{i}">{s}</span></div>' for i,(p,t,s) in enumerate([(0,'100%','Incluído'),(33.333,'110%','10 fichas'),(66.666,'115%','15 fichas'),(100,'125%','30 fichas')]))
-add('s5',11,'''
+REEL=['Investback','Salas VIP','Corretagem zero','Cofre XP']*3
+reel=''.join(f'<div>{t}</div>' for t in REEL)
+add('s5',12.6,'''
     #s5-all{position:absolute;inset:0;padding:110px 170px}
     #s5-h{font-size:88px;max-width:1500px}
+    #s5-reel{position:absolute;left:170px;right:170px;top:520px;height:230px;overflow:hidden;border-top:3px solid rgba(255,255,255,.14);border-bottom:3px solid rgba(255,255,255,.14)}
+    #s5-col div{height:230px;line-height:230px;font-size:170px;font-weight:900;letter-spacing:-.04em;white-space:nowrap}
+    #s5-col div:last-child{color:#FFC709}
     #s5-card{position:absolute;left:170px;right:170px;top:400px;height:540px;border-radius:56px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.08);padding:56px 90px}
     #s5-t{font-size:44px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
     #s5-t em{font-style:normal;font-weight:400;color:#A3A3A8;margin-left:18px}
@@ -130,6 +135,7 @@ add('s5',11,'''
     .s5-n span{display:block;font-size:28px;color:#A3A3A8;margin-top:4px}
 ''',f'''    <div id="s5-all" class="clip" data-start="0" data-duration="11" data-track-index="0">
       <div id="s5-h" class="h">Com fichas, você escolhe<br>o que <span class="y">turbinar.</span></div>
+      <div id="s5-reel" data-layout-allow-overflow><div id="s5-col">{reel}</div></div>
       <div id="s5-card">
         <div id="s5-t"><div>Cofre XP<em>% do CDI</em></div><div id="s5-chips"><span id="s5-c0" class="s5-chip">Incluído</span><span id="s5-c1" class="s5-chip">10 fichas em uso</span><span id="s5-c2" class="s5-chip">15 fichas em uso</span></div></div>
         <div id="s5-big"><div id="s5-b0">100%</div><div id="s5-b1" class="y">110%</div><div id="s5-b2" class="y">115%</div></div>
@@ -138,22 +144,26 @@ add('s5',11,'''
     </div>''',
 '''      const on = { backgroundColor: "#FFC709", borderColor: "#FFC709", duration: 0.3 }, off0 = { backgroundColor: "#1e1b17", borderColor: "#6E6E75" };
       tl.fromTo("#s5-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.2);
-      tl.fromTo("#s5-card", { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: 0.9, ease: "power3.out" }, 0.7);
-      tl.fromTo("#s5-d0", off0, on, 1.4);
-      tl.fromTo("#s5-fill", { scaleX: 0 }, { scaleX: 0.3333, duration: 1.3, ease: "power3.inOut" }, 3.0);
-      tl.fromTo("#s5-d1", off0, on, 4.0);
-      tl.fromTo("#s5-d1", { scale: 1 }, { scale: 1.35, duration: 0.25, yoyo: true, repeat: 1, ease: "power2.out" }, 4.0);
-      tl.fromTo("#s5-fill", { scaleX: 0.3333 }, { scaleX: 0.6667, duration: 1.3, ease: "power3.inOut", immediateRender: false }, 6.4);
-      tl.fromTo("#s5-d2", off0, on, 7.4);
-      tl.fromTo("#s5-d2", { scale: 1 }, { scale: 1.35, duration: 0.25, yoyo: true, repeat: 1, ease: "power2.out" }, 7.4);
-      tl.fromTo("#s5-b1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 4.0);
-      tl.fromTo("#s5-b0", { opacity: 1 }, { opacity: 0, duration: 0.3 }, 3.9);
-      tl.fromTo("#s5-b2", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 7.4);
-      tl.fromTo("#s5-b1", { opacity: 1 }, { opacity: 0, duration: 0.3, immediateRender: false }, 7.3);
-      tl.fromTo("#s5-c0", { opacity: 1 }, { opacity: 0, duration: 0.25 }, 3.9);
-      tl.fromTo("#s5-c1", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 4.0);
-      tl.fromTo("#s5-c1", { opacity: 1 }, { opacity: 0, duration: 0.25, immediateRender: false }, 7.3);
-      tl.fromTo("#s5-c2", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 7.4);''')
+      // rolo de benefícios: gira rápido, desacelera e para no Cofre XP
+      tl.fromTo("#s5-reel", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.6);
+      tl.fromTo("#s5-col", { y: 0 }, { y: -230 * 11, duration: 1.7, ease: "power3.out" }, 0.6);
+      tl.fromTo("#s5-reel", { opacity: 1, y: 0 }, { opacity: 0, y: -60, duration: 0.3, ease: "power2.in", immediateRender: false }, 2.75);
+      tl.fromTo("#s5-card", { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 3.0);
+      tl.fromTo("#s5-d0", off0, on, 3.3);
+      tl.fromTo("#s5-fill", { scaleX: 0 }, { scaleX: 0.3333, duration: 1.3, ease: "power3.inOut" }, 4.9);
+      tl.fromTo("#s5-d1", off0, on, 5.9);
+      tl.fromTo("#s5-d1", { scale: 1 }, { scale: 1.35, duration: 0.25, yoyo: true, repeat: 1, ease: "power2.out" }, 5.9);
+      tl.fromTo("#s5-fill", { scaleX: 0.3333 }, { scaleX: 0.6667, duration: 1.3, ease: "power3.inOut", immediateRender: false }, 8.3);
+      tl.fromTo("#s5-d2", off0, on, 9.3);
+      tl.fromTo("#s5-d2", { scale: 1 }, { scale: 1.35, duration: 0.25, yoyo: true, repeat: 1, ease: "power2.out" }, 9.3);
+      tl.fromTo("#s5-b1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 5.9);
+      tl.fromTo("#s5-b0", { opacity: 1 }, { opacity: 0, duration: 0.3 }, 5.8);
+      tl.fromTo("#s5-b2", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 9.3);
+      tl.fromTo("#s5-b1", { opacity: 1 }, { opacity: 0, duration: 0.3, immediateRender: false }, 9.2);
+      tl.fromTo("#s5-c0", { opacity: 1 }, { opacity: 0, duration: 0.25 }, 5.8);
+      tl.fromTo("#s5-c1", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 5.9);
+      tl.fromTo("#s5-c1", { opacity: 1 }, { opacity: 0, duration: 0.25, immediateRender: false }, 9.2);
+      tl.fromTo("#s5-c2", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 9.3);''')
 
 # 6 trocar
 add('s6',7,'''
