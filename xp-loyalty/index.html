@@ -905,7 +905,7 @@ function banners(){
   if (cardAtRisk()) B('warn', '!', `Seu patrimônio está abaixo de ${brl(P.corte)}`, 'Seu XP Infinite continua ativo por enquanto. Veja como manter.', 'sheet:lossCard', 'Ver como manter');
   if (S.released) B('ok', '✓', `${pt(S.released)} voltaram para o seu saldo`, `Você chegou a ${brl(P.corte)} investidos. Seu XP Infinite agora vem do seu patrimônio.`, 'sheet:transB', 'Entender a mudança');
   if (elig() && S.inf === 'none') B('y', '★', 'Você já pode pedir o Cartão XP Infinite', `Você chegou a ${brl(P.corte)} investidos. O pedido é feito por você, quando quiser.`, 'go:pacote', 'Ver o cartão e pedir');
-  if (S.inf === 'requested') B('', '…', 'XP Infinite em análise', 'Você continua com o XP One até o novo cartão ser ativado.', 'go:pacote', 'Acompanhar');
+  if (S.inf === 'requested') B('', '…', 'XP Infinite em emissão', 'Você continua com o XP One até o novo cartão ser ativado.', 'go:pacote', 'Acompanhar');
   if (S.ibNotice) B('', 'i', `${pt(S.ibNotice.price)} voltaram para o seu saldo`, `Seu cartão mudou. ${S.ibNotice.sv ? 'A opção de Sala VIP' : 'O Investback turbinado de ' + S.ibNotice.label.split(' ')[0]} era do cartão anterior e foi encerrado.`, 'ibnotice', 'Escolher a opção do novo cartão');
   if (S.legacy && !S.active.cofrinho) B('', 'i', 'Seu Cofre XP na Jornada XP', legacyCopy().short, 'sheet:legacy', 'Entender');
   return out.join('');
@@ -976,7 +976,7 @@ function pkCard(k){
   else if (cur){
     tag = infByPoints() ? chip(`${pt(P.infPts)} em uso`, 'use') : chip('Incluído · não usa fichas', 'y');
     sub = infByPoints() ? 'É seu enquanto as fichas estiverem em uso' : `É seu por ter ${brl(P.corte)} ou mais investidos`;
-  } else if (S.inf === 'requested'){ tag = chip('<i class="spin"></i> Em análise', 'y'); sub = 'Você segue com o XP One até a ativação'; }
+  } else if (S.inf === 'requested'){ tag = chip('<i class="spin"></i> Emitindo', 'y'); sub = 'Você segue com o XP One até a ativação'; }
   else if (elig()){ tag = chip('Desbloqueado · você já pode pedir', 'av'); sub = `Liberado pelos seus ${brl(S.auc)} investidos`; }
   else {
     tag = chip(I.lock + ' Bloqueado', 'ghost');
@@ -1009,7 +1009,7 @@ function pacote(){
   const c = activeCard(), ib = investbackNow(), inf = S.inf;
   const show = (inf === 'none' && !elig()) ? 'one' : (inf === 'active' ? 'infinite' : 'one');
   const stepIdx = inf === 'active' ? 2 : inf === 'requested' ? 1 : (elig() || S.scen === 'B') ? 0 : -1;
-  const steps = ['Pode pedir', 'Pedido em análise', 'Cartão ativo'].map((s, i) => `<div class="${i < stepIdx ? 'done' : i === stepIdx ? 'now' : ''}">${s}</div>`).join('');
+  const steps = ['Pode pedir', 'Emitindo', 'Cartão ativo'].map((s, i) => `<div class="${i < stepIdx ? 'done' : i === stepIdx ? 'now' : ''}">${s}</div>`).join('');
   let cta = '', routes = '';
   if (inf === 'none'){
     routes = `<h3 class="sec">Como ter o XP Infinite</h3><div class="card">
@@ -1023,7 +1023,7 @@ function pacote(){
     else if (S.scen === 'B') cta = available() >= P.infPts ? `<button class="btn" data-a="sheet:infPts">Pedir o XP Infinite com ${pt(P.infPts)}</button>`
       : `<button class="btn sec" data-a="go:juntar">Ver como ganhar fichas</button>`;
   } else if (inf === 'requested'){
-    cta = `<div class="note">Seu pedido está em análise. Você continua usando o XP One normalmente e avisamos quando o Infinite for ativado.${infByPoints() ? ` ${pt(P.infPts)} estão reservadas para este pedido.` : ''}</div>`;
+    cta = `<div class="note">Seu pedido está em emissão. Você continua usando o XP One normalmente e avisamos quando o Infinite for ativado.${infByPoints() ? ` ${pt(P.infPts)} estão reservadas para este pedido.` : ''}</div>`;
   } else if (infByPoints()){
     cta = `<div class="note">Seu acesso ao Infinite usa ${pt(P.infPts)} enquanto seu patrimônio estiver abaixo de ${brl(P.corte)}. Faltam ${brl(P.corte - S.auc)} para essas fichas voltarem para o seu saldo.</div>
       <button class="btn ghost" data-a="sheet:infOff">Voltar para o XP One e liberar ${pt(P.infPts)}</button>`;
@@ -1111,14 +1111,14 @@ function shelf(){
   let inf = '';
   if (!solo){
     const fi = families('infinite'), Fi = id => fi.find(f => f.id === id), can = S.scen === 'B' && S.inf === 'none' && !elig() && available() >= P.infPts;
-    const tag = S.inf === 'requested' ? chip('<i class="spin"></i> Em análise', 'y') : elig() ? chip('Desbloqueado', 'av') : chip(I.lock + ' Bloqueado', 'ghost');
-    const foot = S.inf === 'requested' ? '' : elig() ? `<span class="tb" style="display:inline-block;margin-top:12px">Pedir o XP Infinite ›</span>`
+    const tag = S.inf === 'requested' ? chip('<i class="spin"></i> Emitindo', 'y') : elig() ? chip('Desbloqueado', 'av') : chip(I.lock + ' Bloqueado', 'ghost');
+    const foot = S.inf === 'requested' ? '' : elig() ? `<span class="tb" style="display:inline-block;margin-top:12px" data-a="sheet:infReq">Pedir o Cartão XP Infinite ›</span>`
       : `<div class="prog" style="margin:9px 0 4px;height:4px"><i style="width:${S.auc / P.corte * 100}%"></i></div><div class="xs mut">Faltam ${brl(P.corte - S.auc)} investidos${S.scen === 'B' && !can ? ` · ou ${pt(P.infPts)}` : ''}</div>${can ? `<span class="tb" style="display:inline-block;margin-top:8px" data-a="sheet:infPts">Pedir com ${pt(P.infPts)} ›</span>` : ''}`;
     inf = `<div class="pk2 ${S.inf === 'none' && !elig() ? 'lock' : ''}" role="button" tabindex="0" data-a="go:pacote">
       <div class="row">${plast('infinite')}<div class="g"><div class="b" style="font-size:16px;white-space:nowrap">Cartão XP Infinite</div></div>${tag}</div>
       ${foot}${lrow(Fi('investback'), 'Investback')}${lrow(Fi('salavip'), 'Salas VIP')}</div>`;
   }
-  const infState = S.inf === 'requested' ? 'Em análise' : elig() ? 'Você já pode pedir' : S.auc >= P.corte * 0.6 ? `Faltam ${brl(P.corte - S.auc)}` : 'Bloqueado';
+  const infState = S.inf === 'requested' ? 'Emitindo' : elig() ? 'Você já pode pedir' : S.auc >= P.corte * 0.6 ? `Faltam ${brl(P.corte - S.auc)}` : 'Bloqueado';
   const peek = solo ? '' : idx === 0
     ? `<button class="peek infinite" data-a="pk:1"><i class="pp" style="width:${S.inf === 'none' && !elig() ? Math.min(100, S.auc / P.corte * 100) : 100}%"></i><b>CARTÃO XP INFINITE</b><span class="pt">${S.inf === 'none' && !elig() ? I.lock : ''}${infState}</span></button>`
     : `<button class="peek one" data-a="pk:0"><b>CARTÃO XP ONE</b><span class="pt">Seu cartão</span></button>`;
@@ -1296,19 +1296,17 @@ function sheet(){
     const ib = S.active.investback && optOf('investback', S.active.investback.opt);
     h = `<h2>Pedir o XP Infinite</h2><p>Com ${brl(P.corte)} ou mais investidos, você pode pedir o XP Infinite sem usar fichas.</p>
       <div class="swap"><div><small>Hoje</small><b>XP One</b><span>Investback com fichas</span></div><div class="mut">→</div><div class="new"><small style="color:var(--ya)">Novo</small><b>XP Infinite</b><span>Investback 1% incluído</span></div></div>
-      <div class="card"><div class="kv"><span>Fichas usadas</span><span>Nenhuma</span></div><div class="kv"><span>Enquanto o pedido é analisado</span><span>Você segue com o XP One</span></div></div>
+      <div class="card"><div class="kv"><span>Fichas usadas</span><span>Nenhuma</span></div><div class="kv"><span>Emissão</span><span>Na hora, você já está aprovado</span></div></div>
       ${ib ? `<div class="note">Seu ${ib.label} é do XP One. Quando o Infinite for ativado, ele é encerrado e os ${pt(ib.price)} voltam para o saldo.</div>` : ''}
       <button class="btn" data-a="infreq:patrimonio">Pedir o XP Infinite</button><button class="btn ghost" data-a="close">Agora não</button>`;
   }
   else if (s.t === 'infAsk'){
-    h = `<div class="ctr"><div class="okc wait"><i class="spin"></i></div><h2>Pedido recebido</h2><p>Seu XP Infinite está em análise. Você continua usando o XP One até o novo cartão ser ativado.${infByPoints() ? ` ${pt(P.infPts)} foram reservadas.` : ''}</p></div>
-      <div class="card"><div class="steps"><div class="done">Pode pedir</div><div class="now">Pedido em análise</div><div>Cartão ativo</div></div></div>
-      <button class="btn" data-a="home">Voltar para os benefícios</button>`;
+    h = `<div class="ctr"><div class="okc wait"><i class="spin"></i></div><h2>Emitindo seu Cartão XP Infinite</h2><p>É rápido.</p></div>`;
   }
   else if (s.t === 'infOn'){
-    h = `${burst()}<div class="ctr"><div class="okc">✓</div><h2>Seu XP Infinite está ativo</h2><p>Seu cartão agora é o XP Infinite, com Investback de 1%.</p></div>
+    h = `${burst()}<div class="ctr"><div class="okc">✓</div><h2>Seu Cartão XP Infinite está a caminho</h2><p>Pedido aprovado. Os benefícios do Infinite já valem a partir de agora, e o cartão físico chega no seu endereço.</p></div>
       ${S.ibNotice ? `<div class="note">Seu ${S.ibNotice.label} era do XP One e foi encerrado. ${pt(S.ibNotice.price)} voltaram para o saldo.</div>` : ''}
-      <button class="btn" data-a="go:pacote">Ver meu cartão</button><button class="btn ghost" data-a="openfam:investback">Ver Investback turbinado do Infinite</button>`;
+      <button class="btn" data-a="home">Ver meus benefícios</button><button class="btn ghost" data-a="go:pacote">Ver todos os benefícios do cartão</button>`;
   }
   else if (s.t === 'infOff'){
     h = `<h2>Voltar para o XP One?</h2><p>Você deixa o XP Infinite e os ${pt(P.infPts)} voltam para o seu saldo.</p>${saldoRows(P.infPts, 0)}
@@ -1406,7 +1404,7 @@ const HIPOTESES = [
   ['Sala VIP', 'Como no Investback, o número escolhido é o total de acessos do ano, não um extra.'],
   ['Pacotes', 'O cartão mostra o que já vale e, logo abaixo, até onde dá para chegar com fichas (ex.: Investback 1%, até 1,5% com fichas).'],
   ['Pacotes', 'Abaixo do corte, o Infinite aparece bloqueado no carrossel, com o que falta para desbloquear.'],
-  ['Pacotes', 'Atingir o corte libera o pedido do Infinite. O cartão só muda depois de pedido, análise e ativação: três estados separados na tela.'],
+  ['Pacotes', 'Atingir o corte libera o pedido do Infinite. Quem vê o botão de pedir já está pré-aprovado: ao pedir, o cartão é emitido na hora, os benefícios passam a valer e o cartão físico é enviado. Não há etapa de análise visível ao cliente.'],
   ['Fichas', 'Cartão: 1 ficha a cada R$ 500 de gasto no mês, até 15. Patrimônio: 0 ficha até R$ 30 mil e 1 ficha a cada R$ 5 mil completos acima disso, até 10.'],
   ['Fichas', 'Demais comportamentos com pontuação ilustrativa: Open Finance 3, aporte recorrente 3, previdência 3, pagamentos 2, salário 5, câmbio 1, crédito 2, consórcio 2, seguros 2, Seguro Conta e Cartão 1.'],
   ['Fichas', 'Apuração mensal: o saldo total é recalculado a cada ciclo conforme o comportamento. Não há acúmulo nem validade no protótipo.'],
@@ -1465,7 +1463,6 @@ function renderPanel(){
       <p class="hint">Seletor só da demonstração. O cliente verá uma única regra.</p>
       <h2>Tema do app</h2>
       <div class="seg"><button class="${S.theme === 'light' ? 'on' : ''}" data-a="theme:light">Claro</button><button class="${S.theme === 'dark' ? 'on' : ''}" data-a="theme:dark">Escuro</button></div>
-      ${S.inf === 'requested' ? `<button class="pbtn hot" data-a="approve">Simular: XP Infinite aprovado e ativo<small>O pedido está em análise no app</small></button>` : ''}
       ${proc ? `<button class="pbtn hot" data-a="finish">Concluir ativação em processamento</button>` : ''}
       <h2>Simular comportamento</h2>
       <div class="seg" style="margin-bottom:12px"><button class="${S.inf !== 'active' ? 'on' : ''}" data-a="card:one">Tem o XP One</button><button class="${S.inf === 'active' ? 'on' : ''}" data-a="card:infinite">Tem o XP Infinite</button></div>
@@ -1554,7 +1551,8 @@ function act(a){
     case 'simbeh': S.done[x] = true; S.fx = true; S.sheet = {t:'behDone', id:x}; break;
     case 'cond': S.cond = true; break;
     case 'noop': break;
-    case 'infreq': S.inf = 'requested'; S.infVia = x; S.seen.req = true; S.sheet = {t:'infAsk'}; break;
+    case 'infreq': S.inf = 'requested'; S.infVia = x; S.seen.req = true; S.sheet = {t:'infAsk'};
+      timers.push(setTimeout(() => { if (S.inf === 'requested'){ setInfActive(); render(); } }, 1300)); break;
     case 'approve': setInfActive(); break;
     case 'infoff': S.inf = 'none'; S.infVia = null; go('home'); break;
     case 'keepinf': S.infVia = 'fichas'; S.sheet = null; break;
