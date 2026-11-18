@@ -19,7 +19,7 @@ def scene(sid,dur,css,html,js):
     (function(){{
       const tl = gsap.timeline({{ paused: true }});
 {js}
-      tl.fromTo("#{sid}-all", {{ opacity: 1 }}, {{ opacity: 0, duration: 0.45, ease: "power2.in" }}, {dur-0.55});
+      tl.fromTo("#{sid}-all", {{ opacity: 1 }}, {{ opacity: 0, duration: 0.22, ease: "power2.in" }}, {round(dur-0.27,2)});
       window.__timelines["{sid}"] = tl;
     }})();
   </script>
@@ -30,20 +30,20 @@ def add(sid,dur,css,html,js): SC.append((sid,dur)); scene(sid,dur,css,html,js)
 
 # 1 abertura
 waves=''.join(f'<path id="s1-w{i}" d="M-40 {160+i*46} C 420 {20+i*46}, 980 {420+i*40}, 1980 {80+i*52}" pathLength="1" stroke-dasharray="1" />' for i in range(14))
-add('s1',5,'''
+add('s1',2.8,'''
     #s1-all{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:44px}
     #s1-art{position:absolute;inset:0;width:100%;height:100%}
     #s1-logo{width:190px;height:158px;border-radius:30px;background:#fff;color:#111;font-weight:900;font-size:84px;letter-spacing:-.05em;display:flex;align-items:center;justify-content:center}
     #s1-name{font-size:120px}
 ''',f'''    <svg id="s1-art" viewBox="0 0 1920 1080" fill="none" stroke="#FFC709" stroke-opacity=".3" stroke-width="2">{waves}</svg>
-    <div id="s1-all" class="clip" data-start="0" data-duration="5" data-track-index="0">
+    <div id="s1-all" class="clip" data-start="0" data-duration="2.8" data-track-index="0">
       <div id="s1-logo">XP</div>
       <div id="s1-name" class="h" data-var-text="programa">Jornada XP</div>
     </div>''',
-'''      for (let i = 0; i < 14; i++) tl.fromTo("#s1-w" + i, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 2.2, ease: "power2.out" }, 0.05 * i);
-      tl.fromTo("#s1-logo", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.7, ease: "back.out(1.7)" }, 0.5);
-      tl.fromTo("#s1-name", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 1.1);
-      tl.fromTo("#s1-art", { opacity: 1 }, { opacity: 0, duration: 0.45 }, 4.45);''')
+'''      for (let i = 0; i < 14; i++) tl.fromTo("#s1-w" + i, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.3, ease: "power2.out" }, 0.025 * i);
+      tl.fromTo("#s1-logo", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" }, 0.15);
+      tl.fromTo("#s1-name", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.45);
+      tl.fromTo("#s1-art", { opacity: 1 }, { opacity: 0, duration: 0.22 }, 2.53);''')
 
 # 3 momentos: quatro frentes em órbita da Jornada XP, sem começo nem fim
 M=[('Planeje sua vida financeira','Organize contas, gastos e objetivos.'),('Comece a poupar','Guarde um pouco todo mês, no seu ritmo.'),('Otimize seu dia a dia','Faça o dinheiro do mês render mais.'),('Acelere e proteja seus planos','Vá mais longe quando fizer sentido.')]
@@ -61,7 +61,7 @@ for k in range(46):
     if abs(x-CX)<330 and abs(y-CY)<200: continue
     stars+=f'<i class="s3-st" id="s3-st{k}" style="left:{x}px;top:{y}px;width:{z}px;height:{z}px"></i>'
     sjs.append(f'      tl.fromTo("#s3-st{k}", {{ opacity: 0 }}, {{ opacity: {random.choice([0.35,0.5,0.8])}, duration: {0.6+random.random():.2f}, yoyo: true, repeat: 3, ease: "sine.inOut" }}, {random.random()*1.8:.2f});')
-add('s3',8,"""
+add('s3',6.2,"""
     #s3-all{position:absolute;inset:0}
     #s3-cam{position:absolute;inset:0}
     #s3-glow{position:absolute;left:560px;top:140px;width:800px;height:800px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,199,9,.34),rgba(255,199,9,.08) 55%,rgba(255,199,9,0) 100%)}
@@ -76,7 +76,7 @@ add('s3',8,"""
     .s3-lw{position:absolute;width:540px;height:220px;display:flex;align-items:center}
     .s3-l b{display:block;font-size:50px;font-weight:900;letter-spacing:-.03em;line-height:1.06}
     .s3-l span{display:block;font-size:30px;color:#A3A3A8;margin-top:8px;line-height:1.25}
-""",f"""    <div id="s3-all" class="clip" data-start="0" data-duration="8" data-track-index="0">
+""",f"""    <div id="s3-all" class="clip" data-start="0" data-duration="6.2" data-track-index="0">
       <div id="s3-cam">
         <div id="s3-glow"></div>
         {stars}
@@ -92,25 +92,25 @@ add('s3',8,"""
       </div>
     </div>""",
 """      gsap.set(["#s3-out", "#s3-comet", "#s3-cam"], { transformOrigin: "960px 540px" });
-      tl.fromTo("#s3-glow", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 1.2, ease: "power2.out" }, 0);
-      tl.fromTo("#s3-k", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0.15);
-      tl.fromTo("#s3-h", { opacity: 0, scale: 0.6, filter: "blur(18px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.7, ease: "back.out(1.6)" }, 0.25);
-      tl.fromTo("#s3-s", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.8);
-      tl.fromTo("#s3-arc", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.3, ease: "power3.inOut" }, 0.4);
+      tl.fromTo("#s3-glow", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.8, ease: "power2.out" }, 0);
+      tl.fromTo("#s3-k", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0.05);
+      tl.fromTo("#s3-h", { opacity: 0, scale: 0.6, filter: "blur(18px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.6, ease: "back.out(1.6)" }, 0.1);
+      tl.fromTo("#s3-s", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.55);
+      tl.fromTo("#s3-arc", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.0, ease: "power3.inOut" }, 0.2);
       tl.fromTo("#s3-out", { opacity: 0, rotation: -20 }, { opacity: 1, rotation: 0, duration: 1.2, ease: "power2.out" }, 0.5);
-      tl.fromTo("#s3-out", { rotation: 0 }, { rotation: 40, duration: 6.3, ease: "none", immediateRender: false }, 1.7);
+      tl.fromTo("#s3-out", { rotation: 0 }, { rotation: 30, duration: 4.5, ease: "none", immediateRender: false }, 1.7);
       // cometa: dá voltas no anel, sem parar em ninguém
-      tl.fromTo("#s3-comet", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 1.5);
-      tl.fromTo("#s3-comet", { rotation: 0 }, { rotation: 620, duration: 6.4, ease: "none" }, 1.5);
+      tl.fromTo("#s3-comet", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 1.2);
+      tl.fromTo("#s3-comet", { rotation: 0 }, { rotation: 520, duration: 5.0, ease: "none" }, 1.2);
       // as frentes acendem fora de ordem: nenhuma é a primeira
       [2, 0, 3, 1].forEach((k, n) => {
-        const t = 1.0 + n * 0.28;
+        const t = 0.7 + n * 0.22;
         tl.fromTo("#s3-d" + k, { scale: 0 }, { scale: 1, duration: 0.5, ease: "back.out(2.6)" }, t);
         tl.fromTo("#s3-rp" + k, { scale: 1, opacity: 0.8 }, { scale: 3.4, opacity: 0, duration: 0.9, ease: "power2.out", immediateRender: false }, t + 0.05);
         tl.fromTo("#s3-l" + k, { opacity: 0, x: (k === 0 || k === 3) ? 50 : -50 }, { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" }, t + 0.1);
       });
       [1, 3, 0, 2].forEach((k, n) => {
-        const t = 3.3 + n * 0.95;
+        const t = 2.6 + n * 0.75;
         tl.fromTo("#s3-d" + k, { scale: 1 }, { scale: 1.32, duration: 0.3, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, t);
         tl.fromTo("#s3-rp" + k, { scale: 1, opacity: 0.7 }, { scale: 3, opacity: 0, duration: 0.8, ease: "power2.out", immediateRender: false }, t);
       });
@@ -124,7 +124,7 @@ for i_,(t,n) in enumerate(A):
     y=215+i_*166
     rows4+=f'<div class="s4-r" id="s4-r{i_}" style="top:{y}px"><i class="s4-ck" id="s4-ck{i_}">✓</i><b>{t}</b><span id="s4-p{i_}">+{n}</span></div>'
     fly4+=''.join(f'<i class="s4-f" id="s4-f{k0+q}" style="left:{CXL+40}px;top:{y+58}px"></i>' for q in range(n)); k0+=n
-add('s4',8.6,"""
+add('s4',6.9,"""
     #s4-all{position:absolute;inset:0}
     #s4-txt{position:absolute;left:170px;top:150px;width:860px}
     #s4-h{font-size:96px}
@@ -138,7 +138,7 @@ add('s4',8.6,"""
     .s4-r span{font-size:46px;font-weight:900;color:#7BE3A8}
     .s4-ck{flex:none;width:58px;height:58px;border-radius:50%;background:#FFC709;color:#000;font-style:normal;font-weight:900;font-size:34px;display:flex;align-items:center;justify-content:center}
     .s4-f{position:absolute;width:26px;height:26px;border-radius:50%;background:#7BE3A8;box-shadow:0 0 22px rgba(123,227,168,.95);opacity:0}
-""",f"""    <div id="s4-all" class="clip" data-start="0" data-duration="8.6" data-track-index="0">
+""",f"""    <div id="s4-all" class="clip" data-start="0" data-duration="6.9" data-track-index="0">
       <div id="s4-txt">
         <div id="s4-h" class="h">Cada avanço na<br>sua jornada vira<br><span class="y">fichas.</span></div>
         <div id="s4-num"><div id="s4-n">0</div><div id="s4-u">fichas</div></div>
@@ -147,12 +147,12 @@ add('s4',8.6,"""
       {rows4}{fly4}
     </div>""",
 """      const A = [3, 3, 5, 4], n = document.querySelector("#s4-n"), NX = 330, NY = 745, SXc = 1120;
-      tl.fromTo("#s4-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.15);
-      tl.fromTo(["#s4-num", "#s4-bar"], { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0.7);
+      tl.fromTo("#s4-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.05);
+      tl.fromTo(["#s4-num", "#s4-bar"], { opacity: 0 }, { opacity: 1, duration: 0.35 }, 0.35);
       tl.fromTo("#s4-fill", { scaleX: 0 }, { scaleX: 0, duration: 0.01 }, 0);
       let acc = 0, k0 = 0;
       A.forEach((q, i) => {
-        const t = 1.2 + i * 1.45, y0 = 215 + i * 166 + 71, from = acc, to = acc + q, c = { v: from };
+        const t = 0.7 + i * 1.2, y0 = 215 + i * 166 + 71, from = acc, to = acc + q, c = { v: from };
         tl.fromTo("#s4-r" + i, { opacity: 0, x: 120 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, t);
         tl.fromTo("#s4-ck" + i, { scale: 0 }, { scale: 1, duration: 0.35, ease: "back.out(3)" }, t + 0.35);
         tl.fromTo("#s4-p" + i, { scale: 1 }, { scale: 1.35, duration: 0.15, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, t + 0.45);
@@ -179,7 +179,7 @@ fx=''
 for n in (1,2):
     x=round(X0+W*n/3)
     fx+=f'<i class="s5-rp" id="s5-rp{n}" style="left:{x-28}px;top:{NY-28}px"></i>'+''.join(f'<i class="s5-k" id="s5-k{n}-{k}" style="left:{x-6}px;top:{NY-6}px"></i>' for k in range(12))
-add('s5',12.6,"""
+add('s5',9.9,"""
     #s5-all{position:absolute;inset:0}
     #s5-h{position:absolute;left:170px;top:110px;font-size:88px;width:1500px}
     #s5-reel{position:absolute;left:170px;right:170px;top:345px;height:570px;overflow:hidden}
@@ -210,7 +210,7 @@ add('s5',12.6,"""
     .s5-f{position:absolute;left:"""+str(SX-11)+"""px;top:"""+str(SY-11)+"""px;width:26px;height:26px;border-radius:50%;background:#7BE3A8;box-shadow:0 0 22px rgba(123,227,168,.95);opacity:0}
     .s5-rp{position:absolute;width:56px;height:56px;border-radius:50%;border:5px solid #FFC709;opacity:0}
     .s5-k{position:absolute;width:12px;height:12px;border-radius:50%;background:#FFC709;opacity:0}
-""",f"""    <div id="s5-all" class="clip" data-start="0" data-duration="12.6" data-track-index="0">
+""",f"""    <div id="s5-all" class="clip" data-start="0" data-duration="9.9" data-track-index="0">
       <div id="s5-h" class="h">Com fichas, você escolhe<br>o que <span class="y">turbinar.</span></div>
       <div id="s5-reel" data-layout-allow-overflow><div id="s5-col">{reel}</div><div class="s5-fade" id="s5-ft"></div><div class="s5-fade" id="s5-fb"></div></div>
       <div class="s5-bar" id="s5-b1l"></div><div class="s5-bar" id="s5-b2l"></div>
@@ -228,29 +228,29 @@ add('s5',12.6,"""
 """      const X0 = 322, W = 1276, NY = 770, SX = 1493, SY = 484, nodeX = n => X0 + W * n / 3;
       const un = document.querySelector("#s5-un"), dn = document.querySelector("#s5-dn");
       const lit = { backgroundColor: "#FFC709", borderColor: "#FFC709", duration: 0.2 }, unlit = { backgroundColor: "#1e1b17", borderColor: "#6E6E75" };
-      tl.fromTo("#s5-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.15);
+      tl.fromTo("#s5-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.05);
 
       // 1. rolo: três linhas à vista, só a do meio em foco; gira borrado, desacelera e trava com um tranco
-      tl.fromTo("#s5-reel", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 0.55);
-      tl.fromTo(".s5-bar", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 0.55);
-      tl.fromTo("#s5-col", { y: 190, filter: "blur(14px)" }, { y: 190 - 190 * 11, filter: "blur(0px)", duration: 1.75, ease: "back.out(0.9)" }, 0.6);
-      tl.fromTo("#s5-land", { opacity: 0 }, { opacity: 1, duration: 0.01 }, 2.35);
-      tl.fromTo("#s5-land", { scale: 1.12 }, { scale: 1, duration: 0.3, ease: "back.out(3)" }, 2.35);
-      tl.fromTo("#s5-col", { opacity: 1 }, { opacity: 0, duration: 0.01, immediateRender: false }, 2.35);
-      tl.fromTo("#s5-reel", { opacity: 1 }, { opacity: 0, duration: 0.2, immediateRender: false }, 2.45);
+      tl.fromTo("#s5-reel", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 0.25);
+      tl.fromTo(".s5-bar", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 0.25);
+      tl.fromTo("#s5-col", { y: 190, filter: "blur(14px)" }, { y: 190 - 190 * 11, filter: "blur(0px)", duration: 1.75, ease: "back.out(0.9)" }, 0.3);
+      tl.fromTo("#s5-land", { opacity: 0 }, { opacity: 1, duration: 0.01 }, 2.05);
+      tl.fromTo("#s5-land", { scale: 1.12 }, { scale: 1, duration: 0.3, ease: "back.out(3)" }, 2.05);
+      tl.fromTo("#s5-col", { opacity: 1 }, { opacity: 0, duration: 0.01, immediateRender: false }, 2.05);
+      tl.fromTo("#s5-reel", { opacity: 1 }, { opacity: 0, duration: 0.2, immediateRender: false }, 2.15);
 
       // 2. o nome escolhido encolhe e vira o título do cartão, que se abre a partir da faixa do rolo
-      tl.fromTo(".s5-bar", { opacity: 1 }, { opacity: 0, duration: 0.25, immediateRender: false }, 2.95);
-      tl.fromTo("#s5-card", { opacity: 0, scaleY: 0.36 }, { opacity: 1, scaleY: 1, duration: 0.55, ease: "power4.out" }, 2.95);
-      tl.fromTo("#s5-land", { x: 0, y: 0, scale: 1, color: "#FFC709" }, { x: 92, y: -83, scale: 0.2933, color: "#F4F4F2", duration: 0.55, ease: "power4.inOut", immediateRender: false }, 2.95);
-      tl.fromTo("#s5-tn", { opacity: 0 }, { opacity: 1, duration: 0.01 }, 3.5);
-      tl.fromTo("#s5-land", { opacity: 1 }, { opacity: 0, duration: 0.01, immediateRender: false }, 3.5);
-      tl.fromTo("#s5-te", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 3.5);
-      tl.fromTo("#s5-track", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 3.3);
-      for (let i = 0; i < 4; i++) tl.fromTo("#s5-n" + i, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(2)" }, 3.4 + i * 0.09);
-      tl.fromTo("#s5-b0", { yPercent: 110 }, { yPercent: 0, duration: 0.5, ease: "back.out(1.5)" }, 3.45);
-      tl.fromTo(["#s5-uso", "#s5-disp"], { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out", stagger: 0.1 }, 3.6);
-      tl.fromTo("#s5-d0", unlit, lit, 3.95);
+      tl.fromTo(".s5-bar", { opacity: 1 }, { opacity: 0, duration: 0.25, immediateRender: false }, 2.65);
+      tl.fromTo("#s5-card", { opacity: 0, scaleY: 0.36 }, { opacity: 1, scaleY: 1, duration: 0.55, ease: "power4.out" }, 2.65);
+      tl.fromTo("#s5-land", { x: 0, y: 0, scale: 1, color: "#FFC709" }, { x: 92, y: -83, scale: 0.2933, color: "#F4F4F2", duration: 0.55, ease: "power4.inOut", immediateRender: false }, 2.65);
+      tl.fromTo("#s5-tn", { opacity: 0 }, { opacity: 1, duration: 0.01 }, 3.2);
+      tl.fromTo("#s5-land", { opacity: 1 }, { opacity: 0, duration: 0.01, immediateRender: false }, 3.2);
+      tl.fromTo("#s5-te", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 3.2);
+      tl.fromTo("#s5-track", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 3.0);
+      for (let i = 0; i < 4; i++) tl.fromTo("#s5-n" + i, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(2)" }, 3.1 + i * 0.07);
+      tl.fromTo("#s5-b0", { yPercent: 110 }, { yPercent: 0, duration: 0.5, ease: "back.out(1.5)" }, 3.15);
+      tl.fromTo(["#s5-uso", "#s5-disp"], { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out", stagger: 0.1 }, 3.3);
+      tl.fromTo("#s5-d0", unlit, lit, 3.65);
       tl.fromTo("#s5-fill", { scaleX: 0 }, { scaleX: 0, duration: 0.01 }, 0);
       tl.fromTo("#s5-b1", { yPercent: 110 }, { yPercent: 110, duration: 0.01 }, 0);
       tl.fromTo("#s5-b2", { yPercent: 110 }, { yPercent: 110, duration: 0.01 }, 0);
@@ -281,8 +281,8 @@ add('s5',12.6,"""
         tl.fromTo("#s5-b" + n, { yPercent: 110 }, { yPercent: 0, duration: 0.45, ease: "back.out(1.8)", immediateRender: false }, hit + 0.1);
         tl.fromTo("#s5-uso", { scale: 1 }, { scale: 1.1, duration: 0.14, yoyo: true, repeat: 1, immediateRender: false }, hit);
       }
-      allocate(1, 4.9, 0, 10, 0, 10, 15, 5);
-      allocate(2, 8.0, 10, 5, 10, 15, 5, 0);""")
+      allocate(1, 4.1, 0, 10, 0, 10, 15, 5);
+      allocate(2, 6.6, 10, 5, 10, 15, 5, 0);""")
 
 # 6 trocar: um benefício sai, as fichas voltam para o saldo e vão para outro
 LX,RX,CYc,WX,WY=510,1410,740,960,452
@@ -293,7 +293,7 @@ def card(cid,x,name,unit,v0,v1,c0,c1):
         <div class="s6-n">{name}<em>{unit}</em></div>
         <div class="s6-v"><div id="s6-{cid}v0">{v0}</div><div id="s6-{cid}v1" data-layout-ignore>{v1}</div></div>
         <div class="s6-ch"><span id="s6-{cid}c0">{c0}</span><span id="s6-{cid}c1">{c1}</span></div></div>"""
-add('s6',8.4,"""
+add('s6',6.3,"""
     #s6-all{position:absolute;inset:0}
     #s6-h{position:absolute;left:170px;top:100px;font-size:88px;width:1500px}
     #s6-w{position:absolute;left:740px;top:400px;width:440px;height:104px;border-radius:999px;border:4px solid #7BE3A8;color:#7BE3A8;font-size:42px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:16px;background:#0f1512}
@@ -309,7 +309,7 @@ add('s6',8.4,"""
     .s6-f{position:absolute;width:26px;height:26px;border-radius:50%;background:#7BE3A8;box-shadow:0 0 22px rgba(123,227,168,.95);opacity:0}
     #s6-rp{position:absolute;left:"""+str(RX-60)+"""px;top:"""+str(CYc-60)+"""px;width:120px;height:120px;border-radius:50%;border:6px solid #FFC709;opacity:0}
     .on{background:#FFC709;color:#000} .off{border:3px solid #6E6E75;color:#A3A3A8;line-height:54px!important}
-""",f"""    <div id="s6-all" class="clip" data-start="0" data-duration="8.4" data-track-index="0">
+""",f"""    <div id="s6-all" class="clip" data-start="0" data-duration="6.3" data-track-index="0">
       <div id="s6-h" class="h">Troque quando quiser.<br><span class="y">As fichas voltam.</span></div>
       {card('a',170,'Cofre XP','% do CDI','<span class="y">110%</span>','100%','10 fichas em uso','Incluído').replace('id="s6-ac0"','id="s6-ac0" class="on"').replace('id="s6-ac1"','id="s6-ac1" class="off"')}
       {card('b',1070,'Investback','no cartão','<span class="mut">Sem</span>','<span class="y">1,0%</span>','10 fichas','10 fichas em uso').replace('id="s6-bc0"','id="s6-bc0" class="off"').replace('id="s6-bc1"','id="s6-bc1" class="on"')}
@@ -318,10 +318,10 @@ add('s6',8.4,"""
       {out}{inn}
     </div>""",
 """      const LX = 510, RX = 1410, CY = 740, WX = 960, WY = 452, wn = document.querySelector("#s6-wn");
-      tl.fromTo("#s6-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.15);
-      tl.fromTo("#s6-a", { opacity: 0, y: 70 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.5);
-      tl.fromTo("#s6-b", { opacity: 0, y: 70 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.62);
-      tl.fromTo("#s6-w", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(2)" }, 0.85);
+      tl.fromTo("#s6-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.05);
+      tl.fromTo("#s6-a", { opacity: 0, y: 70 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.2);
+      tl.fromTo("#s6-b", { opacity: 0, y: 70 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.3);
+      tl.fromTo("#s6-w", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2)" }, 0.5);
       // estados iniciais do que entra depois
       tl.fromTo(["#s6-av1", "#s6-bv1"], { yPercent: 110 }, { yPercent: 110, duration: 0.01 }, 0);
       tl.fromTo(["#s6-ac1", "#s6-bc1", "#s6-bg"], { opacity: 0 }, { opacity: 0, duration: 0.01 }, 0);
@@ -339,7 +339,7 @@ add('s6',8.4,"""
         tl.fromTo("#s6-w", { scale: 1 }, { scale: 1.08, duration: 0.16, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, t + 0.6); }
 
       // 1. sai do Cofre XP: o cartão apaga, volta a 100% e as fichas sobem para o saldo
-      const t1 = 2.2;
+      const t1 = 1.5;
       tl.fromTo("#s6-a", { scale: 1 }, { scale: 0.97, duration: 0.12, yoyo: true, repeat: 1, immediateRender: false }, t1);
       tl.fromTo("#s6-ag", { opacity: 1 }, { opacity: 0, duration: 0.35 }, t1);
       tl.fromTo("#s6-av0", { yPercent: 0 }, { yPercent: -110, duration: 0.25, ease: "power2.in" }, t1);
@@ -350,7 +350,7 @@ add('s6',8.4,"""
       count(5, 15, t1 + 0.6);
 
       // 2. entra no Investback: as fichas descem do saldo, o cartão acende e o número troca
-      const t2 = 4.6, hit = t2 + 0.95;
+      const t2 = 3.4, hit = t2 + 0.95;
       fly("#s6-i", RX - WX, CY - WY, t2);
       count(15, 5, t2);
       tl.fromTo("#s6-bg", { opacity: 0 }, { opacity: 1, duration: 0.2, immediateRender: false }, hit);
@@ -363,24 +363,24 @@ add('s6',8.4,"""
 
 # 7 app: gravação real do protótipo em uso
 W3=['Simples.','Fluida.','Interativa.']
-add('s7',13.4,"""
+add('s7',10.4,"""
     #s7-all{position:absolute;inset:0}
     #s7-k{position:absolute;left:170px;top:270px;font-size:34px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#A3A3A8}
     .s7-w{position:absolute;left:170px;font-size:128px}
     #s7-s{position:absolute;left:170px;top:800px;width:760px;font-size:40px;color:#A3A3A8;line-height:1.3}
     #s7-ph{position:absolute;left:1180px;top:50px;width:488px;height:980px;border-radius:64px;overflow:hidden;border:10px solid #000;box-shadow:0 0 0 2px rgba(255,255,255,.14),0 50px 120px rgba(0,0,0,.65);background:#000}
     #s7-v{position:absolute;left:0;top:0;width:468px;height:960px;object-fit:cover}
-""",f"""    <div id="s7-all" class="clip" data-start="0" data-duration="13.4" data-track-index="0">
+""",f"""    <div id="s7-all" class="clip" data-start="0" data-duration="10.4" data-track-index="0">
       <div id="s7-k">Tudo no app</div>
       {''.join(f'<div class="s7-w h {"y" if q==2 else ""}" id="s7-w{q}" style="top:{340+q*142}px">{w}</div>' for q,w in enumerate(W3))}
       <div id="s7-s">Você vê o que tem, escolhe o que quer e muda quando quiser.</div>
     </div>
-    <div id="s7-ph" data-layout-allow-overflow><video id="s7-v" class="clip" data-start="0.4" data-duration="12.6" data-track-index="1" src="assets/app-demo.mp4" muted playsinline></video></div>""",
-"""      tl.fromTo("#s7-ph", { opacity: 0, y: 140 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 0.1);
-      tl.fromTo("#s7-k", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0.4);
-      [1.0, 4.4, 8.0].forEach((t, q) => tl.fromTo("#s7-w" + q, { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, t));
-      tl.fromTo("#s7-s", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 9.2);
-      tl.fromTo("#s7-ph", { opacity: 1 }, { opacity: 0, duration: 0.45, ease: "power2.in", immediateRender: false }, 12.85);""")
+    <div id="s7-ph" data-layout-allow-overflow><video id="s7-v" class="clip" data-start="0.1" data-duration="10.2" data-playback-rate="1.24" data-track-index="1" src="assets/app-demo.mp4" muted playsinline></video></div>""",
+"""      tl.fromTo("#s7-ph", { opacity: 0, y: 140 }, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, 0.0);
+      tl.fromTo("#s7-k", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 0.15);
+      [0.5, 3.2, 5.9].forEach((t, q) => tl.fromTo("#s7-w" + q, { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, t));
+      tl.fromTo("#s7-s", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 6.8);
+      tl.fromTo("#s7-ph", { opacity: 1 }, { opacity: 0, duration: 0.22, ease: "power2.in", immediateRender: false }, 10.13);""")
 
 # 8 fecho
 random.seed(7); dots=[]; djs=[]
@@ -388,8 +388,8 @@ import math
 for i in range(46):
     a=random.random()*2*math.pi; r=260+random.random()*620; z=14+random.randint(0,3)*8
     dots.append(f'<i id="s8-p{i}" style="width:{z}px;height:{z}px;background:{"#7BE3A8" if i%3==0 else "#FFC709"}"></i>')
-    djs.append(f'      tl.fromTo("#s8-p{i}", {{ x: 0, y: 0, opacity: 1, scale: 1 }}, {{ x: {round(math.cos(a)*r)}, y: {round(math.sin(a)*r*0.75)}, opacity: 0, scale: 0.4, duration: {1.3+random.random()*0.6:.2f}, ease: "power3.out" }}, {0.9+random.random()*0.15:.2f});')
-add('s8',6,'''
+    djs.append(f'      tl.fromTo("#s8-p{i}", {{ x: 0, y: 0, opacity: 1, scale: 1 }}, {{ x: {round(math.cos(a)*r)}, y: {round(math.sin(a)*r*0.75)}, opacity: 0, scale: 0.4, duration: {1.3+random.random()*0.6:.2f}, ease: "power3.out" }}, {0.5+random.random()*0.15:.2f});')
+add('s8',4.6,'''
     #s8-all{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:36px}
     #s8-fx{position:absolute;left:960px;top:470px}
     #s8-fx i{position:absolute;border-radius:50%;opacity:0}
@@ -397,15 +397,15 @@ add('s8',6,'''
     #s8-name{font-size:150px}
     #s8-cta{font-size:60px;font-weight:700;color:#FFC709}
 ''',f'''    <div id="s8-fx">{''.join(dots)}</div>
-    <div id="s8-all" class="clip" data-start="0" data-duration="6" data-track-index="0">
+    <div id="s8-all" class="clip" data-start="0" data-duration="4.6" data-track-index="0">
       <div id="s8-logo">XP</div>
       <div id="s8-name" class="h" data-var-text="programa">Jornada XP</div>
       <div id="s8-cta">Comece a sua.</div>
     </div>''',
-'''      tl.fromTo("#s8-logo", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.8)" }, 0.3);
-      tl.fromTo("#s8-name", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 0.7);
+'''      tl.fromTo("#s8-logo", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.8)" }, 0.05);
+      tl.fromTo("#s8-name", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, 0.3);
 ''' + '\n'.join(djs) + '''
-      tl.fromTo("#s8-cta", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 2.0);''')
+      tl.fromTo("#s8-cta", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 1.1);''')
 
 t=0; hosts=''
 for sid,d in SC:

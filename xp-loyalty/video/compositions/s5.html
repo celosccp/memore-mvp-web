@@ -39,7 +39,7 @@
 </style>
   <div id="root" data-composition-id="s5" data-width="1920" data-height="1080">
     <div class="bg"></div>
-    <div id="s5-all" class="clip" data-start="0" data-duration="12.6" data-track-index="0">
+    <div id="s5-all" class="clip" data-start="0" data-duration="9.9" data-track-index="0">
       <div id="s5-h" class="h">Com fichas, você escolhe<br>o que <span class="y">turbinar.</span></div>
       <div id="s5-reel" data-layout-allow-overflow><div id="s5-col"><div>Investback</div><div>Salas VIP</div><div>Corretagem zero</div><div>Cofre XP</div><div>Investback</div><div>Salas VIP</div><div>Corretagem zero</div><div>Cofre XP</div><div>Investback</div><div>Salas VIP</div><div>Corretagem zero</div><div>Cofre XP</div></div><div class="s5-fade" id="s5-ft"></div><div class="s5-fade" id="s5-fb"></div></div>
       <div class="s5-bar" id="s5-b1l"></div><div class="s5-bar" id="s5-b2l"></div>
@@ -61,29 +61,29 @@
       const X0 = 322, W = 1276, NY = 770, SX = 1493, SY = 484, nodeX = n => X0 + W * n / 3;
       const un = document.querySelector("#s5-un"), dn = document.querySelector("#s5-dn");
       const lit = { backgroundColor: "#FFC709", borderColor: "#FFC709", duration: 0.2 }, unlit = { backgroundColor: "#1e1b17", borderColor: "#6E6E75" };
-      tl.fromTo("#s5-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.15);
+      tl.fromTo("#s5-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.05);
 
       // 1. rolo: três linhas à vista, só a do meio em foco; gira borrado, desacelera e trava com um tranco
-      tl.fromTo("#s5-reel", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 0.55);
-      tl.fromTo(".s5-bar", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 0.55);
-      tl.fromTo("#s5-col", { y: 190, filter: "blur(14px)" }, { y: 190 - 190 * 11, filter: "blur(0px)", duration: 1.75, ease: "back.out(0.9)" }, 0.6);
-      tl.fromTo("#s5-land", { opacity: 0 }, { opacity: 1, duration: 0.01 }, 2.35);
-      tl.fromTo("#s5-land", { scale: 1.12 }, { scale: 1, duration: 0.3, ease: "back.out(3)" }, 2.35);
-      tl.fromTo("#s5-col", { opacity: 1 }, { opacity: 0, duration: 0.01, immediateRender: false }, 2.35);
-      tl.fromTo("#s5-reel", { opacity: 1 }, { opacity: 0, duration: 0.2, immediateRender: false }, 2.45);
+      tl.fromTo("#s5-reel", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 0.25);
+      tl.fromTo(".s5-bar", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 0.25);
+      tl.fromTo("#s5-col", { y: 190, filter: "blur(14px)" }, { y: 190 - 190 * 11, filter: "blur(0px)", duration: 1.75, ease: "back.out(0.9)" }, 0.3);
+      tl.fromTo("#s5-land", { opacity: 0 }, { opacity: 1, duration: 0.01 }, 2.05);
+      tl.fromTo("#s5-land", { scale: 1.12 }, { scale: 1, duration: 0.3, ease: "back.out(3)" }, 2.05);
+      tl.fromTo("#s5-col", { opacity: 1 }, { opacity: 0, duration: 0.01, immediateRender: false }, 2.05);
+      tl.fromTo("#s5-reel", { opacity: 1 }, { opacity: 0, duration: 0.2, immediateRender: false }, 2.15);
 
       // 2. o nome escolhido encolhe e vira o título do cartão, que se abre a partir da faixa do rolo
-      tl.fromTo(".s5-bar", { opacity: 1 }, { opacity: 0, duration: 0.25, immediateRender: false }, 2.95);
-      tl.fromTo("#s5-card", { opacity: 0, scaleY: 0.36 }, { opacity: 1, scaleY: 1, duration: 0.55, ease: "power4.out" }, 2.95);
-      tl.fromTo("#s5-land", { x: 0, y: 0, scale: 1, color: "#FFC709" }, { x: 92, y: -83, scale: 0.2933, color: "#F4F4F2", duration: 0.55, ease: "power4.inOut", immediateRender: false }, 2.95);
-      tl.fromTo("#s5-tn", { opacity: 0 }, { opacity: 1, duration: 0.01 }, 3.5);
-      tl.fromTo("#s5-land", { opacity: 1 }, { opacity: 0, duration: 0.01, immediateRender: false }, 3.5);
-      tl.fromTo("#s5-te", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 3.5);
-      tl.fromTo("#s5-track", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 3.3);
-      for (let i = 0; i < 4; i++) tl.fromTo("#s5-n" + i, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(2)" }, 3.4 + i * 0.09);
-      tl.fromTo("#s5-b0", { yPercent: 110 }, { yPercent: 0, duration: 0.5, ease: "back.out(1.5)" }, 3.45);
-      tl.fromTo(["#s5-uso", "#s5-disp"], { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out", stagger: 0.1 }, 3.6);
-      tl.fromTo("#s5-d0", unlit, lit, 3.95);
+      tl.fromTo(".s5-bar", { opacity: 1 }, { opacity: 0, duration: 0.25, immediateRender: false }, 2.65);
+      tl.fromTo("#s5-card", { opacity: 0, scaleY: 0.36 }, { opacity: 1, scaleY: 1, duration: 0.55, ease: "power4.out" }, 2.65);
+      tl.fromTo("#s5-land", { x: 0, y: 0, scale: 1, color: "#FFC709" }, { x: 92, y: -83, scale: 0.2933, color: "#F4F4F2", duration: 0.55, ease: "power4.inOut", immediateRender: false }, 2.65);
+      tl.fromTo("#s5-tn", { opacity: 0 }, { opacity: 1, duration: 0.01 }, 3.2);
+      tl.fromTo("#s5-land", { opacity: 1 }, { opacity: 0, duration: 0.01, immediateRender: false }, 3.2);
+      tl.fromTo("#s5-te", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 3.2);
+      tl.fromTo("#s5-track", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 3.0);
+      for (let i = 0; i < 4; i++) tl.fromTo("#s5-n" + i, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(2)" }, 3.1 + i * 0.07);
+      tl.fromTo("#s5-b0", { yPercent: 110 }, { yPercent: 0, duration: 0.5, ease: "back.out(1.5)" }, 3.15);
+      tl.fromTo(["#s5-uso", "#s5-disp"], { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out", stagger: 0.1 }, 3.3);
+      tl.fromTo("#s5-d0", unlit, lit, 3.65);
       tl.fromTo("#s5-fill", { scaleX: 0 }, { scaleX: 0, duration: 0.01 }, 0);
       tl.fromTo("#s5-b1", { yPercent: 110 }, { yPercent: 110, duration: 0.01 }, 0);
       tl.fromTo("#s5-b2", { yPercent: 110 }, { yPercent: 110, duration: 0.01 }, 0);
@@ -114,9 +114,9 @@
         tl.fromTo("#s5-b" + n, { yPercent: 110 }, { yPercent: 0, duration: 0.45, ease: "back.out(1.8)", immediateRender: false }, hit + 0.1);
         tl.fromTo("#s5-uso", { scale: 1 }, { scale: 1.1, duration: 0.14, yoyo: true, repeat: 1, immediateRender: false }, hit);
       }
-      allocate(1, 4.9, 0, 10, 0, 10, 15, 5);
-      allocate(2, 8.0, 10, 5, 10, 15, 5, 0);
-      tl.fromTo("#s5-all", { opacity: 1 }, { opacity: 0, duration: 0.45, ease: "power2.in" }, 12.049999999999999);
+      allocate(1, 4.1, 0, 10, 0, 10, 15, 5);
+      allocate(2, 6.6, 10, 5, 10, 15, 5, 0);
+      tl.fromTo("#s5-all", { opacity: 1 }, { opacity: 0, duration: 0.22, ease: "power2.in" }, 9.63);
       window.__timelines["s5"] = tl;
     })();
   </script>

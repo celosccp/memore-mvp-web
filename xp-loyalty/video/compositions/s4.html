@@ -22,7 +22,7 @@
 </style>
   <div id="root" data-composition-id="s4" data-width="1920" data-height="1080">
     <div class="bg"></div>
-    <div id="s4-all" class="clip" data-start="0" data-duration="8.6" data-track-index="0">
+    <div id="s4-all" class="clip" data-start="0" data-duration="6.9" data-track-index="0">
       <div id="s4-txt">
         <div id="s4-h" class="h">Cada avanço na<br>sua jornada vira<br><span class="y">fichas.</span></div>
         <div id="s4-num"><div id="s4-n">0</div><div id="s4-u">fichas</div></div>
@@ -35,12 +35,12 @@
     (function(){
       const tl = gsap.timeline({ paused: true });
       const A = [3, 3, 5, 4], n = document.querySelector("#s4-n"), NX = 330, NY = 745, SXc = 1120;
-      tl.fromTo("#s4-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.15);
-      tl.fromTo(["#s4-num", "#s4-bar"], { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0.7);
+      tl.fromTo("#s4-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.05);
+      tl.fromTo(["#s4-num", "#s4-bar"], { opacity: 0 }, { opacity: 1, duration: 0.35 }, 0.35);
       tl.fromTo("#s4-fill", { scaleX: 0 }, { scaleX: 0, duration: 0.01 }, 0);
       let acc = 0, k0 = 0;
       A.forEach((q, i) => {
-        const t = 1.2 + i * 1.45, y0 = 215 + i * 166 + 71, from = acc, to = acc + q, c = { v: from };
+        const t = 0.7 + i * 1.2, y0 = 215 + i * 166 + 71, from = acc, to = acc + q, c = { v: from };
         tl.fromTo("#s4-r" + i, { opacity: 0, x: 120 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, t);
         tl.fromTo("#s4-ck" + i, { scale: 0 }, { scale: 1, duration: 0.35, ease: "back.out(3)" }, t + 0.35);
         tl.fromTo("#s4-p" + i, { scale: 1 }, { scale: 1.35, duration: 0.15, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, t + 0.45);
@@ -56,7 +56,7 @@
         tl.fromTo("#s4-fill", { scaleX: from / 51 }, { scaleX: to / 51, duration: 0.4, ease: "power2.out", immediateRender: false }, hit);
         acc = to; k0 += q;
       });
-      tl.fromTo("#s4-all", { opacity: 1 }, { opacity: 0, duration: 0.45, ease: "power2.in" }, 8.049999999999999);
+      tl.fromTo("#s4-all", { opacity: 1 }, { opacity: 0, duration: 0.22, ease: "power2.in" }, 6.63);
       window.__timelines["s4"] = tl;
     })();
   </script>

@@ -24,7 +24,7 @@
 </style>
   <div id="root" data-composition-id="s6" data-width="1920" data-height="1080">
     <div class="bg"></div>
-    <div id="s6-all" class="clip" data-start="0" data-duration="8.4" data-track-index="0">
+    <div id="s6-all" class="clip" data-start="0" data-duration="6.3" data-track-index="0">
       <div id="s6-h" class="h">Troque quando quiser.<br><span class="y">As fichas voltam.</span></div>
       <div class="s6-c" id="s6-a" style="left:170px"><i class="s6-g" id="s6-ag"></i>
         <div class="s6-n">Cofre XP<em>% do CDI</em></div>
@@ -43,10 +43,10 @@
     (function(){
       const tl = gsap.timeline({ paused: true });
       const LX = 510, RX = 1410, CY = 740, WX = 960, WY = 452, wn = document.querySelector("#s6-wn");
-      tl.fromTo("#s6-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.15);
-      tl.fromTo("#s6-a", { opacity: 0, y: 70 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.5);
-      tl.fromTo("#s6-b", { opacity: 0, y: 70 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.62);
-      tl.fromTo("#s6-w", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(2)" }, 0.85);
+      tl.fromTo("#s6-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.05);
+      tl.fromTo("#s6-a", { opacity: 0, y: 70 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.2);
+      tl.fromTo("#s6-b", { opacity: 0, y: 70 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.3);
+      tl.fromTo("#s6-w", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2)" }, 0.5);
       // estados iniciais do que entra depois
       tl.fromTo(["#s6-av1", "#s6-bv1"], { yPercent: 110 }, { yPercent: 110, duration: 0.01 }, 0);
       tl.fromTo(["#s6-ac1", "#s6-bc1", "#s6-bg"], { opacity: 0 }, { opacity: 0, duration: 0.01 }, 0);
@@ -64,7 +64,7 @@
         tl.fromTo("#s6-w", { scale: 1 }, { scale: 1.08, duration: 0.16, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, t + 0.6); }
 
       // 1. sai do Cofre XP: o cartão apaga, volta a 100% e as fichas sobem para o saldo
-      const t1 = 2.2;
+      const t1 = 1.5;
       tl.fromTo("#s6-a", { scale: 1 }, { scale: 0.97, duration: 0.12, yoyo: true, repeat: 1, immediateRender: false }, t1);
       tl.fromTo("#s6-ag", { opacity: 1 }, { opacity: 0, duration: 0.35 }, t1);
       tl.fromTo("#s6-av0", { yPercent: 0 }, { yPercent: -110, duration: 0.25, ease: "power2.in" }, t1);
@@ -75,7 +75,7 @@
       count(5, 15, t1 + 0.6);
 
       // 2. entra no Investback: as fichas descem do saldo, o cartão acende e o número troca
-      const t2 = 4.6, hit = t2 + 0.95;
+      const t2 = 3.4, hit = t2 + 0.95;
       fly("#s6-i", RX - WX, CY - WY, t2);
       count(15, 5, t2);
       tl.fromTo("#s6-bg", { opacity: 0 }, { opacity: 1, duration: 0.2, immediateRender: false }, hit);
@@ -85,7 +85,7 @@
       tl.fromTo("#s6-bv1", { yPercent: 110 }, { yPercent: 0, duration: 0.45, ease: "back.out(1.8)", immediateRender: false }, hit + 0.1);
       tl.fromTo("#s6-bc0", { opacity: 1 }, { opacity: 0, duration: 0.2 }, hit);
       tl.fromTo("#s6-bc1", { opacity: 0 }, { opacity: 1, duration: 0.25, immediateRender: false }, hit + 0.1);
-      tl.fromTo("#s6-all", { opacity: 1 }, { opacity: 0, duration: 0.45, ease: "power2.in" }, 7.8500000000000005);
+      tl.fromTo("#s6-all", { opacity: 1 }, { opacity: 0, duration: 0.22, ease: "power2.in" }, 6.03);
       window.__timelines["s6"] = tl;
     })();
   </script>
