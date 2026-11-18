@@ -1174,7 +1174,7 @@ function juntar(){
     const right = b.dyn ? `<span class="rv ${p ? 'on' : ''}">${p} de ${max}</span>` : full ? `<span class="rv on">${pt(p)}</span>` : b.need ? '' : `<span class="rv">+${b.pts}</span>`;
     return `<button class="li" data-a="beh:${b.id}">${mark}<div class="g"><b>${b.nome}</b><span>${sub}</span></div>${right}<span class="chev">›</span></button>`; };
   return `
-    ${t === 0 ? `<div class="note" style="margin-top:14px">Fichas vêm do que você faz na XP: guardar, usar o cartão, pagar contas. Comece por uma das ações abaixo.</div>` : ''}
+    ${t === 0 ? `<div class="note" style="margin-top:14px">Fichas vêm do que você faz na XP: guardar, usar o cartão, pagar contas. Comece por uma das sugestões abaixo.</div>` : ''}
 
     <h3 class="sec" style="margin-top:14px">Momentos da sua jornada</h3>
     ${CTX.map((cx, i) => { const bs = list.filter(b => b.ctx === i), earned = bs.reduce((a, b) => a + behPts(b), 0), tot = bs.reduce((a, b) => a + mx(b), 0);
@@ -1267,7 +1267,7 @@ function sheet(){
         ${b.need ? `<div class="note">${b.nome} é uma decisão importante. Só vale a pena se você já precisa dele: fichas não devem ser o motivo. Antes de qualquer proposta, você conta o que precisa e vê taxas, prazos e custo total.</div>
           ${S.cond ? `<div class="card" style="margin-top:10px"><div class="xs b mut">CONDIÇÕES DO PRODUTO</div><div class="kv"><span>Taxa e custo total</span><span>mostrados antes de contratar</span></div><div class="kv"><span>Prazo e parcelas</span><span>você escolhe na simulação</span></div><div class="kv"><span>Análise de capacidade de pagamento</span><span>obrigatória</span></div></div>` : `<button class="btn sec" data-a="cond">Ver condições do produto</button>`}` : ''}
         ${!p && !b.need ? `<button class="btn" data-a="noop">${b.cta}</button>` : ''}
-        ${!p ? `<button class="btn demo" data-a="simbeh:${b.id}">Demo · simular ação concluída (+${b.pts})</button>` : ''}`;
+        ${!p ? `<button class="btn demo" data-a="simbeh:${b.id}">Demo · simular como concluído (+${b.pts})</button>` : ''}`;
     }
     h = `<div class="xs b" style="color:var(--ya);text-transform:uppercase;letter-spacing:.05em">${CTX[b.ctx]}</div><h2>${b.nome}</h2>${body}<button class="btn ghost" data-a="close">Fechar</button>`;
   }
@@ -1427,7 +1427,7 @@ const HIPOTESES = [
   ['Recomendação', 'A ordem das sugestões é definida por perfil. Crédito e consórcio nunca aparecem como sugestão: só no catálogo, com a necessidade antes e as condições à vista.'],
   ['Vocabulário', 'Na aba Juntar, os quatro grupos são momentos da jornada financeira e cada item é uma ação que, concluída, vira conquista. "Desafio" e "passo" saíram ("passo" remete ao programa do Itaú); "trilha" fica reservada ao caminho até um benefício.'],
   ['Régua', '"Planeje sua vida financeira" tem três ações: Open Finance (3 fichas), planejamento financeiro (3) e gestão de gastos pelo PFM 3.0 (2). O PFM aparece como "Em breve" e só vale fichas quando ligado no painel. Valores ilustrativos.'],
-  ['Trilha', 'O cliente pode seguir a trilha de um benefício e acompanhar no resumo quanto falta e quais ações sugeridas levam até lá.'],
+  ['Trilha', 'O cliente pode seguir a trilha de um benefício e acompanhar no resumo quanto falta e quais sugestões levam até lá.'],
   ['Vocabulário', 'Das telas de Design: fichas (evita confusão com os pontos do cartão), Em uso e Disponíveis, Juntar e Usar, trilha para desbloquear.'],
   ['Vocabulário', 'Mantidos do briefing e diferentes das telas: taxas 110/115/125% e preços 10/15/30 (telas: 110% por 5 e 120% por 15), Infinite por 10 fichas (telas: 15), quatro contextos de earn (telas: seis).'],
 ];
