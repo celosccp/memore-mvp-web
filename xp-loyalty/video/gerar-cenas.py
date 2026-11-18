@@ -77,7 +77,7 @@ add('s3',8,"""
     .s3-st{position:absolute;border-radius:50%;background:#FFE27A;opacity:0}
     .s3-sv{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
     #s3-c{position:absolute;left:660px;top:380px;width:600px;height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-    #s3-k{font-size:30px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#A3A3A8}
+    #s3-k{font-size:34px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#A3A3A8}
     #s3-h{font-size:112px;margin-top:6px;white-space:nowrap}
     #s3-s{font-size:36px;font-weight:700;color:#FFC709;margin-top:14px}
     .s3-d{position:absolute;width:66px;height:66px;border-radius:50%;background:#FFC709;box-shadow:0 0 0 12px #0f0d0a,0 0 46px 10px rgba(255,199,9,.55)}
@@ -96,14 +96,12 @@ add('s3',8,"""
           <circle cx="{CX}" cy="{CY}" r="{R}" stroke="#fff" stroke-opacity=".4" stroke-width="12" stroke-linecap="round" pathLength="100" stroke-dasharray="8 92" transform="rotate(-119 {CX} {CY})"/>
           <circle cx="{CX}" cy="{CY-R}" r="34" fill="#fff" fill-opacity=".22"/><circle cx="{CX}" cy="{CY-R}" r="15" fill="#fff"/>
         </svg>
-        <div id="s3-c"><div id="s3-k">Sua</div><div id="s3-h" class="h">Jornada <span class="y">XP</span></div><div id="s3-s">Evolua no seu ritmo.</div></div>
+        <div id="s3-c"><div id="s3-k">Sua</div><div id="s3-h" class="h">Jornada <span class="y">XP</span></div><div id="s3-s">Mais longe a cada conquista.</div></div>
         {orb}
       </div>
     </div>""",
 """      gsap.set(["#s3-out", "#s3-comet", "#s3-cam"], { transformOrigin: "960px 540px" });
-      tl.fromTo("#s3-cam", { scale: 0.9 }, { scale: 1.03, duration: 8, ease: "none" }, 0);
       tl.fromTo("#s3-glow", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 1.2, ease: "power2.out" }, 0);
-      tl.fromTo("#s3-glow", { scale: 1 }, { scale: 1.14, duration: 1.6, yoyo: true, repeat: 3, ease: "sine.inOut", immediateRender: false }, 1.2);
       tl.fromTo("#s3-k", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0.15);
       tl.fromTo("#s3-h", { opacity: 0, scale: 0.6, filter: "blur(18px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.7, ease: "back.out(1.6)" }, 0.25);
       tl.fromTo("#s3-s", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.8);
@@ -153,61 +151,120 @@ add('s4',7,'''
       tl.fromTo(c, { v: 0 }, { v: 15, duration: 2.4, ease: "power2.out", onUpdate: () => { n.textContent = Math.round(c.v); } }, 1.4);
       tl.fromTo("#s4-fill", { scaleX: 0 }, { scaleX: 0.3, duration: 2.4, ease: "power2.out" }, 1.4);''')
 
-# 5 regua
-nodes=''.join(f'<div class="s5-n" style="left:{p}%"><i id="s5-d{i}"></i><b>{t}</b><span id="s5-s{i}">{s}</span></div>' for i,(p,t,s) in enumerate([(0,'100%','Incluído'),(33.333,'110%','10 fichas'),(66.666,'115%','15 fichas'),(100,'125%','30 fichas')]))
+# 5 régua: o rolo para no Cofre XP, o nome vira o título do cartão e as fichas voam até o ponto escolhido
 REEL=['Investback','Salas VIP','Corretagem zero','Cofre XP']*3
 reel=''.join(f'<div>{t}</div>' for t in REEL)
-add('s5',12.6,'''
-    #s5-all{position:absolute;inset:0;padding:110px 170px}
-    #s5-h{font-size:88px;max-width:1500px}
-    #s5-reel{position:absolute;left:170px;right:170px;top:520px;height:230px;overflow:hidden;border-top:3px solid rgba(255,255,255,.14);border-bottom:3px solid rgba(255,255,255,.14)}
-    #s5-col div{height:230px;line-height:230px;font-size:170px;font-weight:900;letter-spacing:-.04em;white-space:nowrap}
-    #s5-col div:last-child{color:#FFC709}
-    #s5-card{position:absolute;left:170px;right:170px;top:400px;height:540px;border-radius:56px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.08);padding:56px 90px}
-    #s5-t{font-size:44px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+X0,W,NY,SX,SY=322,1276,770,1493,484
+nodes=''.join(f'<div class="s5-n" id="s5-n{i}" style="left:{p}%"><i id="s5-d{i}"></i><b>{t}</b><span>{c}</span></div>' for i,(p,t,c) in enumerate([(0,'100%','Incluído'),(33.333,'110%','10 fichas'),(66.666,'115%','15 fichas'),(100,'125%','30 fichas')]))
+fly=''.join(f'<i class="s5-f" id="s5-f{k}"></i>' for k in range(15))
+fx=''
+for n in (1,2):
+    x=round(X0+W*n/3)
+    fx+=f'<i class="s5-rp" id="s5-rp{n}" style="left:{x-28}px;top:{NY-28}px"></i>'+''.join(f'<i class="s5-k" id="s5-k{n}-{k}" style="left:{x-6}px;top:{NY-6}px"></i>' for k in range(12))
+add('s5',12.6,"""
+    #s5-all{position:absolute;inset:0}
+    #s5-h{position:absolute;left:170px;top:110px;font-size:88px;width:1500px}
+    #s5-reel{position:absolute;left:170px;right:170px;top:345px;height:570px;overflow:hidden}
+    #s5-col div,#s5-land{height:190px;line-height:190px;font-size:150px;font-weight:900;letter-spacing:-.04em;white-space:nowrap}
+    #s5-col div{color:#77777f}
+    .s5-fade{position:absolute;left:0;right:0;height:200px}
+    #s5-ft{top:0;background:linear-gradient(#0c0b0b,rgba(12,11,11,0))} #s5-fb{bottom:0;background:linear-gradient(rgba(11,11,12,0),#0b0b0c)}
+    .s5-bar{position:absolute;left:170px;right:170px;height:4px;border-radius:2px;background:#FFC709;transform-origin:0 50%}
+    #s5-b1l{top:533px} #s5-b2l{top:725px}
+    #s5-land{position:absolute;left:170px;top:535px;color:#FFC709;transform-origin:0 0}
+    #s5-card{position:absolute;left:170px;right:170px;top:400px;height:540px;border-radius:56px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.1);transform-origin:50% 43%;overflow:hidden}
+    #s5-sheen{position:absolute;top:0;bottom:0;left:0;width:200px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.07),rgba(255,255,255,0))}
+    #s5-t{position:absolute;left:90px;top:50px;font-size:44px;font-weight:700;white-space:nowrap}
     #s5-t em{font-style:normal;font-weight:400;color:#A3A3A8;margin-left:18px}
-    #s5-chips{position:relative;width:420px;height:64px}
-    .s5-chip{position:absolute;right:0;top:0;white-space:nowrap;font-size:34px;font-weight:700;background:#FFC709;color:#000;border-radius:999px;padding:10px 30px}
-    #s5-big{position:relative;height:150px;margin-top:20px}
-    #s5-big div{position:absolute;left:0;top:0;font-size:150px;font-weight:900;letter-spacing:-.04em;line-height:1}
-    #s5-rg{position:relative;margin:70px 60px 0;height:150px}
-    #s5-track{position:absolute;left:0;right:0;top:22px;height:12px;border-radius:6px;background:rgba(255,255,255,.14)}
-    #s5-fill{position:absolute;left:0;right:0;top:22px;height:12px;border-radius:6px;background:#FFC709;transform-origin:0 50%}
+    #s5-tn{opacity:0}
+    .s5-chip{position:absolute;top:44px;height:64px;line-height:64px;border-radius:999px;padding:0 30px;font-size:32px;font-weight:700;white-space:nowrap}
+    #s5-uso{right:440px;background:#FFC709;color:#000}
+    #s5-disp{right:90px;width:330px;text-align:center;border:3px solid #7BE3A8;color:#7BE3A8;line-height:58px}
+    #s5-big{position:absolute;left:90px;top:128px;height:156px;width:700px;overflow:hidden}
+    #s5-big div{position:absolute;left:0;top:0;font-size:150px;font-weight:900;letter-spacing:-.04em;line-height:156px}
+    #s5-rg{position:absolute;left:150px;right:150px;top:340px;height:160px}
+    #s5-track{position:absolute;left:0;right:0;top:22px;height:12px;border-radius:6px;background:rgba(255,255,255,.14);transform-origin:0 50%}
+    #s5-fill{position:absolute;left:0;right:0;top:22px;height:12px;border-radius:6px;background:#FFC709;transform-origin:0 50%;box-shadow:0 0 24px rgba(255,199,9,.7)}
     .s5-n{position:absolute;top:0;width:260px;margin-left:-130px;text-align:center}
     .s5-n i{display:block;width:56px;height:56px;border-radius:50%;margin:0 auto 18px;background:#1e1b17;border:7px solid #6E6E75}
     .s5-n b{display:block;font-size:44px;font-weight:700}
     .s5-n span{display:block;font-size:28px;color:#A3A3A8;margin-top:4px}
-''',f'''    <div id="s5-all" class="clip" data-start="0" data-duration="11" data-track-index="0">
+    .s5-f{position:absolute;left:"""+str(SX-11)+"""px;top:"""+str(SY-11)+"""px;width:26px;height:26px;border-radius:50%;background:#7BE3A8;box-shadow:0 0 22px rgba(123,227,168,.95);opacity:0}
+    .s5-rp{position:absolute;width:56px;height:56px;border-radius:50%;border:5px solid #FFC709;opacity:0}
+    .s5-k{position:absolute;width:12px;height:12px;border-radius:50%;background:#FFC709;opacity:0}
+""",f"""    <div id="s5-all" class="clip" data-start="0" data-duration="12.6" data-track-index="0">
       <div id="s5-h" class="h">Com fichas, você escolhe<br>o que <span class="y">turbinar.</span></div>
-      <div id="s5-reel" data-layout-allow-overflow><div id="s5-col">{reel}</div></div>
+      <div id="s5-reel" data-layout-allow-overflow><div id="s5-col">{reel}</div><div class="s5-fade" id="s5-ft"></div><div class="s5-fade" id="s5-fb"></div></div>
+      <div class="s5-bar" id="s5-b1l"></div><div class="s5-bar" id="s5-b2l"></div>
       <div id="s5-card">
-        <div id="s5-t"><div>Cofre XP<em>% do CDI</em></div><div id="s5-chips"><span id="s5-c0" class="s5-chip">Incluído</span><span id="s5-c1" class="s5-chip">10 fichas em uso</span><span id="s5-c2" class="s5-chip">15 fichas em uso</span></div></div>
+        <div id="s5-sheen"></div>
+        <div id="s5-t"><span id="s5-tn">Cofre XP</span><em id="s5-te">% do CDI</em></div>
+        <div class="s5-chip" id="s5-uso">Em uso <span id="s5-un">0</span></div>
+        <div class="s5-chip" id="s5-disp">Disponíveis <span id="s5-dn">15</span></div>
         <div id="s5-big"><div id="s5-b0">100%</div><div id="s5-b1" class="y">110%</div><div id="s5-b2" class="y">115%</div></div>
         <div id="s5-rg"><div id="s5-track"></div><div id="s5-fill"></div>{nodes}</div>
       </div>
-    </div>''',
-'''      const on = { backgroundColor: "#FFC709", borderColor: "#FFC709", duration: 0.3 }, off0 = { backgroundColor: "#1e1b17", borderColor: "#6E6E75" };
-      tl.fromTo("#s5-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.2);
-      // rolo de benefícios: gira rápido, desacelera e para no Cofre XP
-      tl.fromTo("#s5-reel", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.6);
-      tl.fromTo("#s5-col", { y: 0 }, { y: -230 * 11, duration: 1.7, ease: "power3.out" }, 0.6);
-      tl.fromTo("#s5-reel", { opacity: 1, y: 0 }, { opacity: 0, y: -60, duration: 0.3, ease: "power2.in", immediateRender: false }, 2.75);
-      tl.fromTo("#s5-card", { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 3.0);
-      tl.fromTo("#s5-d0", off0, on, 3.3);
-      tl.fromTo("#s5-fill", { scaleX: 0 }, { scaleX: 0.3333, duration: 1.3, ease: "power3.inOut" }, 4.9);
-      tl.fromTo("#s5-d1", off0, on, 5.9);
-      tl.fromTo("#s5-d1", { scale: 1 }, { scale: 1.35, duration: 0.25, yoyo: true, repeat: 1, ease: "power2.out" }, 5.9);
-      tl.fromTo("#s5-fill", { scaleX: 0.3333 }, { scaleX: 0.6667, duration: 1.3, ease: "power3.inOut", immediateRender: false }, 8.3);
-      tl.fromTo("#s5-d2", off0, on, 9.3);
-      tl.fromTo("#s5-d2", { scale: 1 }, { scale: 1.35, duration: 0.25, yoyo: true, repeat: 1, ease: "power2.out" }, 9.3);
-      tl.fromTo("#s5-b1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 5.9);
-      tl.fromTo("#s5-b0", { opacity: 1 }, { opacity: 0, duration: 0.3 }, 5.8);
-      tl.fromTo("#s5-b2", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 9.3);
-      tl.fromTo("#s5-b1", { opacity: 1 }, { opacity: 0, duration: 0.3, immediateRender: false }, 9.2);
-      tl.fromTo("#s5-c0", { opacity: 1 }, { opacity: 0, duration: 0.25 }, 5.8);
-      tl.fromTo("#s5-c1", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 5.9);
-      tl.fromTo("#s5-c1", { opacity: 1 }, { opacity: 0, duration: 0.25, immediateRender: false }, 9.2);
-      tl.fromTo("#s5-c2", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 9.3);''')
+      <div id="s5-land">Cofre XP</div>
+      {fly}{fx}
+    </div>""",
+"""      const X0 = 322, W = 1276, NY = 770, SX = 1493, SY = 484, nodeX = n => X0 + W * n / 3;
+      const un = document.querySelector("#s5-un"), dn = document.querySelector("#s5-dn");
+      const lit = { backgroundColor: "#FFC709", borderColor: "#FFC709", duration: 0.2 }, unlit = { backgroundColor: "#1e1b17", borderColor: "#6E6E75" };
+      tl.fromTo("#s5-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.15);
+
+      // 1. rolo: três linhas à vista, só a do meio em foco; gira borrado, desacelera e trava com um tranco
+      tl.fromTo("#s5-reel", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 0.55);
+      tl.fromTo(".s5-bar", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 0.55);
+      tl.fromTo("#s5-col", { y: 190, filter: "blur(14px)" }, { y: 190 - 190 * 11, filter: "blur(0px)", duration: 1.75, ease: "back.out(0.9)" }, 0.6);
+      tl.fromTo("#s5-land", { opacity: 0 }, { opacity: 1, duration: 0.01 }, 2.35);
+      tl.fromTo("#s5-land", { scale: 1.12 }, { scale: 1, duration: 0.3, ease: "back.out(3)" }, 2.35);
+      tl.fromTo("#s5-col", { opacity: 1 }, { opacity: 0, duration: 0.01, immediateRender: false }, 2.35);
+      tl.fromTo("#s5-reel", { opacity: 1 }, { opacity: 0, duration: 0.2, immediateRender: false }, 2.45);
+
+      // 2. o nome escolhido encolhe e vira o título do cartão, que se abre a partir da faixa do rolo
+      tl.fromTo(".s5-bar", { opacity: 1 }, { opacity: 0, duration: 0.25, immediateRender: false }, 2.95);
+      tl.fromTo("#s5-card", { opacity: 0, scaleY: 0.36 }, { opacity: 1, scaleY: 1, duration: 0.55, ease: "power4.out" }, 2.95);
+      tl.fromTo("#s5-land", { x: 0, y: 0, scale: 1, color: "#FFC709" }, { x: 92, y: -83, scale: 0.2933, color: "#F4F4F2", duration: 0.55, ease: "power4.inOut", immediateRender: false }, 2.95);
+      tl.fromTo("#s5-tn", { opacity: 0 }, { opacity: 1, duration: 0.01 }, 3.5);
+      tl.fromTo("#s5-land", { opacity: 1 }, { opacity: 0, duration: 0.01, immediateRender: false }, 3.5);
+      tl.fromTo("#s5-te", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 3.5);
+      tl.fromTo("#s5-track", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 3.3);
+      for (let i = 0; i < 4; i++) tl.fromTo("#s5-n" + i, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(2)" }, 3.4 + i * 0.09);
+      tl.fromTo("#s5-b0", { yPercent: 110 }, { yPercent: 0, duration: 0.5, ease: "back.out(1.5)" }, 3.45);
+      tl.fromTo(["#s5-uso", "#s5-disp"], { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out", stagger: 0.1 }, 3.6);
+      tl.fromTo("#s5-d0", unlit, lit, 3.95);
+      tl.fromTo("#s5-fill", { scaleX: 0 }, { scaleX: 0, duration: 0.01 }, 0);
+      tl.fromTo("#s5-b1", { yPercent: 110 }, { yPercent: 110, duration: 0.01 }, 0);
+      tl.fromTo("#s5-b2", { yPercent: 110 }, { yPercent: 110, duration: 0.01 }, 0);
+      tl.fromTo("#s5-sheen", { x: -400, skewX: -20 }, { x: -400, skewX: -20, duration: 0.01 }, 0);
+
+      // 3. alocar: as fichas disponíveis voam até o ponto, a barra avança e o impacto troca o número
+      function allocate(n, t, first, count, usoFrom, usoTo, dispFrom, dispTo) {
+        for (let i = 0; i < count; i++) {
+          const id = "#s5-f" + (first + i), d = t + i * 0.055;
+          tl.fromTo(id, { x: 0, opacity: 0, scale: 0.4 }, { x: nodeX(n) - SX, opacity: 1, scale: 1, duration: 0.7, ease: "power1.inOut", immediateRender: false }, d);
+          tl.fromTo(id, { y: 0 }, { y: NY - SY, duration: 0.7, ease: "power2.in", immediateRender: false }, d);
+          tl.fromTo(id, { opacity: 1 }, { opacity: 0, duration: 0.06, immediateRender: false }, d + 0.7);
+        }
+        const hit = t + 0.9, c = { u: usoFrom, d: dispFrom };
+        tl.fromTo("#s5-disp", { scale: 1 }, { scale: 0.93, duration: 0.12, yoyo: true, repeat: 1, immediateRender: false }, t);
+        tl.fromTo(c, { u: usoFrom, d: dispFrom }, { u: usoTo, d: dispTo, duration: 0.9, ease: "none", immediateRender: false, onUpdate: () => { un.textContent = Math.round(c.u); dn.textContent = Math.round(c.d); } }, t + 0.1);
+        tl.fromTo("#s5-fill", { scaleX: (n - 1) / 3 }, { scaleX: n / 3, duration: 0.8, ease: "power3.in", immediateRender: false }, t + 0.1);
+        tl.fromTo("#s5-d" + n, unlit, lit, hit);
+        tl.fromTo("#s5-d" + n, { scale: 1 }, { scale: 1.5, duration: 0.14, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, hit);
+        tl.fromTo("#s5-rp" + n, { scale: 1, opacity: 0.9 }, { scale: 4.2, opacity: 0, duration: 0.7, ease: "power2.out", immediateRender: false }, hit);
+        for (let k = 0; k < 12; k++) {
+          const a = k * Math.PI / 6, r = 90 + (k % 3) * 44;
+          tl.fromTo("#s5-k" + n + "-" + k, { x: 0, y: 0, opacity: 1, scale: 1 }, { x: Math.cos(a) * r, y: Math.sin(a) * r, opacity: 0, scale: 0.3, duration: 0.6, ease: "power3.out", immediateRender: false }, hit);
+        }
+        tl.fromTo("#s5-card", { scale: 1 }, { scale: 1.018, duration: 0.1, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, hit);
+        tl.fromTo("#s5-sheen", { x: -400, skewX: -20 }, { x: 1700, skewX: -20, duration: 0.6, ease: "power2.out", immediateRender: false }, hit);
+        tl.fromTo("#s5-b" + (n - 1), { yPercent: 0 }, { yPercent: -110, duration: 0.22, ease: "power2.in", immediateRender: false }, hit - 0.05);
+        tl.fromTo("#s5-b" + n, { yPercent: 110 }, { yPercent: 0, duration: 0.45, ease: "back.out(1.8)", immediateRender: false }, hit + 0.1);
+        tl.fromTo("#s5-uso", { scale: 1 }, { scale: 1.1, duration: 0.14, yoyo: true, repeat: 1, immediateRender: false }, hit);
+      }
+      allocate(1, 4.9, 0, 10, 0, 10, 15, 5);
+      allocate(2, 8.0, 10, 5, 10, 15, 5, 0);""")
 
 # 6 trocar
 add('s6',7,'''
@@ -224,29 +281,6 @@ add('s6',7,'''
       tl.fromTo("#s6-ph", { opacity: 0, y: 160, scale: 1 }, { opacity: 1, y: 0, scale: 1, duration: 1.0, ease: "power3.out" }, 0.4);
       tl.fromTo("#s6-s", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 1.6);
       tl.fromTo("#s6-ph", { scale: 1 }, { scale: 1.06, duration: 4.6, ease: "none", immediateRender: false }, 1.6);''')
-
-# 7 infinite
-add('s7',7,'''
-    #s7-all{position:absolute;inset:0}
-    #s7-h{position:absolute;left:170px;top:300px;width:900px;font-size:104px}
-    #s7-chips{position:absolute;left:170px;top:700px;height:80px;width:900px}
-    .s7-c{position:absolute;left:0;top:0;white-space:nowrap;font-size:40px;font-weight:700;border-radius:999px;padding:14px 36px}
-    #s7-c0{border:3px solid #6E6E75;color:#A3A3A8}
-    #s7-c1{background:#7BE3A8;color:#062b17}
-    .s7-ph{position:absolute;right:210px;top:70px;height:940px;border-radius:64px}
-    #s7-p0{box-shadow:0 50px 120px rgba(0,0,0,.6)}
-''','''    <div id="s7-all" class="clip" data-start="0" data-duration="7" data-track-index="0">
-      <div id="s7-h" class="h">E o próximo cartão<br>já está <span class="y">à vista.</span></div>
-      <div id="s7-chips"><div id="s7-c0" class="s7-c">Cartão XP Infinite · Bloqueado</div><div id="s7-c1" class="s7-c">Cartão XP Infinite · Desbloqueado</div></div>
-      <img id="s7-p0" class="s7-ph" src="assets/inf-lock.png" alt="">
-      <img id="s7-p1" class="s7-ph" src="assets/inf-on.png" alt="">
-    </div>''',
-'''      tl.fromTo("#s7-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.2);
-      tl.fromTo("#s7-p0", { opacity: 0, y: 160 }, { opacity: 1, y: 0, duration: 1.0, ease: "power3.out" }, 0.4);
-      tl.fromTo("#s7-c0", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 1.3);
-      tl.fromTo("#s7-p1", { opacity: 0 }, { opacity: 1, duration: 0.7, ease: "power2.inOut" }, 3.4);
-      tl.fromTo("#s7-c0", { opacity: 1 }, { opacity: 0, duration: 0.3, immediateRender: false }, 3.4);
-      tl.fromTo("#s7-c1", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(2)" }, 3.6);''')
 
 # 8 fecho
 random.seed(7); dots=[]; djs=[]
