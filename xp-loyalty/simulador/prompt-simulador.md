@@ -118,7 +118,7 @@ Poucos gráficos, cada um com título que diz a conclusão, eixos rotulados e a 
 
 ## Estrutura sugerida
 
-Use abas para Instruções, Parâmetros de Earn, Parâmetros da Vitrine, Simulador Individual, Base XP B2C, Base XP B2B, Cálculos da População, Resumo, Premissas de Custo e Testes. Acrescente a projeção de comportamento depois da validação da foto atual.
+Use abas para Instruções, Earn Referência, Earn Simulado, Calibração do Earn, Parâmetros da Vitrine, Simulador Individual, Base XP B2C, Base XP B2B, Cálculos da População, Resumo, Premissas de Custo e Testes. Acrescente a projeção de comportamento depois da validação da foto atual.
 
 Organize os cálculos da população em blocos de colunas auxiliares. Se uma aba de cálculo por canal facilitar o desempenho e a manutenção, use essa estrutura.
 
@@ -126,45 +126,87 @@ Diferencie células editáveis, fórmulas e dados importados. Use português bra
 
 Reúna em um só lugar, na aba de Parâmetros da Vitrine, os **controles de cenário** descritos adiante: acesso ao Infinite (A ou B), Investback do One (com base ou só com fichas), Salas VIP (mínimo no cartão ou tudo por fichas), Corretagem zero (faixas ou corte único) e transição do Cofre XP.
 
-## Regras iniciais de earn
+## Regras de earn
 
 Use o mesmo perfil para calcular Referência e Simulado. A Referência fica fixa. Os parâmetros do Simulado são editáveis.
 
-Os quatro momentos da jornada e as regras iniciais são os seguintes:
+### Três tipos de mecânica
 
-**Planeje sua vida financeira**
+Cada alavanca usa uma de três mecânicas. A aba de parâmetros mostra, para cada alavanca, só os campos da mecânica dela.
 
-* Open Finance. Entrada Sim ou Não. Referência e Simulado geram 1 ficha quando ativo.
-* Planejamento financeiro (Financial Planning). Entrada Sim ou Não. Começa com zero ficha nas duas réguas. Permita ativar e editar a pontuação somente no Simulado. **[a confirmar]** No protótipo, valor ilustrativo de 3 fichas.
-* Gestão de gastos pelo PFM 3.0. Entrada Sim ou Não. Mesma lógica: zero nas duas réguas, ativável só no Simulado, com um controle "PFM 3.0 disponível" desligado inicialmente. **[a confirmar]** No protótipo, valor ilustrativo de 2 fichas.
+| Mecânica | Como funciona | Campos |
+| --- | --- | --- |
+| **Tem ou não tem** | O cliente tem a coisa, ou atinge um valor mínimo, e ganha um número fixo de fichas | Valor mínimo (quando houver), fichas |
+| **A cada valor** | Ganha fichas a cada bloco completo de valor, acima de um ponto de partida, até um teto | A partir de, a cada, fichas por bloco, teto de fichas |
+| **Por faixas** | O valor do cliente cai em uma faixa e cada faixa vale um número de fichas | Lista de faixas: de, até, fichas |
 
-**Comece a poupar**
+Não use os rótulos "passo" nem "piso ou gatilho". Use "a cada" para o tamanho do bloco, "a partir de" para o ponto de partida e "valor mínimo" para a mecânica "tem ou não tem".
 
-* AUC. Na Referência, 1 ficha por bloco completo de R$ 5.000 desde zero, limitado a 10 fichas. No Simulado, os primeiros R$ 30.000 ficam sem fichas e cada bloco completo de R$ 5.000 acima desse valor gera 1 ficha, até 10. Portanto, R$ 30.000 geram zero ficha por AUC e R$ 35.000 geram a primeira.
-* Aporte recorrente. Entrada Sim ou Não. Referência e Simulado geram 5 fichas se ativo.
-* Previdência. Saldo em R$. Referência e Simulado geram 1 ficha fixa se o saldo for maior ou igual a R$ 100.
+### Desenho das abas de parâmetros de earn
 
-**Otimize seu dia a dia**
+Crie **duas abas com o mesmo layout**: `Earn Referência`, travada, e `Earn Simulado`, editável. O layout idêntico permite que as fórmulas das duas réguas sejam as mesmas, mudando só a aba de origem.
 
-* TPV mensal no cartão. Referência e Simulado geram 1 ficha por bloco completo de R$ 500, até 15 fichas.
-* Boletos pagos no mês. Referência e Simulado geram 2 fichas fixas se o valor for maior ou igual a R$ 5.000.
-* Salário portado por mês. Referência e Simulado começam com zero ficha até R$ 5.000 inclusive, 2 fichas acima de R$ 5.000 até R$ 10.000 inclusive e 5 fichas acima de R$ 10.000. As faixas são excludentes.
-* Câmbio mensal. Volume em US$. Na Referência, gera zero ficha. No Simulado, gera 1 ficha por bloco completo de US$ 2.000, até 10 fichas.
+Em cada aba, **uma linha por alavanca**, nunca várias linhas genéricas por alavanca. Colunas, da esquerda para a direita:
 
-**Acelere e proteja seus planos**
+1. Momento da jornada.
+2. Alavanca.
+3. Medida do cliente e unidade (por exemplo, "AUC, R$" ou "Open Finance ativo, sim ou não").
+4. Ligada, sim ou não. É aqui que se decide se a alavanca entra na régua.
+5. Mecânica, escolhida em lista: tem ou não tem, a cada valor, por faixas.
+6. Bloco "Tem ou não tem": valor mínimo, fichas.
+7. Bloco "A cada valor": a partir de, a cada, fichas por bloco, teto de fichas.
+8. Máximo de fichas da alavanca, calculado.
+9. Observação.
 
-* Crédito. Saldo devedor em R$. Referência e Simulado geram 1 ficha por bloco completo de R$ 10.000, até 20 fichas.
-* Consórcio. Valor da carta em R$. Referência e Simulado geram 1 ficha por bloco completo de R$ 10.000, até 20 fichas.
-* Seguro de vida. Prêmio anual em R$. Referência e Simulado geram 5 fichas fixas se o prêmio for maior ou igual a R$ 100.
-* Seguro Conta e Cartão. Entrada de apólice ativa, separada do seguro de vida. Começa com zero ficha nas duas réguas. Permita ativar e editar a pontuação somente no Simulado.
+As faixas ficam em uma **tabela separada na mesma aba**, logo abaixo, em formato longo: alavanca, número da faixa, de (exclusivo), até (inclusivo), fichas. Reserve até seis faixas por alavanca; faixas em branco são ignoradas. A última faixa preenchida pode ter "até" vazio, significando sem limite.
 
-Deixe disponível uma sensibilidade adicional de portabilidade, inicialmente desligada. Ao ligá-la, o Simulado concede 1 ficha entre R$ 3.000 e R$ 5.000 inclusive, mantendo 2 fichas acima de R$ 5.000 até R$ 10.000 e 5 acima de R$ 10.000.
+Os campos que não pertencem à mecânica escolhida ficam esmaecidos por formatação condicional e não entram no cálculo. Na aba `Earn Simulado`, acrescente uma coluna "Difere da Referência", sim ou não, e mantenha ao lado de cada entrada o valor inicial, para poder voltar atrás.
 
-Nas regras por bloco, arredonde a quantidade de blocos para baixo e aplique o teto da alavanca. Boletos, previdência e seguro de vida são gatilhos fixos. Deixe pisos, passos, fichas e tetos editáveis onde aplicáveis.
+No cálculo, cada alavanca tem três colunas auxiliares, uma por mecânica, e uma quarta que escolhe o resultado conforme a mecânica selecionada e zera quando a alavanca está desligada. Assim, trocar a mecânica de uma alavanca não exige reescrever fórmula.
+
+### Alavancas e configuração inicial
+
+| Momento | Alavanca | Medida do cliente | Mecânica inicial | Referência | Simulado |
+| --- | --- | --- | --- | --- | --- |
+| Planeje sua vida financeira | Open Finance | Ativo, sim ou não | Tem ou não tem | 1 ficha | 1 ficha |
+| Planeje sua vida financeira | Planejamento financeiro | Atualizado, sim ou não | Tem ou não tem | Desligada | Desligada; fichas a definir |
+| Planeje sua vida financeira | PFM 3.0 | Ativado, sim ou não | Tem ou não tem | Desligada | Desligada; fichas a definir |
+| Comece a poupar | AUC | Saldo em R$ | A cada valor | A partir de R$ 0, a cada R$ 5.000, 1 ficha, teto 10 | A partir de R$ 30.000, a cada R$ 5.000, 1 ficha, teto 10 |
+| Comece a poupar | Aporte recorrente | Valor aportado no mês, R$ | Por faixas | Qualquer valor acima de zero: 5 fichas | Igual à Referência; faixas a definir |
+| Comece a poupar | Previdência | Saldo em R$ | Tem ou não tem | Valor mínimo R$ 100, 1 ficha | Igual |
+| Otimize seu dia a dia | TPV no cartão | Gasto mensal, R$ | A cada valor | A cada R$ 500, 1 ficha, teto 15 | Igual |
+| Otimize seu dia a dia | Boletos | Valor pago no mês, R$ | Tem ou não tem | Valor mínimo R$ 5.000, 2 fichas | Igual |
+| Otimize seu dia a dia | Salário portado | Salário mensal, R$ | Por faixas | Até R$ 5.000: 0; acima de R$ 5.000 até R$ 10.000: 2; acima de R$ 10.000: 5 | Igual |
+| Otimize seu dia a dia | Câmbio | Valor da remessa no mês, US$ | A cada valor | Desligada | A cada US$ 2.000, 1 ficha, teto 10 |
+| Acelere e proteja seus planos | Crédito | Valor do crédito, R$ | A cada valor | A cada R$ 10.000, 1 ficha, teto 20 | Igual |
+| Acelere e proteja seus planos | Consórcio | Valor da carta, R$ | A cada valor | A cada R$ 10.000, 1 ficha, teto 20 | Igual |
+| Acelere e proteja seus planos | Seguro de vida | Valor do PA, R$ | Tem ou não tem | Valor mínimo R$ 100, 5 fichas | Igual |
+| Acelere e proteja seus planos | Seguro Conta e Cartão | Apólice ativa, sim ou não | Tem ou não tem | Desligada | Desligada; fichas a definir |
+
+Observações sobre a tabela:
+
+* **Aporte recorrente** passa a ser medido pelo valor aportado, e não só por sim ou não. A configuração inicial reproduz a regra anterior (qualquer aporte vale 5 fichas). Deixe prontas, em branco, faixas como R$ 500 a R$ 1.000, R$ 1.000 a R$ 1.500 e acima de R$ 1.500, para serem preenchidas quando a quantidade de faixas for decidida. Se a base só trouxer a marca de sim ou não, registre a limitação.
+* **Salário portado** começa por faixas, mas a mecânica pode ser trocada para "tem ou não tem" na lista. Mantenha a sensibilidade de 1 ficha entre R$ 3.000 e R$ 5.000 como uma faixa adicional desligada.
+* **Seguro de vida** começa como "tem ou não tem" pelo valor do PA e pode virar "por faixas".
+* Ainda não está decidido se todas as alavancas entram no programa. A coluna "Ligada" existe para isso; mostre no painel quantas estão ligadas em cada régua.
+
+Nas regras "a cada valor", arredonde a quantidade de blocos para baixo e aplique o teto da alavanca. Nas regras "por faixas", o limite inferior é exclusivo e o superior é inclusivo, e as faixas não podem se sobrepor: inclua uma verificação que acuse sobreposição ou lacuna.
 
 Mostre soma bruta, teto total, pontuação final e redução pelo teto. O teto total inicial é zero, significando sem teto. Classifique as fichas finais nas faixas 0, 1–4, 5–9, 10–14, 15–29, 30–49, 50–59 e 60 ou mais.
 
-Mostre também o **máximo de fichas possível** em cada régua, somando os tetos das alavancas ligadas. A experiência exibe ao cliente "N fichas de M possíveis", então M precisa sair do modelo.
+Mostre também o **máximo de fichas possível** em cada régua, somando o máximo das alavancas ligadas. A experiência exibe ao cliente "N fichas de M possíveis", então M precisa sair do modelo.
+
+### Calibração das fichas por alavanca
+
+A quantidade de fichas de cada alavanca ainda será discutida e precisa de um critério, e não de palpite. Crie uma aba `Calibração do Earn` que, para cada alavanca do Simulado e usando a base de outubro, mostre lado a lado:
+
+* Quantas contas pontuam na alavanca e que percentual da população representam.
+* Fichas médias por conta que pontua, e fichas totais geradas.
+* Participação da alavanca no total de fichas do programa.
+* Quanto esforço do cliente uma ficha exige naquela alavanca, na unidade da medida (por exemplo, R$ de gasto por ficha).
+* Margem de contribuição estimada do comportamento, como entrada pendente, e as **fichas por R$ de margem**.
+
+O último indicador coloca todas as alavancas na mesma base: mostra quais estão pagando fichas demais ou de menos em relação ao valor que o comportamento traz. Inclua ainda, por alavanca, o efeito de ligar ou desligar: quantas contas mudam de faixa de fichas e quantas passam a alcançar, ou deixam de alcançar, a oferta mais barata.
 
 ## Cartões e cenários de acesso
 
@@ -310,6 +352,10 @@ Com os parâmetros iniciais e todos os demais campos zerados:
 * Perfil zerado gera zero ficha em Referência e Simulado.
 * Perfil zerado tem, sem fichas: cartão XP One, Cofre XP a 100% do CDI, nenhum Investback (no modo "One só com fichas"), nenhum acesso a sala VIP e nenhuma ordem com corretagem zero.
 * Open Finance ativo gera 1 ficha nas duas réguas.
+* Aporte recorrente de R$ 300 no mês gera 5 fichas com a faixa inicial. Ao preencher faixas de R$ 500 a R$ 1.000 e acima, o mesmo aporte passa a seguir a nova tabela.
+* Trocar a mecânica do Salário portado de "por faixas" para "tem ou não tem", com 2 fichas, faz R$ 4.000 de salário gerar 2 fichas, sem alterar nenhuma fórmula.
+* Desligar uma alavanca na coluna "Ligada" zera as fichas dela e reduz o máximo possível da régua no mesmo valor.
+* Faixas sobrepostas ou com lacuna disparam a verificação de erro.
 * Planejamento financeiro e PFM 3.0 ativos geram zero ficha enquanto as alavancas estiverem desligadas.
 * AUC de R$ 25 mil e TPV de R$ 7.500 geram 20 fichas na Referência e 15 no Simulado.
 * No A, esse perfil tem o One como cartão efetivo e 15 fichas para a prateleira. Combinações que cabem exatamente: Cofre XP 115%; Investback One 1,1%; Cofre XP 110% com Investback One 0,8%; Corretagem zero 9 ordens.
