@@ -586,8 +586,8 @@ h3.sec2 span{display:block;font-size:14.5px;color:var(--mut);font-weight:400;mar
 .cf-fx span{display:block;font-size:12px;color:var(--mut)} .cf-fx b{font-size:17px}
 .cf-rules{margin:12px 0 6px;padding-left:18px;font-size:12.5px;color:var(--mut);line-height:1.45}
 .cf-rules li{margin-bottom:3px}
-.rg.mv .rt i{width:var(--to);animation:rgmove 1.1s cubic-bezier(.3,.8,.2,1) .25s both}
-@keyframes rgmove{from{width:var(--from)}to{width:var(--to)}}
+.rg.mv .rt i{transform:scaleX(var(--to));animation:rgmove 1.1s cubic-bezier(.3,.8,.2,1) .25s both}
+@keyframes rgmove{from{transform:scaleX(var(--from))}to{transform:scaleX(var(--to))}}
 .rg.mv .nd{cursor:default}
 .rg.mv .nd.tgt i{animation:tgt 1.1s cubic-bezier(.3,.8,.2,1) .25s both,ndp 1.6s ease-in-out 1.4s infinite}
 @keyframes tgt{0%,70%{background:var(--nb);border-color:var(--dim);box-shadow:none}100%{background:var(--y);border-color:var(--y)}}
@@ -656,6 +656,37 @@ h3.sec2 span{display:block;font-size:14.5px;color:var(--mut);font-weight:400;mar
 .nd.here b{color:var(--tx);font-weight:650}
 .nd.here span{color:var(--tx);font-weight:700}
 .nd.av b{font-weight:600}
+
+/* ===== Regras de animação =====
+   1 entradas a partir de scale .97   2 toque com scale .97 em 150 ms   3 tremor no bloqueado
+   4 abas entram da direção do movimento   5 acordeões animam a altura   6 mover com transform
+   7 troca de tema sem transição   9 e 10 painel arrastável com resistência */
+:root{interpolate-size:allow-keywords}
+@keyframes rise{from{opacity:0;transform:scale(.97)}}
+@keyframes pop{from{transform:scale(.9);opacity:0}}
+@keyframes wdot{from{background:var(--s3);transform:scale(.9);opacity:0}}
+@keyframes up{from{transform:translateY(22px) scale(.97);opacity:0}}
+@keyframes pkin{from{transform:scale(.97);opacity:0}}
+button,[role=button],.tb,.pkl2{transition:scale 150ms ease-out}
+button:active,[role=button]:active,.tb:active{scale:.97}
+.btn:active,.opt:active,.go:active,.nd:active,.stp:active,.tb:active{transform:none}
+.ov:active,.pk2[role=button]:active{scale:1}
+@keyframes shake{0%{transform:translateX(0)}17%{transform:translateX(-10px)}33%{transform:translateX(10px)}50%{transform:translateX(-6px)}67%{transform:translateX(6px)}83%{transform:translateX(-3px)}100%{transform:translateX(0)}}
+.chip.shake{animation:shake 360ms ease-in-out;border-color:#E5484D!important;color:#E5484D!important}
+.scr.enter.from-r>.ttabs~*,.scr.enter.from-l>.ttabs~*{animation-duration:.3s;animation-delay:0s!important;animation-timing-function:cubic-bezier(.2,.8,.2,1)}
+.scr.enter.from-r>.ttabs~*{animation-name:slideR} .scr.enter.from-l>.ttabs~*{animation-name:slideL}
+@keyframes slideR{from{opacity:0;transform:translateX(34px)}} @keyframes slideL{from{opacity:0;transform:translateX(-34px)}}
+.acc-in{overflow:hidden;animation:accin .32s cubic-bezier(.2,.8,.2,1)}
+@keyframes accin{from{height:0;opacity:0}to{height:auto;opacity:1}}
+.hb{display:block;position:relative}
+.hb i{position:absolute;inset:0;border-radius:0;transform-origin:0 50%;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.rt i{width:100%;transform-origin:0 50%;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.theme-switching,.theme-switching *{transition:none!important}
+.sheet::before{display:none}
+.grab{display:block;height:30px;margin:-8px -18px 0;touch-action:none;cursor:grab;position:relative}
+.grab::after{content:"";position:absolute;left:50%;top:10px;width:38px;height:4px;margin-left:-19px;border-radius:2px;background:var(--s3)}
+.sheet{will-change:transform}
+@media (prefers-reduced-motion:reduce){.chip.shake,.acc-in{animation:none!important}}
 </style>
 </head>
 <body>
@@ -893,7 +924,7 @@ const maxTotal = () => visibleBeh().reduce((a, b) => a + (b.id === 'cartao' ? P.
 function bal(){
   const t = total(), al = allocated(), av = available(), mx = Math.max(maxTotal(), t, al);
   return `<div class="bal"><div class="btop"><div class="n"><span class="cnt">${t}</span></div><div class="blab"><b>${t === 1 ? 'ficha' : 'fichas'}</b><span>de ${mx} possíveis</span></div></div>
-    <div class="hb"><i class="bu" style="width:${(al / mx * 100).toFixed(1)}%"></i><i class="ba" style="width:${(av / mx * 100).toFixed(1)}%"></i></div>
+    <div class="hb"><i class="bu" style="transform:scaleX(${(al / mx).toFixed(4)})"></i><i class="ba" style="transform:translateX(${(al / mx * 100).toFixed(2)}%) scaleX(${(av / mx).toFixed(4)})"></i></div>
     <div class="leg" ${t === 0 && al === 0 ? 'hidden' : ''}><span><i class="d y"></i>Em uso <b>${al}</b></span><span><i class="d g"></i>Disponíveis <b>${av}</b></span><button data-a="go:juntar"><i class="d o"></i>A conquistar <b>${mx - Math.max(t, al)}</b></button></div>
     ${t === 0 && al === 0 ? '<button class="xs" style="display:block;font-weight:650" data-a="go:juntar">Veja em Juntar como conseguir fichas ›</button>' : ''}</div>`;
 }
@@ -1089,12 +1120,12 @@ function regua(f, card = activeCard(), locked = false){
   const has = !locked && f.id === 'cofrinho' && S.legacy && !a && S.legRule !== 'migrar';
   const pos = a ? f.opts.findIndex(o => o.id === a.opt) + 1 : has ? 1 : 0;      // 0 = nada com fichas
   const n = f.opts.length + (org ? 1 : 0), fill = org ? pos / (n - 1) : Math.max(0, pos - 1) / (n - 1);
-  return `<div class="rg ${locked ? 'off' : ''}" style="--n:${n}"><div class="rt"><i style="width:${locked ? 0 : fill * 100}%"></i></div><div class="rn">
+  return `<div class="rg ${locked ? 'off' : ''}" style="--n:${n}"><div class="rt"><i style="transform:scaleX(${locked ? 0 : fill})"></i></div><div class="rn">
     ${org ? `<button class="nd ${locked ? 'no' : pos ? 'past' : base ? 'cur' : 'here'}" ${a ? `data-a="sheet:deact:${f.id}"` : ''}><i></i><b>${base || (f.id === 'salavip' ? 'Sem acesso' : 'Sem')}</b><span>${base ? 'Incluído' : locked || pos ? '&nbsp;' : 'Hoje'}</span></button>` : ''}
     ${f.opts.map((o, k) => { const i = k + 1, isA = a && a.opt === o.id, m = missing(f.id, o.id);
       const cls = locked ? 'no' : i < pos ? 'past' : i === pos ? 'cur' + (a && a.status === 'processing' ? ' proc' : '') : m ? 'no' : 'av';
       const sub = isA ? (a.status === 'processing' ? 'Ativando…' : 'Em uso') : has && i === 1 ? 'Você já tem' : pt(o.price);
-      return `<button class="nd ${cls}" ${locked ? '' : `data-a="${isA ? `sheet:deact:${f.id}` : `sheet:confirm:${f.id}:${o.id}`}"`}><i></i><b>${rgShort(f, o)}</b><span>${sub}</span></button>`; }).join('')}
+      return `<button class="nd ${cls}" ${locked ? 'data-a="shake"' : `data-a="${isA ? `sheet:deact:${f.id}` : `sheet:confirm:${f.id}:${o.id}`}"`}><i></i><b>${rgShort(f, o)}</b><span>${sub}</span></button>`; }).join('')}
   </div></div>`;
 }
 function rgState(f, card, locked){
@@ -1225,7 +1256,7 @@ function sheet(){
       // régua em miniatura: o marcador anda da opção atual até a nova
       const org = f.id !== 'corretagem', n = f.opts.length + (org ? 1 : 0), ix = x => f.opts.findIndex(y => y.id === x.id) + (org ? 1 : 0);
       const from = cur ? ix(cur) : 0, to = ix(o), base = rgBase(f, activeCard());
-      const mini = `<div class="rg mv" style="--n:${n};--from:${from / (n - 1) * 100}%;--to:${to / (n - 1) * 100}%"><div class="rt"><i></i></div><div class="rn">
+      const mini = `<div class="rg mv" style="--n:${n};--from:${from / (n - 1)};--to:${to / (n - 1)}"><div class="rt"><i></i></div><div class="rn">
         ${org ? `<div class="nd past"><i></i><b>${base || (f.id === 'salavip' ? 'Sem acesso' : 'Sem')}</b></div>` : ''}
         ${f.opts.map(x => `<div class="nd ${ix(x) === to ? 'cur tgt' : ix(x) < to ? 'past' : 'no'}"><i></i><b>${short(x)}</b></div>`).join('')}</div></div>`;
       h = `<div class="cf-top"><div class="ico">${I[f.id]}</div><span>${f.nome}</span></div>
@@ -1353,11 +1384,11 @@ function sheet(){
       <h2 style="margin-top:6px">${T.h}</h2><p>${T.p} O dinheiro guardado não muda.</p>
       ${T.cta ? `<button class="btn" data-a="${T.cta[0]}">${T.cta[1]}</button><button class="btn ghost" data-a="close">Entendi</button>` : `<button class="btn" data-a="close">Entendi</button>`}`;
   }
-  return `<div class="ov" data-a="close"><div class="sheet" data-stop>${h}</div></div>`;
+  return `<div class="ov" data-a="close"><div class="sheet" data-stop><i class="grab"></i>${h}</div></div>`;
 }
 
 // ---------- Render ----------
-let lastKey = '', prevBal = null;
+let lastKey = '', prevBal = null, justOpen = null;
 function renderPhone(){
   const app = document.getElementById('app');
   if (S.screen === 'welcome'){ app.innerHTML = welcome(); lastKey = 'welcome'; return; }
@@ -1368,7 +1399,7 @@ function renderPhone(){
   const hadSheet = !!app.querySelector('.ov');
   const cta = isHub && S.screen !== 'shelf' && canActivate() ? `<button class="go" data-a="go:shelf"><span>Você tem benefícios para ativar</span><span>›</span></button>` : '';
   app.innerHTML = `<div class="hd"><button class="back" data-a="back">←</button><h1>${isHub ? 'Jornada XP' : S.screen === 'fam' ? fam(S.param).nome : ''}</h1></div>
-    <div class="scr ${key !== lastKey ? 'enter' : ''} ${isHub ? 'hubv' : 'sub'} s-${S.screen}">${isHub ? bal() + banners() + cta + hubTabs() : ''}${body}</div>
+    <div class="scr ${key !== lastKey ? 'enter' : ''} ${lastKey === 'shelf:' && S.screen === 'juntar' ? 'from-r' : lastKey === 'juntar:' && S.screen === 'shelf' ? 'from-l' : ''} ${isHub ? 'hubv' : 'sub'} s-${S.screen}">${isHub ? bal() + banners() + cta + hubTabs() : ''}${body}</div>
     ${S.screen === 'fam' ? famFoot() : ''}
     ${sheet()}`;
   app.querySelector('.scr').scrollTop = st; lastKey = key;
@@ -1386,7 +1417,7 @@ function renderPhone(){
   // contador e barra do saldo animam quando o valor muda
   const cnt = app.querySelector('.bal .cnt');
   if (cnt){
-    const els = [['.bu', 'width'], ['.ba', 'width']].map(([q, k]) => [app.querySelector('.bal ' + q), k]);
+    const els = [['.bu', 'transform'], ['.ba', 'transform']].map(([q, k]) => [app.querySelector('.bal ' + q), k]);
     const now = { t: total(), v: els.map(([el, k]) => el.style[k]) };
     if (prevBal && !matchMedia('(prefers-reduced-motion: reduce)').matches){
       if (prevBal.v.join() !== now.v.join()){ els.forEach(([el, k], n) => { el.style[k] = prevBal.v[n]; }); void cnt.offsetWidth; els.forEach(([el, k], n) => { el.style[k] = now.v[n]; }); }
@@ -1509,7 +1540,8 @@ function renderPanel(){
   el.dataset.tab = S.tab;
   if (same) el.querySelector('.pbody').scrollTop = st;
 }
-function render(){ document.getElementById('phone').classList.toggle('light', S.theme === 'light'); reconcile(); renderPhone(); renderPanel(); }
+function render(){ document.getElementById('phone').classList.toggle('light', S.theme === 'light'); reconcile(); renderPhone(); renderPanel();
+  if (justOpen){ const b = document.querySelector('[data-a^="tog:' + justOpen + ':"]'), c = b && b.nextElementSibling; if (c && !c.hidden) c.classList.add('acc-in'); justOpen = null; } }
 
 // ---------- Ações ----------
 function activate(famId, optId, hold){
@@ -1543,13 +1575,13 @@ function act(a){
     case 'go': if (x === 'pacote') S.ctab = 0; go(x); break;
     case 'home': go('home'); break;
     case 'back': go(S.screen === 'fam' ? 'shelf' : S.screen === 'pacote' ? 'home' : 'welcome'); break;
-    case 'enter': go('home'); prevBal = { t:0, v:['0%', '0%'] }; break;
+    case 'enter': go('home'); prevBal = { t:0, v:['scaleX(0)', 'translateX(0%) scaleX(0)'] }; break;
     case 'openfam': go('shelf'); if (y && fam(x) && fam(x).opts.some(o => o.id === y)) S.sheet = {t:'confirm', fam:x, opt:y}; break;
     case 'sel': S.sel = x; break;
     case 'sheet': S.cond = false; S.open.rule = false; S.sheet = x === 'confirm' ? {t:x, fam:y, opt:a.split(':')[3]} : x === 'deact' ? {t:x, fam:y} : {t:x}; break;
     case 'beh': S.cond = false; S.sheet = {t:'beh', id:x}; break;
     case 'close': S.sheet = null; break;
-    case 'tog': S.open[x] = !(S.open[x] ?? y === '1'); break;
+    case 'tog': S.open[x] = !(S.open[x] ?? y === '1'); justOpen = S.open[x] ? x : null; break;
     case 'do': activate(x, y); if (S.goal && S.goal.fam === x && S.goal.opt === y) S.goal = null; S.sheet = {t:'done', fam:x}; break;
     case 'undo': { const back = optOf(x, S.active[x].opt).price; delete S.active[x]; S.sel = null; S.sheet = {t:'done', fam:x, back}; break; }
     case 'goal': S.goal = {fam:x, opt:y}; S.goalWas = false; go('juntar'); break;
@@ -1575,7 +1607,8 @@ function act(a){
     case 'auc30': S.auc = Math.max(S.auc, P.corte); break;
     case 'leg': S.legRule = x; break;
     case 'sala': S.salaMode = x; break;
-    case 'theme': S.theme = x; break;
+    case 'theme': { S.theme = x; const ph = document.getElementById('phone'); ph.classList.add('theme-switching');
+      requestAnimationFrame(() => requestAnimationFrame(() => ph.classList.remove('theme-switching'))); break; }
     case 'card':   // define qual cartão o cliente já tem, sem passar pelo pedido
       if (x === 'infinite'){ S.inf = 'active'; S.infVia = 'patrimonio'; S.auc = Math.max(S.auc, P.corte); S.seen.req = true; }
       else { S.inf = 'none'; S.infVia = null; }
@@ -1596,7 +1629,37 @@ document.addEventListener('click', e => {
   if (!el) return;
   if (stop && !stop.contains(el)) return;        // toque dentro da sheet não fecha
   if (el.classList.contains('ov') && stop) return;
+  if (dragged){ dragged = false; return; }
+  if (el.dataset.a === 'shake'){ const c = el.closest('.pk2').querySelector('.chip'); c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake'); return; }
   act(el.dataset.a);
+});
+// painel inferior: arrasta pela alça; ao soltar, fecha ou volta conforme a distância e a velocidade do gesto
+let drag = null, dragged = false;
+document.addEventListener('pointerdown', e => {
+  const g = e.target.closest('.grab'); if (!g) return;
+  const sh = g.parentElement; sh.getAnimations().forEach(a => a.cancel()); sh.style.animation = 'none';
+  drag = { sh, y0: e.clientY, y: 0, pts: [[performance.now(), e.clientY]] }; g.setPointerCapture(e.pointerId);
+});
+document.addEventListener('pointermove', e => {
+  if (!drag) return;
+  const dy = e.clientY - drag.y0;
+  // para cima, resistência que cresce quanto mais se puxa
+  drag.y = dy >= 0 ? dy : -(1 - 1 / (-dy / 260 + 1)) * 70;
+  drag.sh.style.transform = `translateY(${drag.y}px)`;
+  drag.pts.push([performance.now(), e.clientY]); if (drag.pts.length > 5) drag.pts.shift();
+  if (Math.abs(dy) > 6) dragged = true;
+});
+document.addEventListener('pointerup', () => {
+  if (!drag) return;
+  const { sh, y, pts } = drag; drag = null;
+  const a = pts[0], b = pts[pts.length - 1], v = b[0] > a[0] ? (b[1] - a[1]) / (b[0] - a[0]) : 0;   // px por ms
+  const h = sh.offsetHeight, close = y > h * 0.33 || v > 0.55;
+  const to = close ? h : 0, dist = Math.abs(to - y);
+  // a duração herda a velocidade do gesto: solto rápido, termina rápido
+  const dur = Math.max(140, Math.min(420, dist / Math.max(Math.abs(v), 0.9)));
+  const an = sh.animate([{ transform: `translateY(${y}px)` }, { transform: `translateY(${to}px)` }], { duration: dur, easing: 'cubic-bezier(.2,.9,.25,1)', fill: 'forwards' });
+  an.onfinish = () => { if (close){ dragged = false; act('close'); } else { sh.style.transform = ''; an.cancel(); } };
+  setTimeout(() => { dragged = false; }, 60);
 });
 document.addEventListener('input', e => {
   if (e.target.id === 'rAuc' || e.target.id === 'rGasto'){
