@@ -49,15 +49,15 @@ O usuário ainda não confirmou este texto palavra por palavra; perguntar se que
 - Voz escolhida pelo usuário, de ouvido: `lWq4KDY8znfkV0DrK8Vb`, modelo `eleven_multilingual_v2`, saída `mp3_44100_128` (o Starter não libera 192 kbps).
 - Quando uma fala não cabe na cena, a imagem é segurada no fim da cena (antes do fade) em vez de acelerar a voz.
 
-### Roteiro atual (versão 29, com trilha) (substitui a tabela acima)
+### Roteiro atual (versão 31, com trilha) (substitui a tabela acima)
 
 Escrito para o ouvido: gancho, uma ideia por frase, exemplos concretos, marca e chamada no fim. Cerca de 70 palavras.
 
 1. Sucesso financeiro tem caminho.
-2. E a XP caminha com você.
+2. E a XP te ajuda a chegar lá.
 3. Pagou no cartão. Recebeu o salário. Guardou um pouco. Aqui, tudo isso conta.
 4. E a recompensa, você escolhe: dinheiro rendendo mais, mais retorno no cartão, sala VIP na viagem. O que fizer sentido agora.
-5. A vida mudou? É só trocar.
+5. Mudou de ideia, ou tá precisando de outra coisa? É só trocar.
 6. E você vê tudo acontecer, na palma da mão.
 7. Jornada XP. Seu sucesso financeiro começa aqui.
 
