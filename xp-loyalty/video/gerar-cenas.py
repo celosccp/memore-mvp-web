@@ -367,24 +367,24 @@ add('s6',6.3,"""
 
 # 7 app: gravação real do protótipo em uso
 W3=['Simples.','Personalizada.','Interativa.']
-add('s7',10.4,"""
+add('s7',11.4,"""
     #s7-all{position:absolute;inset:0}
     #s7-k{position:absolute;left:170px;top:270px;font-size:34px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#A3A3A8}
     .s7-w{position:absolute;left:170px;font-size:112px;white-space:nowrap}
     #s7-s{position:absolute;left:170px;top:800px;width:760px;font-size:40px;color:#A3A3A8;line-height:1.3}
     #s7-ph{position:absolute;left:1180px;top:50px;width:488px;height:980px;border-radius:64px;overflow:hidden;border:10px solid #000;box-shadow:0 0 0 2px rgba(255,255,255,.14),0 50px 120px rgba(0,0,0,.65);background:#000}
     #s7-v{position:absolute;left:0;top:0;width:468px;height:960px;object-fit:cover}
-""",f"""    <div id="s7-all" class="clip" data-start="0" data-duration="10.4" data-track-index="0">
+""",f"""    <div id="s7-all" class="clip" data-start="0" data-duration="11.4" data-track-index="0">
       <div id="s7-k">Tudo no app</div>
       {''.join(f'<div class="s7-w h {"y" if q==2 else ""}" id="s7-w{q}" style="top:{350+q*130}px">{w}</div>' for q,w in enumerate(W3))}
       <div id="s7-s">Você vê o que tem, escolhe o que quer e muda quando quiser.</div>
     </div>
-    <div id="s7-ph" data-layout-allow-overflow><video id="s7-v" class="clip" data-start="0.1" data-duration="10.2" data-playback-rate="1.24" data-track-index="1" src="assets/app-demo.mp4" muted playsinline></video></div>""",
+    <div id="s7-ph" data-layout-allow-overflow><video id="s7-v" class="clip" data-start="0.1" data-duration="11.1" data-playback-rate="1.05" data-track-index="1" src="assets/app-demo.mp4" muted playsinline></video></div>""",
 """      tl.fromTo("#s7-ph", { opacity: 0, y: 140 }, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, 0.0);
       tl.fromTo("#s7-k", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 0.15);
       [0.5, 3.2, 5.9].forEach((t, q) => tl.fromTo("#s7-w" + q, { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, t));
       tl.fromTo("#s7-s", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 6.8);
-      tl.fromTo("#s7-ph", { opacity: 1 }, { opacity: 0, duration: 0.22, ease: "power2.in", immediateRender: false }, 10.13);""")
+      tl.fromTo("#s7-ph", { opacity: 1 }, { opacity: 0, duration: 0.22, ease: "power2.in", immediateRender: false }, 11.13);""")
 
 # 8 fecho
 random.seed(7); dots=[]; djs=[]
@@ -427,7 +427,7 @@ cue(st['s5']+4.75+0.9,'pop',0.45); cue(st['s5']+6.15+0.9,'pop',0.45)       # 110
 cue(st['s5']+7.55+0.9,'impact-bass-2',0.42); cue(st['s5']+7.55+0.95,'sparkle',0.5)   # 125%: o ponto alto
 cue(st['s6']+1.5+1.35,'pop',0.38)                                         # fichas chegam ao saldo
 cue(st['s6']+3.4+0.95,'chime',1.4); cue(st['s6']+3.4+0.95,'pop',0.38)      # Investback turbinado
-for m_ in (1.805,3.685,6.741,8.0,11.544,13.401,15.713): cue(st['s7']+0.1+(m_+0.26-1.7)/1.3/1.24,'click-soft',0.6)   # toques reais na gravação
+for m_ in (3.316,5.286,8.333,10.287): cue(st['s7']+0.1+(m_-1.9)/1.05,'click-soft',0.6)   # toques reais na gravação
 cue(st['s8']+0.35,'impact-bass-1',0.32); cue(st['s8']+0.55,'sparkle',0.5)   # fecho
 audio=''
 for k,(tc,name,vol) in enumerate(sorted(cues)):
