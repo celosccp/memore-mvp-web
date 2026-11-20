@@ -718,7 +718,7 @@ const P = {
   ibInf: [15, 25],       // Investback Infinite 1,2 / 1,5 (1,0% já incluído)
   cartaoPor: 500, cartaoMax: 20,
   aucBloco: 3500, aucMax: 15,   // patrimônio conta desde o primeiro real
-  salFaixas: [[0, 3], [5000, 5]],  // salário portado: [piso em R$, XPoints]; a faixa acima de R$ 5 mil é premissa a confirmar
+  salFaixas: [[0, 3], [5000, 5], [10000, 5]],  // salário portado: [piso exclusivo em R$, XPoints]
   ciclo: 'mensal',
   salaIncl: 4,           // acessos incluídos no Infinite (modo "incluída")
   salaCond: 'com gasto mínimo no cartão',
@@ -754,10 +754,10 @@ const BEH = [
   { id:'segcc',  ctx:3, nome:'Seguro Conta e Cartão', pts:5, optional:true, como:'Proteção para transações na conta e no cartão.', esforco:'Contratação rápida, direto pelo app.', cta:'Ver o seguro' },
 ];
 const beh = id => BEH.find(b => b.id === id);
-// As duas réguas da aba Earn da planilha. Salário: [piso exclusivo em R$, XPoints]; as faixas altas da Simulada são premissa a confirmar.
+// Régua de ganho: bloco Simulado da aba Earn da planilha (a Referência fica guardada só para comparação). Salário: [piso exclusivo em R$, XPoints].
 const EARN = {
   ref: { nome:'Referência', of:1, aucBloco:5000, aucMax:10, cartaoMax:15, cambio:false, segcc:false, sal:[[0, 0], [5000, 2], [10000, 5]] },
-  sim: { nome:'Simulado',   of:3, aucBloco:3500, aucMax:15, cartaoMax:20, cambio:true,  segcc:true,  sal:[[0, 3], [5000, 5]] },
+  sim: { nome:'Simulado',   of:3, aucBloco:3500, aucMax:15, cartaoMax:20, cambio:true,  segcc:true,  sal:[[0, 3], [5000, 5], [10000, 5]] },
 };
 function applyEarn(k){
   const e = EARN[k]; S.earn = k;
@@ -1318,7 +1318,7 @@ function sheet(){
         ${p < P.aucMax ? `<div class="kv tot"><span>Próximo XPoint</span><span>faltam ${brl(next)}</span></div>` : ''}</div>`;
     } else {
       body = `<p>${b.como}</p>
-        <div class="card"><div class="kv"><span>Vale</span><span>${b.step ? `1 XPoint a cada ${brl(b.step)}, até ${b.max}` : b.fx ? P.salFaixas.filter(f => f[1] > 0).map(([piso, n]) => `${n} ${piso ? 'acima de ' + brl(piso) : 'até ' + brl(P.salFaixas[1][0])}`).join(' · ') + ' XPoints' : pt(b.pts)}</span></div>${b.step || b.fx ? `<div class="kv"><span>${b.lab}</span><span>${brl(valOf(b))}</span></div>` : ''}${b.esforco ? `<div class="kv"><span>O que é preciso</span><span>${b.esforco}</span></div>` : ''}<div class="kv"><span>Situação</span><span>${b.step || b.fx ? (p ? `${p} de ${behMax(b)} XPoints` : 'Ainda não feito') : p ? '✓ Concluído' : 'Ainda não feito'}</span></div></div>
+        <div class="card"><div class="kv"><span>Vale</span><span>${b.step ? `1 XPoint a cada ${brl(b.step)}, até ${b.max}` : b.fx ? P.salFaixas.filter((f, i, a) => f[1] > 0 && (!i || a[i - 1][1] !== f[1])).map(([piso, n]) => `${n} ${piso ? 'acima de ' + brl(piso) : 'até ' + brl(P.salFaixas[1][0])}`).join(' · ') + ' XPoints' : pt(b.pts)}</span></div>${b.step || b.fx ? `<div class="kv"><span>${b.lab}</span><span>${brl(valOf(b))}</span></div>` : ''}${b.esforco ? `<div class="kv"><span>O que é preciso</span><span>${b.esforco}</span></div>` : ''}<div class="kv"><span>Situação</span><span>${b.step || b.fx ? (p ? `${p} de ${behMax(b)} XPoints` : 'Ainda não feito') : p ? '✓ Concluído' : 'Ainda não feito'}</span></div></div>
         ${b.need ? `<div class="note">${b.nome} é uma decisão importante. Só vale a pena se você já precisa dele: XPoints não devem ser o motivo. Antes de qualquer proposta, você conta o que precisa e vê taxas, prazos e custo total.</div>
           ${S.cond ? `<div class="card" style="margin-top:10px"><div class="xs b mut">CONDIÇÕES DO PRODUTO</div><div class="kv"><span>Taxa e custo total</span><span>mostrados antes de contratar</span></div><div class="kv"><span>Prazo e parcelas</span><span>você escolhe na simulação</span></div><div class="kv"><span>Análise de capacidade de pagamento</span><span>obrigatória</span></div></div>` : `<button class="btn sec" data-a="cond">Ver condições do produto</button>`}` : ''}
         ${!p && !b.need ? `<button class="btn" data-a="noop">${b.cta}</button>` : ''}
@@ -1460,9 +1460,8 @@ const HIPOTESES = [
   ['Pacotes', 'O cartão mostra o que já vale e, logo abaixo, até onde dá para chegar com XPoints (ex.: Investback 1%, até 1,5% com XPoints).'],
   ['Pacotes', 'Abaixo do corte, o Infinite aparece bloqueado no carrossel, com o que falta para desbloquear.'],
   ['Pacotes', 'Atingir o corte libera o pedido do Infinite. Quem vê o botão de pedir já está pré-aprovado: ao pedir, o cartão é emitido na hora, os benefícios passam a valer e o cartão físico é enviado. Não há etapa de análise visível ao cliente.'],
-  ['XPoints', 'O painel alterna entre as duas réguas da planilha. Referência: Open Finance 1; patrimônio 1 a cada R$ 5 mil, até 10; cartão até 15; salário 0 até R$ 5 mil, 2 até R$ 10 mil e 5 acima; câmbio e Seguro Conta e Cartão desligados.'],
-  ['XPoints', 'Régua Simulada, da planilha Simulador Loyalty Digital v5 (premissas de trabalho, não política aprovada). A cada valor: cartão, 1 XPoint a cada R$ 500 no mês, até 20; patrimônio, 1 a cada R$ 3.500 desde o primeiro real, até 15; câmbio, 1 a cada R$ 2.000, até 10; crédito e consórcio, 1 a cada R$ 10 mil, até 20 cada.'],
-  ['XPoints', 'Tem ou não tem: Open Finance 3, aporte recorrente 5, previdência 1 (a partir de R$ 100), pagamento de contas 2 (a partir de R$ 5 mil no mês), seguro de vida 5 (a partir de R$ 100), Seguro Conta e Cartão 5. Salário por faixas: 3 XPoints até R$ 5 mil; a faixa acima (5 XPoints) é premissa a confirmar. Planejamento financeiro vale 3 XPoints nas duas réguas (decisão de produto; ainda não está na planilha). Gestão de gastos (2) segue ilustrativa e aparece como em breve.'],
+  ['XPoints', 'Ganho pelos parâmetros do bloco Simulado da planilha Simulador Loyalty Digital v5 (premissas de trabalho, não política aprovada). A cada valor: cartão, 1 XPoint a cada R$ 500 no mês, até 20; patrimônio, 1 a cada R$ 3.500 desde o primeiro real, até 15; câmbio, 1 a cada R$ 2.000, até 10; crédito e consórcio, 1 a cada R$ 10 mil, até 20 cada.'],
+  ['XPoints', 'Tem ou não tem: Open Finance 3, aporte recorrente 5, previdência 1 (a partir de R$ 100), pagamento de contas 2 (a partir de R$ 5 mil no mês), seguro de vida 5 (a partir de R$ 100), Seguro Conta e Cartão 5. Salário por faixas: 3 XPoints até R$ 5 mil e 5 acima disso. Planejamento financeiro vale 3 XPoints (decisão de produto; ainda não está na planilha). Gestão de gastos (2) segue ilustrativa e aparece como em breve.'],
   ['XPoints', 'Apuração mensal: o saldo total é recalculado a cada ciclo conforme o comportamento. Não há acúmulo nem validade no protótipo.'],
   ['Saldo', 'O medidor mostra os XPoints do cliente contra o total possível (48 na régua ilustrativa): em uso, disponíveis e a conquistar. O total é a soma dos tetos de todos os desafios e muda com a calibração.'],
   ['Saldo', 'XPoints travados: ficam em uso enquanto o benefício está ativo e voltam ao desativar. Uma opção ativa por família.'],
@@ -1520,9 +1519,6 @@ function renderPanel(){
       <h2>Tema do app</h2>
       <div class="seg"><button class="${S.theme === 'light' ? 'on' : ''}" data-a="theme:light">Claro</button><button class="${S.theme === 'dark' ? 'on' : ''}" data-a="theme:dark">Escuro</button></div>
       ${proc ? `<button class="pbtn hot" data-a="finish">Concluir ativação em processamento</button>` : ''}
-      <h2>Régua de ganho</h2>
-      <div class="seg">${Object.entries(EARN).map(([k, e]) => `<button class="${S.earn === k ? 'on' : ''}" data-a="earn:${k}">${e.nome}</button>`).join('')}</div>
-      <p class="hint">Os dois blocos da aba Earn da planilha. ${S.earn === 'ref' ? 'Referência: patrimônio a cada R$ 5 mil, cartão até 15, salário só conta acima de R$ 5 mil; câmbio e seguro conta e cartão desligados.' : 'Simulado: patrimônio a cada R$ 3.500, cartão até 20, Open Finance vale 3; câmbio e seguro conta e cartão ligados.'}</p>
       <h2>Simular comportamento</h2>
       <div class="seg" style="margin-bottom:12px"><button class="${S.inf !== 'active' ? 'on' : ''}" data-a="card:one">Tem o XP One</button><button class="${S.inf === 'active' ? 'on' : ''}" data-a="card:infinite">Tem o XP Infinite</button></div>
       <div class="sl"><label>Patrimônio investido <output id="oAuc">${brl(S.auc)}</output></label><input type="range" id="rAuc" min="0" max="100000" step="1000" value="${S.auc}"></div>
