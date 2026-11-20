@@ -376,18 +376,26 @@ add('s7',11.4,"""
     #s7-k{position:absolute;left:170px;top:270px;font-size:34px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#A3A3A8}
     .s7-w{position:absolute;left:170px;font-size:112px;white-space:nowrap}
     #s7-s{position:absolute;left:170px;top:800px;width:760px;font-size:40px;color:#A3A3A8;line-height:1.3}
-    #s7-ph{position:absolute;left:1180px;top:50px;width:488px;height:980px;border-radius:64px;overflow:hidden;border:10px solid #000;box-shadow:0 0 0 2px rgba(255,255,255,.14),0 50px 120px rgba(0,0,0,.65);background:#000}
+    #s7-cam{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:1440px 540px}
+    #s7-ph{position:absolute;left:1196px;top:50px;width:488px;height:980px;border-radius:64px;overflow:hidden;border:10px solid #000;box-shadow:0 0 0 2px rgba(255,255,255,.14),0 50px 120px rgba(0,0,0,.65);background:#000}
     #s7-v{position:absolute;left:0;top:0;width:468px;height:960px;object-fit:cover}
 """,f"""    <div id="s7-all" class="clip" data-start="0" data-duration="11.4" data-track-index="0">
       <div id="s7-k">Tudo no app</div>
       {''.join(f'<div class="s7-w h {"y" if q==2 else ""}" id="s7-w{q}" style="top:{350+q*130}px">{w}</div>' for q,w in enumerate(W3))}
       <div id="s7-s">Você vê o que tem, escolhe o que quer e muda quando quiser.</div>
     </div>
-    <div id="s7-ph" data-layout-allow-overflow><video id="s7-v" class="clip" data-start="0.1" data-duration="11.1" data-playback-rate="1.05" data-track-index="1" src="assets/app-demo.mp4" muted playsinline></video></div>""",
+    <div id="s7-cam" data-layout-allow-overflow><div id="s7-ph" data-layout-allow-overflow><video id="s7-v" class="clip" data-start="0.1" data-duration="11.1" data-playback-rate="1.05" data-track-index="1" src="assets/app-demo.mp4" muted playsinline></video></div></div>""",
 """      tl.fromTo("#s7-ph", { opacity: 0, y: 140 }, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, 0.0);
       tl.fromTo("#s7-k", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 0.15);
       [0.5, 3.2, 5.9].forEach((t, q) => tl.fromTo("#s7-w" + q, { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, t));
       tl.fromTo("#s7-s", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 6.8);
+      // câmera: mostra o celular inteiro, aproxima na ação e acompanha cada toque; volta ao plano geral no fim
+      const Z = 1.6, cam = fy => -(50 + 980 * fy - 540) * Z;
+      tl.fromTo("#s7-cam", { scale: 1, y: 0 }, { scale: 1, y: 0, duration: 0.01 }, 0);
+      tl.fromTo("#s7-cam", { scale: 1, y: 0 }, { scale: Z, y: cam(0.69), duration: 0.6, ease: "power2.inOut", immediateRender: false }, 0.85);
+      tl.fromTo("#s7-cam", { y: cam(0.69) }, { y: cam(0.31), duration: 0.55, ease: "power2.inOut", immediateRender: false }, 7.35);
+      tl.fromTo("#s7-cam", { y: cam(0.31) }, { y: cam(0.42), duration: 1.4, ease: "sine.inOut", immediateRender: false }, 9.0);
+      tl.fromTo("#s7-cam", { scale: Z, y: cam(0.42) }, { scale: 1, y: 0, duration: 0.5, ease: "power2.inOut", immediateRender: false }, 10.5);
       tl.fromTo("#s7-ph", { opacity: 1 }, { opacity: 0, duration: 0.22, ease: "power2.in", immediateRender: false }, 11.13);""")
 
 # 8 fecho

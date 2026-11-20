@@ -74,3 +74,5 @@ Versão 27: o usuário não gosta da construção "um avanço de cada vez"; a ab
 Em discussão: trocar "fichas" por **XPoints** (marca com "XP" grande e "OINTS" pequeno; o X sozinho foi rejeitado). O tratamento tipográfico ainda não foi escolhido e nada foi aplicado ao vídeo nem ao protótipo.
 
 Versão 28: o vídeo passou a mostrar **XPoints** no lugar de "fichas" (tratamento B: "XP" pesado e "OINTS" em maiúsculas pequenas e espaçadas, classe `.xpb` no gerador). O protótipo ainda usa "fichas".
+
+Versão 30: na cena do app (s7) uma "câmera" (`#s7-cam`) aproxima o celular em 1,6× e acompanha os toques: plano geral → régua do Cofre XP e painel de confirmação → abas no topo → lista de momentos → plano geral. Pendente: a gravação do app ainda mostra "fichas", enquanto o resto do vídeo já usa XPoints.
