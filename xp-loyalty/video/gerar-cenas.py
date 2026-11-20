@@ -126,11 +126,12 @@ for i_,(t,n) in enumerate(A):
     fly4+=''.join(f'<i class="s4-f" id="s4-f{k0+q}" style="left:{CXL+40}px;top:{y+43}px"></i>' for q in range(n)); k0+=n
 add('s4',6.9,"""
     #s4-all{position:absolute;inset:0}
+    .xpb{font-style:normal;white-space:nowrap;font-weight:900;letter-spacing:-.05em}.xpb b{font-weight:900}.xpb.yx b{color:#FFC709}.xpb small{font-size:.3em;font-weight:800;letter-spacing:.2em;margin-left:.2em;text-transform:uppercase;position:relative;top:-.12em}.xpb.s small{font-size:.58em;letter-spacing:.1em;margin-left:.14em;top:-.04em}
     #s4-txt{position:absolute;left:170px;top:150px;width:860px}
     #s4-h{font-size:96px}
     #s4-num{display:flex;align-items:flex-end;gap:26px;margin-top:70px}
     #s4-n{font-size:260px;font-weight:900;letter-spacing:-.05em;line-height:.85;min-width:300px}
-    #s4-u{font-size:60px;font-weight:700;padding-bottom:14px}
+    #s4-u{font-size:104px;line-height:1;padding-bottom:8px}
     #s4-bar{height:22px;border-radius:12px;background:rgba(255,255,255,.12);margin-top:40px;overflow:hidden;width:760px}
     #s4-fill{height:100%;width:100%;background:#7BE3A8;border-radius:12px;transform-origin:0 50%}
     .s4-r{position:absolute;left:1080px;width:670px;height:112px;border-radius:32px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:26px;padding:0 36px}
@@ -140,8 +141,8 @@ add('s4',6.9,"""
     .s4-f{position:absolute;width:26px;height:26px;border-radius:50%;background:#7BE3A8;box-shadow:0 0 22px rgba(123,227,168,.95);opacity:0}
 """,f"""    <div id="s4-all" class="clip" data-start="0" data-duration="6.9" data-track-index="0">
       <div id="s4-txt">
-        <div id="s4-h" class="h">Cada avanço na<br>sua jornada vira<br><span class="y">fichas.</span></div>
-        <div id="s4-num"><div id="s4-n">0</div><div id="s4-u">fichas</div></div>
+        <div id="s4-h" class="h">Cada avanço na<br>sua jornada vira<br><span class="y"><em class="xpb"><b>XP</b><small>oints</small></em></span></div>
+        <div id="s4-num"><div id="s4-n">0</div><div id="s4-u"><em class="xpb yx"><b>XP</b><small>oints</small></em></div></div>
         <div id="s4-bar"><div id="s4-fill"></div></div>
       </div>
       {rows4}{fly4}
@@ -173,7 +174,7 @@ add('s4',6.9,"""
 REEL=['Corretagem zero','Investback turbinado','Mais acessos a salas VIP','Cofre XP turbinado']*2
 reel=''.join(f'<div>{t}</div>' for t in REEL)
 X0,W,NY,SX,SY=322,1276,770,1493,484
-nodes=''.join(f'<div class="s5-n" id="s5-n{i}" style="left:{p}%"><i id="s5-d{i}"></i><b>{t}</b><span>{c}</span></div>' for i,(p,t,c) in enumerate([(0,'100%','Incluído'),(33.333,'110%','10 fichas'),(66.666,'115%','15 fichas'),(100,'125%','30 fichas')]))
+nodes=''.join(f'<div class="s5-n" id="s5-n{i}" style="left:{p}%"><i id="s5-d{i}"></i><b>{t}</b><span>{c}</span></div>' for i,(p,t,c) in enumerate([(0,'100%','Incluído'),(33.333,'110%','10 <em class="xpb s"><b>XP</b><small>oints</small></em>'),(66.666,'115%','15 <em class="xpb s"><b>XP</b><small>oints</small></em>'),(100,'125%','30 <em class="xpb s"><b>XP</b><small>oints</small></em>')]))
 fly=''.join(f'<i class="s5-f" id="s5-f{k}"></i>' for k in range(30))
 fx=''
 for n in (1,2,3):
@@ -181,6 +182,7 @@ for n in (1,2,3):
     fx+=f'<i class="s5-rp" id="s5-rp{n}" style="left:{x-28}px;top:{NY-28}px"></i>'+''.join(f'<i class="s5-k" id="s5-k{n}-{k}" style="left:{x-6}px;top:{NY-6}px"></i>' for k in range(12))
 add('s5',10.0,"""
     #s5-all{position:absolute;inset:0}
+    .xpb{font-style:normal;white-space:nowrap;font-weight:900;letter-spacing:-.05em}.xpb b{font-weight:900}.xpb.yx b{color:#FFC709}.xpb small{font-size:.3em;font-weight:800;letter-spacing:.2em;margin-left:.2em;text-transform:uppercase;position:relative;top:-.12em}.xpb.s small{font-size:.58em;letter-spacing:.1em;margin-left:.14em;top:-.04em}
     #s5-h{position:absolute;left:170px;top:110px;font-size:88px;width:1500px}
     #s5-reel{position:absolute;left:170px;right:170px;top:345px;height:570px;overflow:hidden}
     #s5-col div,#s5-land{height:190px;line-height:190px;font-size:118px;font-weight:900;letter-spacing:-.04em;white-space:nowrap}
@@ -206,12 +208,13 @@ add('s5',10.0,"""
     .s5-n{position:absolute;top:0;width:260px;margin-left:-130px;text-align:center}
     .s5-n i{display:block;width:56px;height:56px;border-radius:50%;margin:0 auto 18px;background:#1e1b17;border:7px solid #6E6E75}
     .s5-n b{display:block;font-size:44px;font-weight:700}
-    .s5-n span{display:block;font-size:28px;color:#A3A3A8;margin-top:4px}
+    .s5-n span{display:block;font-size:28px;color:#A3A3A8;margin-top:4px;white-space:nowrap}
+    .s5-n .xpb b{display:inline;font-size:inherit;font-weight:900}
     .s5-f{position:absolute;left:"""+str(SX-11)+"""px;top:"""+str(SY-11)+"""px;width:26px;height:26px;border-radius:50%;background:#7BE3A8;box-shadow:0 0 22px rgba(123,227,168,.95);opacity:0}
     .s5-rp{position:absolute;width:56px;height:56px;border-radius:50%;border:5px solid #FFC709;opacity:0}
     .s5-k{position:absolute;width:12px;height:12px;border-radius:50%;background:#FFC709;opacity:0}
 """,f"""    <div id="s5-all" class="clip" data-start="0" data-duration="10.0" data-track-index="0">
-      <div id="s5-h" class="h">Com fichas, você escolhe<br>o que <span class="y">turbinar.</span></div>
+      <div id="s5-h" class="h">Com <em class="xpb yx"><b>XP</b><small>oints</small></em>, você escolhe<br>o que <span class="y">turbinar.</span></div>
       <div id="s5-reel" data-layout-allow-overflow><div id="s5-col">{reel}</div><div class="s5-fade" id="s5-ft"></div><div class="s5-fade" id="s5-fb"></div></div>
       <div class="s5-bar" id="s5-b1l"></div><div class="s5-bar" id="s5-b2l"></div>
       <div id="s5-card">
@@ -300,6 +303,7 @@ def card(cid,x,name,unit,v0,v1,c0,c1):
         <div class="s6-ch"><span id="s6-{cid}c0">{c0}</span><span id="s6-{cid}c1">{c1}</span></div></div>"""
 add('s6',6.3,"""
     #s6-all{position:absolute;inset:0}
+    .xpb{font-style:normal;white-space:nowrap;font-weight:900;letter-spacing:-.05em}.xpb b{font-weight:900}.xpb.yx b{color:#FFC709}.xpb small{font-size:.3em;font-weight:800;letter-spacing:.2em;margin-left:.2em;text-transform:uppercase;position:relative;top:-.12em}.xpb.s small{font-size:.58em;letter-spacing:.1em;margin-left:.14em;top:-.04em}
     #s6-h{position:absolute;left:170px;top:100px;font-size:88px;width:1500px}
     #s6-w{position:absolute;left:740px;top:400px;width:440px;height:104px;border-radius:999px;border:4px solid #7BE3A8;color:#7BE3A8;font-size:42px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:16px;background:#0f1512}
     #s6-wn{font-size:60px;font-weight:900;color:#F4F4F2;min-width:76px;text-align:center}
@@ -315,9 +319,9 @@ add('s6',6.3,"""
     #s6-rp{position:absolute;left:"""+str(RX-60)+"""px;top:"""+str(CYc-60)+"""px;width:120px;height:120px;border-radius:50%;border:6px solid #FFC709;opacity:0}
     .on{background:#FFC709;color:#000} .off{border:3px solid #6E6E75;color:#A3A3A8;line-height:54px!important}
 """,f"""    <div id="s6-all" class="clip" data-start="0" data-duration="6.3" data-track-index="0">
-      <div id="s6-h" class="h">Troque quando quiser.<br><span class="y">As fichas voltam.</span></div>
-      {card('a',170,'Cofre XP','% do CDI','<span class="y">125%</span>','<span class="y">110%</span>','30 fichas em uso','10 fichas em uso').replace('id="s6-ac0"','id="s6-ac0" class="on"').replace('id="s6-ac1"','id="s6-ac1" class="on"')}
-      {card('b',1070,'Investback','no cartão','1%','<span class="y">1,5%</span>','Incluído','15 fichas em uso').replace('id="s6-bc0"','id="s6-bc0" class="off"').replace('id="s6-bc1"','id="s6-bc1" class="on"')}
+      <div id="s6-h" class="h">Troque quando quiser.<br><span class="y">Os <em class="xpb"><b>XP</b><small>oints</small></em> voltam.</span></div>
+      {card('a',170,'Cofre XP','% do CDI','<span class="y">125%</span>','<span class="y">110%</span>','30 <em class="xpb s"><b>XP</b><small>oints</small></em> em uso','10 <em class="xpb s"><b>XP</b><small>oints</small></em> em uso').replace('id="s6-ac0"','id="s6-ac0" class="on"').replace('id="s6-ac1"','id="s6-ac1" class="on"')}
+      {card('b',1070,'Investback','no cartão','1%','<span class="y">1,5%</span>','Incluído','15 <em class="xpb s"><b>XP</b><small>oints</small></em> em uso').replace('id="s6-bc0"','id="s6-bc0" class="off"').replace('id="s6-bc1"','id="s6-bc1" class="on"')}
       <div id="s6-w">Disponíveis <span id="s6-wn">0</span></div>
       <i id="s6-rp"></i>
       {out}{inn}

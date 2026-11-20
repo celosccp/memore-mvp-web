@@ -72,3 +72,5 @@ Versão 26: a gravação do app (`assets/app-demo.mp4`) foi refeita com `gravar-
 Versão 27: o usuário não gosta da construção "um avanço de cada vez"; a abertura aprovada é "Sucesso financeiro tem caminho. / E a XP caminha com você.".
 
 Em discussão: trocar "fichas" por **XPoints** (marca com "XP" grande e "OINTS" pequeno; o X sozinho foi rejeitado). O tratamento tipográfico ainda não foi escolhido e nada foi aplicado ao vídeo nem ao protótipo.
+
+Versão 28: o vídeo passou a mostrar **XPoints** no lugar de "fichas" (tratamento B: "XP" pesado e "OINTS" em maiúsculas pequenas e espaçadas, classe `.xpb` no gerador). O protótipo ainda usa "fichas".
