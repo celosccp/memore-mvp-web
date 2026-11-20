@@ -714,7 +714,7 @@ const P = {
   corr: [20, 30, 45],    // Corretagem zero: 3 / 6 / 10 ordens por mês, todas com XPoints
   cofBase: 100,          // Cofre XP sem XPoints
   cofre: [15, 20, 25],   // Cofre XP Turbo 110/115/125
-  ibOne: [10, 15, 25],   // Investback One 1,0 / 1,2 / 1,5 (tudo com XPoints)
+  ibOne: [10],           // Investback One: sem Investback de partida; 1,0% com XPoints
   ibInf: [15, 25],       // Investback Infinite 1,2 / 1,5 (1,0% já incluído)
   cartaoPor: 500, cartaoMax: 20,
   aucBloco: 3500, aucMax: 15,   // patrimônio conta desde o primeiro real
@@ -797,7 +797,7 @@ const gainOf = b => isBlk(b) ? 1 : b.fx ? P.salFaixas.find(f => f[1] > 0)[1] : b
 const visibleBeh = () => BEH.filter(b => !b.off && (!b.optional || S.segcc) && (!b.soon || S.pfm));
 const total = () => visibleBeh().reduce((s,b) => s + behPts(b), 0);
 
-const IB = { one: () => [ {id:'o10', label:'1,0% de Investback', rate:1.0, price:P.ibOne[0]}, {id:'o12', label:'1,2% de Investback', rate:1.2, price:P.ibOne[1]}, {id:'o15', label:'1,5% de Investback', rate:1.5, price:P.ibOne[2]} ],
+const IB = { one: () => [ {id:'o10', label:'1,0% de Investback', rate:1.0, price:P.ibOne[0]} ],
              infinite: () => [ {id:'i12', label:'1,2% de Investback', rate:1.2, price:P.ibInf[0]}, {id:'i15', label:'1,5% de Investback', rate:1.5, price:P.ibInf[1]} ] };
 // Sala VIP: incluída no Infinite (mínimo de largada) ou só por XPoints. O número da opção é o total de acessos por ano.
 const salaBase = card => card === 'infinite' && S.salaMode === 'incluida' ? P.salaIncl : 0;
@@ -1120,7 +1120,7 @@ function pacote(){
     <div class="cmp" ${isOpen('cmp') ? '' : 'hidden'}>
       <div></div><div ${cmpCur('one')}>XP One</div><div ${cmpCur('infinite')}>XP Infinite</div>
       <div>Investback</div><div ${cmpCur('one')}>Até 1,1%<br><span class="xs mut">com XPoints</span></div><div ${cmpCur('infinite')}>1%<br><span class="xs mut">já incluído</span></div>
-      <div>Investback com XPoints</div><div ${cmpCur('one')}>1,0%, 1,2% ou 1,5%</div><div ${cmpCur('infinite')}>1,2% ou 1,5%</div>
+      <div>Investback com XPoints</div><div ${cmpCur('one')}>1,0%</div><div ${cmpCur('infinite')}>1,2% ou 1,5%</div>
       <div>Salas VIP</div><div ${cmpCur('one')}>${salaNow('one').main}<br><span class="xs mut">${salaNow('one').up}</span></div><div ${cmpCur('infinite')}>${salaNow('infinite').main}<br><span class="xs mut">${salaNow('infinite').up}</span></div>
       <div>Como ter</div><div ${cmpCur('one')}>Cartão de entrada</div><div ${cmpCur('infinite')}>${brl(P.corte)} investidos${S.scen === 'B' ? ` ou ${pt(P.infPts)}` : ''}</div>
     </div>`}`;
@@ -1453,7 +1453,7 @@ function renderPhone(){
 
 const HIPOTESES = [
   ['Pacotes', 'Dois pacotes, XP One e XP Infinite, sem nomes de nível ou segmento. Na tela, a palavra é sempre "cartão": o do cliente aparece como "Incluído · não usa XPoints", com a razão (cliente XP Digital, ou R$ 30 mil ou mais investidos).'],
-  ['Pacotes', 'No One, o Investback vem só de XPoints: 1,0%, 1,2% ou 1,5% por 10, 15 ou 25 XPoints. No Infinite, 1,0% já vem incluído e 1,2% ou 1,5% custam 15 ou 25.'],
+  ['Pacotes', 'Investback: o One parte sem Investback e chega a 1,0% por 10 XPoints. O Infinite já começa com 1,0% incluído e chega a 1,2% ou 1,5% por 15 ou 25 XPoints.'],
   ['Pacotes', 'Quem tem o XP One vê o Infinite ao lado, em carrossel. Quem já tem o Infinite vê só o Infinite. Quem está longe do corte (abaixo de 60%) não vê barra de "faltam R$": só a regra, sem cobrança.'],
   ['Sala VIP', 'Pela planilha, sala VIP vem de XPoints: 2 ou 4 acessos por ano por 30 ou 45 XPoints, nos dois cartões (6 acessos por 60 está desligado). O painel mantém o modo alternativo em que o Infinite já inclui 4 acessos e chega a 6 por 60 XPoints.'],
   ['Sala VIP', 'Como no Investback, o número escolhido é o total de acessos do ano, não um extra.'],
@@ -1467,7 +1467,7 @@ const HIPOTESES = [
   ['Saldo', 'XPoints travados: ficam em uso enquanto o benefício está ativo e voltam ao desativar. Uma opção ativa por família.'],
   ['Saldo', 'Na troca dentro da família, os XPoints da opção atual são liberados e os da nova entram em uso, de uma vez só.'],
   ['Prateleira', 'Cofre XP Turbo 110/115/125% do CDI por 15/20/25 XPoints. Sem XPoints, o Cofre XP rende 100% do CDI, já incluído.'],
-  ['Prateleira', 'Investback turbinado é a taxa total do cartão. One: 1,0%, 1,2% ou 1,5% por 10, 15 ou 25 XPoints. Infinite: 1,2% ou 1,5% por 15 ou 25.'],
+  ['Prateleira', 'Investback turbinado é a taxa total do cartão. One: 1,0% por 10 XPoints. Infinite: 1,2% ou 1,5% por 15 ou 25.'],
   ['Prateleira', 'Corretagem zero em três faixas, todas com XPoints: 3, 6 ou 10 ordens por mês por 20, 30 ou 45 XPoints. Nenhuma ordem é incluída.'],
   ['Prateleira', 'Na aba Usar, cada benefício é uma régua: o cliente toca no ponto que quer e vai direto para a confirmação. Investback e Salas VIP ficam dentro do card do cartão.'],
   ['Sala VIP', 'No One, a régua vai de sem acesso a 2 ou 4 acessos por ano (30 ou 45 XPoints).'],
@@ -1544,7 +1544,7 @@ function renderPanel(){
       <label class="fld">Corte patrimonial (R$) <input type="number" data-p="corte" step="1000" value="${P.corte}"></label>
       <label class="fld">Corretagem 3 / 6 / 10 ordens <span><input type="number" data-p="corr.0" value="${P.corr[0]}" style="width:42px"> <input type="number" data-p="corr.1" value="${P.corr[1]}" style="width:42px"> <input type="number" data-p="corr.2" value="${P.corr[2]}" style="width:42px"></span></label>
       <label class="fld">Cofre XP 110 / 115 / 125 <span><input type="number" data-p="cofre.0" value="${P.cofre[0]}" style="width:46px"> <input type="number" data-p="cofre.1" value="${P.cofre[1]}" style="width:46px"> <input type="number" data-p="cofre.2" value="${P.cofre[2]}" style="width:46px"></span></label>
-      <label class="fld">Investback One 1,0 / 1,2 / 1,5 <span><input type="number" data-p="ibOne.0" value="${P.ibOne[0]}" style="width:42px"> <input type="number" data-p="ibOne.1" value="${P.ibOne[1]}" style="width:42px"> <input type="number" data-p="ibOne.2" value="${P.ibOne[2]}" style="width:42px"></span></label>
+      <label class="fld">Investback One 1,0% <input type="number" data-p="ibOne.0" value="${P.ibOne[0]}"></label>
       <label class="fld">Investback Infinite 1,2 / 1,5 <span><input type="number" data-p="ibInf.0" value="${P.ibInf[0]}" style="width:46px"> <input type="number" data-p="ibInf.1" value="${P.ibInf[1]}" style="width:46px"></span></label>
       <label class="fld">Acessos incluídos no Infinite <input type="number" data-p="salaIncl" value="${P.salaIncl}"></label>
       <label class="fld txt">Cobertura da corretagem zero <input type="text" data-p="corrCob" value="${P.corrCob}"></label>
