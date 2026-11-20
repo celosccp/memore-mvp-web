@@ -49,16 +49,18 @@ O usuário ainda não confirmou este texto palavra por palavra; perguntar se que
 - Voz escolhida pelo usuário, de ouvido: `lWq4KDY8znfkV0DrK8Vb`, modelo `eleven_multilingual_v2`, saída `mp3_44100_128` (o Starter não libera 192 kbps).
 - Quando uma fala não cabe na cena, a imagem é segurada no fim da cena (antes do fade) em vez de acelerar a voz.
 
-### Roteiro atual (versão 21, com trilha) (substitui a tabela acima)
+### Roteiro atual (versão 24, com trilha) (substitui a tabela acima)
 
 Escrito para o ouvido: gancho, uma ideia por frase, exemplos concretos, marca e chamada no fim. Cerca de 70 palavras.
 
 1. Ninguém organiza a vida financeira de uma vez.
 2. É um avanço de cada vez. E a XP te mostra qual é o próximo.
 3. Pagou no cartão. Recebeu o salário. Guardou um pouco. Aqui, tudo isso conta.
-4. E o benefício, você escolhe: dinheiro rendendo mais, mais retorno no cartão, sala VIP na viagem. O que fizer sentido agora.
+4. E a recompensa, você escolhe: dinheiro rendendo mais, mais retorno no cartão, sala VIP na viagem. O que fizer sentido agora.
 5. A vida mudou? É só trocar.
 6. E você vê tudo acontecer, na palma da mão.
 7. Jornada XP. O seu sucesso financeiro começa no próximo avanço.
 
 Trilha: instrumental gerada no Runway (`eleven_music_v2_5`, endpoint `/v1/text_to_music`, 17 créditos por 50 s). Na mixagem a voz fica na frente, a trilha baixa sozinha durante a fala e os efeitos ficam a cerca de 20%.
+
+Vozes testadas com o roteiro atual (o usuário ainda vai escolher a oficial): `lWq4KDY8znfkV0DrK8Vb`, `zhza6dIY7yb1xz5MKTvQ` e `PKoLMZQNTkKzc8W7Fy4P`. As duas últimas agradaram mais.
