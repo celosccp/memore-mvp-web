@@ -49,12 +49,12 @@ O usuário ainda não confirmou este texto palavra por palavra; perguntar se que
 - Voz escolhida pelo usuário, de ouvido: `lWq4KDY8znfkV0DrK8Vb`, modelo `eleven_multilingual_v2`, saída `mp3_44100_128` (o Starter não libera 192 kbps).
 - Quando uma fala não cabe na cena, a imagem é segurada no fim da cena (antes do fade) em vez de acelerar a voz.
 
-### Roteiro atual (versão 26, com trilha) (substitui a tabela acima)
+### Roteiro atual (versão 27, com trilha) (substitui a tabela acima)
 
 Escrito para o ouvido: gancho, uma ideia por frase, exemplos concretos, marca e chamada no fim. Cerca de 70 palavras.
 
-1. Organizar a vida financeira? Às vezes, o mais difícil é saber por onde começar.
-2. É um avanço de cada vez. E a XP te mostra qual é o próximo.
+1. Sucesso financeiro tem caminho.
+2. E a XP caminha com você.
 3. Pagou no cartão. Recebeu o salário. Guardou um pouco. Aqui, tudo isso conta.
 4. E a recompensa, você escolhe: dinheiro rendendo mais, mais retorno no cartão, sala VIP na viagem. O que fizer sentido agora.
 5. A vida mudou? É só trocar.
@@ -68,3 +68,7 @@ Vozes testadas com o roteiro atual (o usuário ainda vai escolher a oficial): `l
 **Voz oficial escolhida pelo usuário: `zhza6dIY7yb1xz5MKTvQ`.** A primeira fala entra 1,3 s depois do início, com logo e trilha sozinhos antes; as demais entram 0,3 s depois do início de cada cena.
 
 Versão 26: a gravação do app (`assets/app-demo.mp4`) foi refeita com `gravar-app.js`, num fluxo único e calmo (aba Usar → 110% no Cofre XP → confirma → volta com o benefício ativo → aba Juntar → desce a lista). A cena do app passou a durar 11,4 s e o vídeo base 48,2 s. A primeira fala entra em 0,9 s e atravessa o corte para a cena dos momentos.
+
+Versão 27: o usuário não gosta da construção "um avanço de cada vez"; a abertura aprovada é "Sucesso financeiro tem caminho. / E a XP caminha com você.".
+
+Em discussão: trocar "fichas" por **XPoints** (marca com "XP" grande e "OINTS" pequeno; o X sozinho foi rejeitado). O tratamento tipográfico ainda não foi escolhido e nada foi aplicado ao vídeo nem ao protótipo.
