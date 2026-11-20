@@ -711,13 +711,14 @@ button:active,[role=button]:active,.tb:active{scale:.97}
 const P = {
   corte: 30000,          // corte patrimonial do Infinite
   infPts: 10,            // Infinite por XPoints (cenário B)
-  corr: [5, 10, 15],     // Corretagem zero: 3 / 6 / 9 ordens por mês, todas com XPoints
+  corr: [20, 30, 45],    // Corretagem zero: 3 / 6 / 10 ordens por mês, todas com XPoints
   cofBase: 100,          // Cofre XP sem XPoints
-  cofre: [10, 15, 30],   // Cofre XP Turbo 110/115/125
-  ibOne: [5, 10, 15],    // Investback One 0,8 / 1,0 / 1,1 (tudo com XPoints)
-  ibInf: [10, 15],       // Investback Infinite 1,2 / 1,5
-  cartaoPor: 500, cartaoMax: 15,
-  aucBloco: 5000, aucMax: 10,
+  cofre: [15, 20, 25],   // Cofre XP Turbo 110/115/125
+  ibOne: [10, 15, 25],   // Investback One 1,0 / 1,2 / 1,5 (tudo com XPoints)
+  ibInf: [15, 25],       // Investback Infinite 1,2 / 1,5 (1,0% já incluído)
+  cartaoPor: 500, cartaoMax: 20,
+  aucBloco: 3500, aucMax: 15,   // patrimônio conta desde o primeiro real
+  salFaixas: [[0, 3], [5000, 5]],  // salário portado: [piso em R$, XPoints]; a faixa acima de R$ 5 mil é premissa a confirmar
   ciclo: 'mensal',
   salaIncl: 4,           // acessos incluídos no Infinite (modo "incluída")
   salaCond: 'com gasto mínimo no cartão',
@@ -730,8 +731,8 @@ const PROFILES = {
         resumo: 'R$ 25 mil investidos · R$ 7.500/mês no cartão' },
   p2: { nome: 'Rafael', auc: 40000, gasto: 400, rec: ['cartao','of','plan','aporte','auc','pfm'], inf: 'active',
         resumo: 'R$ 40 mil investidos · pouco uso dos demais produtos', goal: {fam:'cofrinho', opt:'c110'} },
-  p3: { nome: 'Jô', auc: 8000, gasto: 300, rec: ['of','plan','pag','aporte','sal','pfm'], inf: 'none',
-        resumo: 'R$ 8 mil investidos · zero XPoint' },
+  p3: { nome: 'Jô', auc: 3000, gasto: 300, rec: ['of','plan','pag','aporte','sal','pfm'], inf: 'none',
+        resumo: 'R$ 3 mil investidos · zero XPoint' },
 };
 
 const CTX = ['Planeje sua vida financeira', 'Comece a poupar', 'Otimize seu dia a dia', 'Acelere e proteja seus planos'];
@@ -741,21 +742,21 @@ const BEH = [
   { id:'plan',   ctx:0, nome:'Fazer seu planejamento financeiro', sub:'Planejamento financeiro', pts:3, como:'Defina seus objetivos e veja quanto guardar por mês para chegar lá.', esforco:'Uns 10 minutos, pelo app. Você ajusta quando quiser.', cta:'Montar meu planejamento' },
   { id:'pfm',    ctx:0, nome:'Organizar seus gastos', sub:'Gestão financeira no app', pts:2, soon:true, como:'Acompanhe para onde vai o seu dinheiro e receba alertas sobre os seus gastos.', esforco:'Ative os alertas uma vez. O app acompanha por você.', cta:'Ativar alertas' },
   { id:'auc',    ctx:1, nome:'Patrimônio investido', dyn:true },
-  { id:'aporte', ctx:1, nome:'Aporte recorrente', pts:3, como:'Programe um valor para investir todo mês. Você escolhe quanto e pode mudar quando quiser.', esforco:'A partir de R$ 100 por mês.', cta:'Programar aporte' },
-  { id:'prev',   ctx:1, nome:'Previdência', pts:3, como:'Tenha um plano de previdência na XP.', esforco:'Vale para quem já pensa em longo prazo.', cta:'Conhecer previdência' },
+  { id:'aporte', ctx:1, nome:'Aporte recorrente', pts:5, como:'Programe um valor para investir todo mês. Você escolhe quanto e pode mudar quando quiser.', esforco:'A partir de R$ 100 por mês.', cta:'Programar aporte' },
+  { id:'prev',   ctx:1, nome:'Previdência', pts:1, como:'Invista em um plano de previdência na XP.', esforco:'A partir de R$ 100 por mês no plano.', cta:'Conhecer previdência' },
   { id:'cartao', ctx:2, nome:'Gasto no cartão', dyn:true },
-  { id:'pag',    ctx:2, nome:'Pagar contas pelo app', pts:2, como:'Pague boletos e contas do mês pela conta XP.', esforco:'Você já paga essas contas. Só muda o lugar.', cta:'Pagar uma conta' },
-  { id:'sal',    ctx:2, nome:'Receber o salário na XP', sub:'Portabilidade de salário', pts:5, como:'Traga seu salário para a conta XP, sem custo.', esforco:'Pedido feito pelo app. Seu empregador não precisa fazer nada.', cta:'Trazer meu salário' },
-  { id:'cambio', ctx:2, nome:'Câmbio', pts:1, como:'Compre moeda ou use a conta internacional quando for viajar.', esforco:'Só quando você precisar.', cta:'Ver câmbio' },
-  { id:'cred',   ctx:3, nome:'Crédito', pts:2, need:true, como:'Se você já tem um plano que precisa de crédito, contratar na XP também conta XPoints.', cta:'Contar o que eu preciso' },
-  { id:'cons',   ctx:3, nome:'Consórcio', pts:2, need:true, como:'Se você planeja comprar um bem sem pressa, o consórcio também conta XPoints.', cta:'Contar o que eu preciso' },
-  { id:'seg',    ctx:3, nome:'Seguros', pts:2, como:'Proteja o que é importante para você: vida, casa ou celular.', esforco:'Compare coberturas e preços antes de decidir.', cta:'Ver seguros' },
-  { id:'segcc',  ctx:3, nome:'Seguro Conta e Cartão', pts:1, optional:true, como:'Proteção para transações na conta e no cartão.', esforco:'Contratação rápida, direto pelo app.', cta:'Ver o seguro' },
+  { id:'pag',    ctx:2, nome:'Pagar contas pelo app', pts:2, como:'Pague boletos e contas do mês pela conta XP.', esforco:'Conta a partir de R$ 5.000 pagos no mês.', cta:'Pagar uma conta' },
+  { id:'sal',    ctx:2, nome:'Receber o salário na XP', sub:'Portabilidade de salário', fx:true, unit:'de salário na XP', lab:'Salário recebido na XP', smax:20000, sstep:500, como:'Traga seu salário para a conta XP, sem custo.', esforco:'Pedido feito pelo app. Seu empregador não precisa fazer nada.', cta:'Trazer meu salário' },
+  { id:'cambio', ctx:2, nome:'Câmbio', step:2000, max:10, unit:'em câmbio no mês', lab:'Câmbio no mês', smax:20000, sstep:500, como:'Compre moeda ou use a conta internacional quando for viajar.', esforco:'Só quando você precisar.', cta:'Ver câmbio' },
+  { id:'cred',   ctx:3, nome:'Crédito', step:10000, max:20, unit:'em crédito na XP', lab:'Crédito contratado', smax:200000, sstep:5000, need:true, como:'Se você já tem um plano que precisa de crédito, contratar na XP também conta XPoints.', cta:'Contar o que eu preciso' },
+  { id:'cons',   ctx:3, nome:'Consórcio', step:10000, max:20, unit:'em consórcio na XP', lab:'Consórcio contratado', smax:200000, sstep:5000, need:true, como:'Se você planeja comprar um bem sem pressa, o consórcio também conta XPoints.', cta:'Contar o que eu preciso' },
+  { id:'seg',    ctx:3, nome:'Seguro de vida', pts:5, como:'Proteja quem depende de você com um seguro de vida.', esforco:'A partir de R$ 100 por mês. Compare coberturas antes de decidir.', cta:'Ver seguros' },
+  { id:'segcc',  ctx:3, nome:'Seguro Conta e Cartão', pts:5, optional:true, como:'Proteção para transações na conta e no cartão.', esforco:'Contratação rápida, direto pelo app.', cta:'Ver o seguro' },
 ];
 const beh = id => BEH.find(b => b.id === id);
 
 // ---------- Estado ----------
-const S = { scen:'A', prof:'p1', tab:'demo', legacy:false, legRule:'preservar', segcc:false, salaMode:'incluida', pfm:false, theme:'light', open:{} };
+const S = { scen:'A', prof:'p1', tab:'demo', legacy:false, legRule:'preservar', segcc:false, salaMode:'fichas', pfm:false, theme:'light', open:{} };
 let timers = [];
 
 function loadProfile(id){
@@ -763,7 +764,7 @@ function loadProfile(id){
   const p = PROFILES[id];
   Object.assign(S, { prof:id, auc:p.auc, gasto:p.gasto, done:{}, active:{}, inf:p.inf,
     infVia: p.inf==='active' ? 'patrimonio' : null, goal: p.goal ? {...p.goal} : null,
-    screen:'shelf', goalWas:false, pk:null, param:null, sel:null, sheet:null, released:0, ibNotice:null, seen:{}, cond:false });
+    val:{}, screen:'shelf', goalWas:false, pk:null, param:null, sel:null, sheet:null, released:0, ibNotice:null, seen:{}, cond:false });
 }
 
 // ---------- Regras ----------
@@ -774,16 +775,23 @@ const activeCard = () => S.inf === 'active' ? 'infinite' : 'one';
 const elig = () => S.auc >= P.corte;
 
 const ptsCartao = () => Math.min(Math.floor(S.gasto / P.cartaoPor), P.cartaoMax);
-const ptsAuc    = () => Math.min(Math.max(Math.floor((S.auc - P.corte) / P.aucBloco), 0), P.aucMax);
-function behPts(b){ return b.id==='cartao' ? ptsCartao() : b.id==='auc' ? ptsAuc() : (S.done[b.id] ? b.pts : 0); }
+const ptsAuc    = () => Math.min(Math.floor(S.auc / P.aucBloco), P.aucMax);
+// três mecânicas: "tem ou não tem" (pts), "a cada valor" (step/max) e "por faixas" (fx)
+const isBlk  = b => !!(b.dyn || b.step);
+const stepOf = b => b.id === 'cartao' ? P.cartaoPor : b.id === 'auc' ? P.aucBloco : b.step;
+const valOf  = b => b.id === 'cartao' ? S.gasto : b.id === 'auc' ? S.auc : (S.val[b.id] || 0);
+const faixa  = v => P.salFaixas.reduce((r, [piso, pts]) => v > piso ? pts : r, 0);
+const behMax = b => b.id === 'cartao' ? P.cartaoMax : b.id === 'auc' ? P.aucMax : b.step ? b.max : b.fx ? Math.max(...P.salFaixas.map(f => f[1])) : b.pts;
+function behPts(b){ return isBlk(b) ? Math.min(Math.floor(valOf(b) / stepOf(b)), behMax(b)) : b.fx ? faixa(valOf(b)) : (S.done[b.id] ? b.pts : 0); }
+const gainOf = b => isBlk(b) ? 1 : b.fx ? P.salFaixas[0][1] : b.pts;   // quanto rende o próximo movimento
 const visibleBeh = () => BEH.filter(b => (!b.optional || S.segcc) && (!b.soon || S.pfm));
 const total = () => visibleBeh().reduce((s,b) => s + behPts(b), 0);
 
-const IB = { one: () => [ {id:'o08', label:'0,8% de Investback', rate:0.8, price:P.ibOne[0]}, {id:'o10', label:'1,0% de Investback', rate:1.0, price:P.ibOne[1]}, {id:'o11', label:'1,1% de Investback', rate:1.1, price:P.ibOne[2]} ],
+const IB = { one: () => [ {id:'o10', label:'1,0% de Investback', rate:1.0, price:P.ibOne[0]}, {id:'o12', label:'1,2% de Investback', rate:1.2, price:P.ibOne[1]}, {id:'o15', label:'1,5% de Investback', rate:1.5, price:P.ibOne[2]} ],
              infinite: () => [ {id:'i12', label:'1,2% de Investback', rate:1.2, price:P.ibInf[0]}, {id:'i15', label:'1,5% de Investback', rate:1.5, price:P.ibInf[1]} ] };
 // Sala VIP: incluída no Infinite (mínimo de largada) ou só por XPoints. O número da opção é o total de acessos por ano.
 const salaBase = card => card === 'infinite' && S.salaMode === 'incluida' ? P.salaIncl : 0;
-const SVALL = { one: [['sv_o2', 2, 10], ['sv_o4', 4, 15]], infinite_incluida: [['sv_i6', 6, 10], ['sv_i8', 8, 15]], infinite_fichas: [['sv_f4', 4, 10], ['sv_f8', 8, 15]] };
+const SVALL = { one: [['sv_o2', 2, 30], ['sv_o4', 4, 45]], infinite_incluida: [['sv_i6', 6, 60]], infinite_fichas: [['sv_f2', 2, 30], ['sv_f4', 4, 45]] };
 const svOpts = key => SVALL[key].map(([id, n, price]) => ({ id, n, price, label: `${n} acessos por ano` }));
 const SV = card => svOpts(card === 'one' ? 'one' : 'infinite_' + S.salaMode);
 function salaNow(card, mine){
@@ -797,7 +805,7 @@ function families(card = activeCard()){
       opts:[ {id:'c110', label:'110% do CDI', price:P.cofre[0]}, {id:'c115', label:'115% do CDI', price:P.cofre[1]}, {id:'c125', label:'125% do CDI', price:P.cofre[2]} ] },
     { id:'investback', nome:'Investback turbinado', desc:'Mais dinheiro de volta nas compras.', card, opts: IB[card]() },
     { id:'corretagem', nome:'Corretagem zero', desc:'Invista na bolsa sem pagar corretagem.',
-      opts:[3, 6, 9].map((n, i) => ({ id:'cz' + n, n, label:`${n} ordens por mês`, price:P.corr[i] })) },
+      opts:[3, 6, 10].map((n, i) => ({ id:'cz' + n, n, label:`${n} ordens por mês`, price:P.corr[i] })) },
     { id:'salavip', nome:'Sala VIP', desc: salaBase(card) ? `Mais acessos a salas VIP, além dos ${salaBase(card)} do seu cartão.` : 'Acessos a salas VIP em aeroportos.', card, opts: SV(card) },
   ];
 }
@@ -869,9 +877,9 @@ function suggestions(n = 3){
       out.push({ id, gain:1, t:'Concentrar compras no cartão', d:`Mais ${brl(falta)} no mês valem 1 XPoint. Use o cartão no que você já compra.` });
     } else if (id === 'auc'){
       if (ptsAuc() >= P.aucMax) continue;
-      if (!elig()) out.push({ id, gain:0, t:`Chegar a ${brl(P.corte)} investidos`, d:`Faltam ${brl(P.corte - S.auc)}. Libera o pedido do XP Infinite.` });
-      else { const falta = P.aucBloco - ((S.auc - P.corte) % P.aucBloco); out.push({ id, gain:1, t:'Investir um pouco mais', d:`Faltam ${brl(falta)} investidos para ganhar 1 XPoint.` }); }
-    } else if (!S.done[id]) out.push({ id, gain:b.pts, t:b.nome, d:b.esforco });
+      const falta = P.aucBloco - (S.auc % P.aucBloco);
+      out.push({ id, gain:1, t:'Investir um pouco mais', d:`Faltam ${brl(falta)} investidos para ganhar 1 XPoint.` });
+    } else if (behPts(b) < behMax(b) && !(b.fx && behPts(b))) out.push({ id, gain:gainOf(b), t:b.nome, d: b.step ? `Cada ${brl(b.step)} ${b.unit} vale 1 XPoint.` : b.esforco });
   }
   return out.slice(0, n);
 }
@@ -920,7 +928,7 @@ const chip = (t, k = '') => `<span class="chip ${k}">${t}</span>`;
 const plast = (c, lg) => `<div class="plast ${c} ${lg ? 'lg' : ''}"><span>${c === 'infinite' ? 'XP INFINITE' : 'XP ONE'}</span></div>`;
 
 const ring = (p, inner = '') => `<div class="ring" style="--p:${Math.round(Math.min(1, p) * 100)}">${inner}</div>`;
-const maxTotal = () => visibleBeh().reduce((a, b) => a + (b.id === 'cartao' ? P.cartaoMax : b.id === 'auc' ? P.aucMax : b.pts), 0);
+const maxTotal = () => visibleBeh().reduce((a, b) => a + behMax(b), 0);
 function bal(){
   const t = total(), al = allocated(), av = available(), mx = Math.max(maxTotal(), t, al);
   return `<div class="bal"><div class="btop"><div class="n"><span class="cnt">${t}</span></div><div class="blab"><b>${t === 1 ? 'XPoint' : 'XPoints'}</b><span>de ${mx} possíveis</span></div></div>
@@ -1102,7 +1110,7 @@ function pacote(){
     <div class="cmp" ${isOpen('cmp') ? '' : 'hidden'}>
       <div></div><div ${cmpCur('one')}>XP One</div><div ${cmpCur('infinite')}>XP Infinite</div>
       <div>Investback</div><div ${cmpCur('one')}>Até 1,1%<br><span class="xs mut">com XPoints</span></div><div ${cmpCur('infinite')}>1%<br><span class="xs mut">já incluído</span></div>
-      <div>Investback com XPoints</div><div ${cmpCur('one')}>0,8%, 1,0% ou 1,1%</div><div ${cmpCur('infinite')}>1,2% ou 1,5%</div>
+      <div>Investback com XPoints</div><div ${cmpCur('one')}>1,0%, 1,2% ou 1,5%</div><div ${cmpCur('infinite')}>1,2% ou 1,5%</div>
       <div>Salas VIP</div><div ${cmpCur('one')}>${salaNow('one').main}<br><span class="xs mut">${salaNow('one').up}</span></div><div ${cmpCur('infinite')}>${salaNow('infinite').main}<br><span class="xs mut">${salaNow('infinite').up}</span></div>
       <div>Como ter</div><div ${cmpCur('one')}>Cartão de entrada</div><div ${cmpCur('infinite')}>${brl(P.corte)} investidos${S.scen === 'B' ? ` ou ${pt(P.infPts)}` : ''}</div>
     </div>`}`;
@@ -1203,11 +1211,12 @@ function famFoot(){
 function juntar(){
   const t = total(), list = visibleBeh(), sug = suggestions(3);
   const defCtx = sug.length ? beh(sug[0].id).ctx : 0;
-  const mx = b => b.id === 'cartao' ? P.cartaoMax : b.id === 'auc' ? P.aucMax : b.pts;
+  const mx = behMax;
   const row = b => { const p = behPts(b), max = mx(b), full = p >= max;
     const mark = full ? '<i class="mk on">✓</i>' : p ? '<i class="mk part">…</i>' : '<i class="mk off"></i>';
-    const sub = b.id === 'cartao' ? `${brl(S.gasto)} em compras no mês` : b.id === 'auc' ? `${brl(S.auc)} investidos` : full ? 'Feito' : b.need ? 'Se fizer sentido para você' : (b.sub || 'Ainda não feito');
-    const right = b.dyn ? `<span class="rv ${p ? 'on' : ''}">${p} de ${max}</span>` : full ? `<span class="rv on">${pt(p)}</span>` : b.need ? '' : `<span class="rv">+${b.pts}</span>`;
+    const v = valOf(b), byVal = !!(b.step || b.fx);
+    const sub = b.id === 'cartao' ? `${brl(S.gasto)} em compras no mês` : b.id === 'auc' ? `${brl(S.auc)} investidos` : byVal && v ? `${brl(v)} ${b.unit}` : full ? 'Feito' : b.need ? 'Se fizer sentido para você' : (b.sub || 'Ainda não feito');
+    const right = b.dyn || (byVal && p) ? `<span class="rv ${p ? 'on' : ''}">${p} de ${max}</span>` : full ? `<span class="rv on">${pt(p)}</span>` : b.need ? '' : `<span class="rv">${byVal ? 'até ' + max : '+' + b.pts}</span>`;
     return `<button class="li" data-a="beh:${b.id}">${mark}<div class="g"><b>${b.nome}</b><span>${sub}</span></div>${right}<span class="chev">›</span></button>`; };
   return `
     ${t === 0 ? `<div class="note" style="margin-top:14px">XPoints vêm do que você faz na XP: guardar, usar o cartão, pagar contas. Comece por uma das sugestões abaixo.</div>` : ''}
@@ -1292,18 +1301,18 @@ function sheet(){
         ${p < P.cartaoMax ? `<div class="kv tot"><span>Próximo XPoint</span><span>faltam ${brl(falta)}</span></div>` : `<div class="kv tot"><span>Você chegou ao máximo</span><span>✓</span></div>`}</div>
         <div class="note">A ideia é concentrar no cartão XP o que você já compra, não gastar mais.</div>`;
     } else if (b.id === 'auc'){
-      const next = elig() ? P.aucBloco - ((S.auc - P.corte) % P.aucBloco) : P.corte + P.aucBloco - S.auc;
-      body = `<p>Acima de ${brl(P.corte)} investidos, cada ${brl(P.aucBloco)} completos valem 1 XPoint, até ${P.aucMax} XPoints. O primeiro XPoint vem aos ${brl(P.corte + P.aucBloco)}.</p>
+      const next = P.aucBloco - (S.auc % P.aucBloco);
+      body = `<p>Cada ${brl(P.aucBloco)} investidos na XP valem 1 XPoint, até ${P.aucMax} XPoints.</p>
         <div class="card"><div class="kv"><span>Investido hoje</span><span>${brl(S.auc)}</span></div><div class="kv"><span>XPoints por patrimônio</span><span>${p} de ${P.aucMax}</span></div>
         ${!elig() ? `<div class="kv"><span>Para poder pedir o XP Infinite</span><span>faltam ${brl(P.corte - S.auc)}</span></div>` : ''}
         ${p < P.aucMax ? `<div class="kv tot"><span>Próximo XPoint</span><span>faltam ${brl(next)}</span></div>` : ''}</div>`;
     } else {
       body = `<p>${b.como}</p>
-        <div class="card"><div class="kv"><span>Vale</span><span>${pt(b.pts)}</span></div>${b.esforco ? `<div class="kv"><span>O que é preciso</span><span>${b.esforco}</span></div>` : ''}<div class="kv"><span>Situação</span><span>${p ? '✓ Concluído' : 'Ainda não feito'}</span></div></div>
+        <div class="card"><div class="kv"><span>Vale</span><span>${b.step ? `1 XPoint a cada ${brl(b.step)}, até ${b.max}` : b.fx ? P.salFaixas.map(([piso, n], i) => `${n} ${i ? 'acima de ' + brl(piso) : 'até ' + brl(P.salFaixas[1][0])}`).join(' · ') + ' XPoints' : pt(b.pts)}</span></div>${b.step || b.fx ? `<div class="kv"><span>${b.lab}</span><span>${brl(valOf(b))}</span></div>` : ''}${b.esforco ? `<div class="kv"><span>O que é preciso</span><span>${b.esforco}</span></div>` : ''}<div class="kv"><span>Situação</span><span>${b.step || b.fx ? (p ? `${p} de ${behMax(b)} XPoints` : 'Ainda não feito') : p ? '✓ Concluído' : 'Ainda não feito'}</span></div></div>
         ${b.need ? `<div class="note">${b.nome} é uma decisão importante. Só vale a pena se você já precisa dele: XPoints não devem ser o motivo. Antes de qualquer proposta, você conta o que precisa e vê taxas, prazos e custo total.</div>
           ${S.cond ? `<div class="card" style="margin-top:10px"><div class="xs b mut">CONDIÇÕES DO PRODUTO</div><div class="kv"><span>Taxa e custo total</span><span>mostrados antes de contratar</span></div><div class="kv"><span>Prazo e parcelas</span><span>você escolhe na simulação</span></div><div class="kv"><span>Análise de capacidade de pagamento</span><span>obrigatória</span></div></div>` : `<button class="btn sec" data-a="cond">Ver condições do produto</button>`}` : ''}
         ${!p && !b.need ? `<button class="btn" data-a="noop">${b.cta}</button>` : ''}
-        ${!p ? `<button class="btn demo" data-a="simbeh:${b.id}">Demo · simular como concluído (+${b.pts})</button>` : ''}`;
+        ${p < behMax(b) && !(b.fx && p) ? `<button class="btn demo" data-a="simbeh:${b.id}">Demo · simular ${b.step ? 'mais ' + brl(b.step) : 'como concluído'} (+${gainOf(b)})</button>` : ''}`;
     }
     h = `<div class="xs b" style="color:var(--ya);text-transform:uppercase;letter-spacing:.05em">${CTX[b.ctx]}</div><h2>${b.nome}</h2>${body}<button class="btn ghost" data-a="close">Fechar</button>`;
   }
@@ -1315,7 +1324,7 @@ function sheet(){
   }
   else if (s.t === 'behDone'){
     const b = beh(s.id), g = S.goal && fam(S.goal.fam) ? { f: fam(S.goal.fam), o: optOf(S.goal.fam, S.goal.opt), m: missing(S.goal.fam, S.goal.opt) } : null;
-    h = `${burst()}<div class="ctr"><div class="okc">✓</div><h2>+${pt(b.pts)}</h2><p>Conquista: ${b.nome}.</p></div>
+    h = `${burst()}<div class="ctr"><div class="okc">✓</div><h2>+${pt(gainOf(b))}</h2><p>Conquista: ${b.nome}.</p></div>
       ${g && g.m ? `<div class="card"><div class="row">${ring((g.o.price - g.m) / g.o.price, `<span>${Math.round((g.o.price - g.m) / g.o.price * 100)}%</span>`)}<div class="g"><div class="xs mut b">SUA TRILHA RECOMENDADA</div><div class="b">${g.f.nome} · ${g.o.label}</div><div class="xs mut">Faltam ${pt(g.m)}.</div></div></div></div>` : ''}
       <button class="btn" data-a="close">Continuar</button>`;
   }
@@ -1434,24 +1443,24 @@ function renderPhone(){
 
 const HIPOTESES = [
   ['Pacotes', 'Dois pacotes, XP One e XP Infinite, sem nomes de nível ou segmento. Na tela, a palavra é sempre "cartão": o do cliente aparece como "Incluído · não usa XPoints", com a razão (cliente XP Digital, ou R$ 30 mil ou mais investidos).'],
-  ['Pacotes', 'No One, o Investback vem só de XPoints: 0,8%, 1,0% ou 1,1% por 5, 10 ou 15 XPoints. Não há mais gasto mínimo de R$ 2.500: gastar R$ 2.500 no cartão rende os 5 XPoints do 0,8%. No Infinite, 1% já vem incluído.'],
+  ['Pacotes', 'No One, o Investback vem só de XPoints: 1,0%, 1,2% ou 1,5% por 10, 15 ou 25 XPoints. No Infinite, 1,0% já vem incluído e 1,2% ou 1,5% custam 15 ou 25.'],
   ['Pacotes', 'Quem tem o XP One vê o Infinite ao lado, em carrossel. Quem já tem o Infinite vê só o Infinite. Quem está longe do corte (abaixo de 60%) não vê barra de "faltam R$": só a regra, sem cobrança.'],
-  ['Sala VIP', 'Dois modos no painel. Mínimo no cartão: o Infinite inclui 4 acessos por ano e chega a 6 ou 8 com 10 ou 15 XPoints. Tudo por XPoints: nenhum cartão inclui, e o Infinite tem 4 ou 8 acessos por 10 ou 15 XPoints. Nos dois modos o One tem 2 acessos por 10 XPoints. Quantidades e preços são ilustrativos.'],
+  ['Sala VIP', 'Pela planilha, sala VIP vem de XPoints: 2 ou 4 acessos por ano por 30 ou 45 XPoints, nos dois cartões (6 acessos por 60 está desligado). O painel mantém o modo alternativo em que o Infinite já inclui 4 acessos e chega a 6 por 60 XPoints.'],
   ['Sala VIP', 'Como no Investback, o número escolhido é o total de acessos do ano, não um extra.'],
   ['Pacotes', 'O cartão mostra o que já vale e, logo abaixo, até onde dá para chegar com XPoints (ex.: Investback 1%, até 1,5% com XPoints).'],
   ['Pacotes', 'Abaixo do corte, o Infinite aparece bloqueado no carrossel, com o que falta para desbloquear.'],
   ['Pacotes', 'Atingir o corte libera o pedido do Infinite. Quem vê o botão de pedir já está pré-aprovado: ao pedir, o cartão é emitido na hora, os benefícios passam a valer e o cartão físico é enviado. Não há etapa de análise visível ao cliente.'],
-  ['XPoints', 'Cartão: 1 XPoint a cada R$ 500 de gasto no mês, até 15. Patrimônio: 0 XPoint até R$ 30 mil e 1 XPoint a cada R$ 5 mil completos acima disso, até 10.'],
-  ['XPoints', 'Demais comportamentos com pontuação ilustrativa: Open Finance 3, aporte recorrente 3, previdência 3, pagamentos 2, salário 5, câmbio 1, crédito 2, consórcio 2, seguros 2, Seguro Conta e Cartão 1.'],
+  ['XPoints', 'Valores da planilha Simulador Loyalty Digital v5 (premissas de trabalho, não política aprovada). A cada valor: cartão, 1 XPoint a cada R$ 500 no mês, até 20; patrimônio, 1 a cada R$ 3.500 desde o primeiro real, até 15; câmbio, 1 a cada R$ 2.000, até 10; crédito e consórcio, 1 a cada R$ 10 mil, até 20 cada.'],
+  ['XPoints', 'Tem ou não tem: Open Finance 3, aporte recorrente 5, previdência 1 (a partir de R$ 100), pagamento de contas 2 (a partir de R$ 5 mil no mês), seguro de vida 5 (a partir de R$ 100), Seguro Conta e Cartão 5. Salário por faixas: 3 XPoints até R$ 5 mil; a faixa acima (5 XPoints) é premissa a confirmar. Planejamento financeiro (3) e gestão de gastos (2) não estão na planilha e seguem ilustrativos.'],
   ['XPoints', 'Apuração mensal: o saldo total é recalculado a cada ciclo conforme o comportamento. Não há acúmulo nem validade no protótipo.'],
   ['Saldo', 'O medidor mostra os XPoints do cliente contra o total possível (48 na régua ilustrativa): em uso, disponíveis e a conquistar. O total é a soma dos tetos de todos os desafios e muda com a calibração.'],
   ['Saldo', 'XPoints travados: ficam em uso enquanto o benefício está ativo e voltam ao desativar. Uma opção ativa por família.'],
   ['Saldo', 'Na troca dentro da família, os XPoints da opção atual são liberados e os da nova entram em uso, de uma vez só.'],
-  ['Prateleira', 'Cofre XP Turbo 110/115/125% do CDI por 10/15/30 XPoints. Sem XPoints, o Cofre XP rende 100% do CDI, já incluído.'],
-  ['Prateleira', 'Investback turbinado é a taxa total do cartão. One: 0,8%, 1,0% ou 1,1% por 5, 10 ou 15 (os preços de 1,0% e 1,1% subiram 5 XPoints para abrir espaço ao 0,8%). Infinite: 1,2% ou 1,5% por 10 ou 15.'],
-  ['Prateleira', 'Corretagem zero em três faixas, todas com XPoints: 3, 6 ou 9 ordens por mês por 5, 10 ou 15 XPoints (ilustrativo). Nenhuma ordem é incluída.'],
+  ['Prateleira', 'Cofre XP Turbo 110/115/125% do CDI por 15/20/25 XPoints. Sem XPoints, o Cofre XP rende 100% do CDI, já incluído.'],
+  ['Prateleira', 'Investback turbinado é a taxa total do cartão. One: 1,0%, 1,2% ou 1,5% por 10, 15 ou 25 XPoints. Infinite: 1,2% ou 1,5% por 15 ou 25.'],
+  ['Prateleira', 'Corretagem zero em três faixas, todas com XPoints: 3, 6 ou 10 ordens por mês por 20, 30 ou 45 XPoints. Nenhuma ordem é incluída.'],
   ['Prateleira', 'Na aba Usar, cada benefício é uma régua: o cliente toca no ponto que quer e vai direto para a confirmação. Investback e Salas VIP ficam dentro do card do cartão.'],
-  ['Sala VIP', 'No One, a régua vai de sem acesso a 2 ou 4 acessos por ano (10 ou 15 XPoints).'],
+  ['Sala VIP', 'No One, a régua vai de sem acesso a 2 ou 4 acessos por ano (30 ou 45 XPoints).'],
   ['Prateleira', 'Investback turbinado pertence ao cartão. Se o cartão muda, a opção é encerrada e os XPoints voltam ao saldo.'],
   ['Cenário B', 'Infinite por 10 XPoints abaixo do corte. Os XPoints ficam reservados desde o pedido.'],
   ['Cenário B', 'Ao atingir R$ 30 mil, os XPoints do cartão são liberados automaticamente e o acesso passa a ser por patrimônio.'],
@@ -1463,7 +1472,7 @@ const HIPOTESES = [
   ['Régua', '"Planeje sua vida financeira" tem três ações: Open Finance (3 XPoints), planejamento financeiro (3) e gestão de gastos pelo PFM 3.0 (2). O PFM aparece como "Em breve" e só vale XPoints quando ligado no painel. Valores ilustrativos.'],
   ['Trilha', 'O cliente pode seguir a trilha de um benefício e acompanhar no resumo quanto falta e quais sugestões levam até lá.'],
   ['Vocabulário', 'Moeda do programa: XPoints (nome em validação; substitui XPoints), Em uso e Disponíveis, Juntar e Usar, trilha para desbloquear.'],
-  ['Vocabulário', 'Mantidos do briefing e diferentes das telas: taxas 110/115/125% e preços 10/15/30 (telas: 110% por 5 e 120% por 15), Infinite por 10 XPoints (telas: 15), quatro contextos de earn (telas: seis).'],
+  ['Vocabulário', 'Mantidos do briefing e diferentes das telas: taxas 110/115/125% (telas: 110% e 120%); preços pela planilha do simulador, Infinite por 10 XPoints (telas: 15), quatro contextos de earn (telas: seis).'],
 ];
 const DECISOES = [
   ['Acesso ao Infinite', 'Cenário A ou B. No B, com 15 XPoints, quem pega o Infinite fica com 5 e não alcança nenhum adicional (o menor custa 10). Vale rever o preço do cartão ou o piso do Investback Infinite.'],
@@ -1504,8 +1513,9 @@ function renderPanel(){
       <div class="seg" style="margin-bottom:12px"><button class="${S.inf !== 'active' ? 'on' : ''}" data-a="card:one">Tem o XP One</button><button class="${S.inf === 'active' ? 'on' : ''}" data-a="card:infinite">Tem o XP Infinite</button></div>
       <div class="sl"><label>Patrimônio investido <output id="oAuc">${brl(S.auc)}</output></label><input type="range" id="rAuc" min="0" max="100000" step="1000" value="${S.auc}"></div>
       <div class="sl"><label>Gasto mensal no cartão <output id="oGasto">${brl(S.gasto)}</output></label><input type="range" id="rGasto" min="0" max="10000" step="100" value="${S.gasto}"></div>
-      ${CTX.map((cx, i) => { const bs = visibleBeh().filter(b => b.ctx === i && !b.dyn); return bs.length ? `<div class="glab">${cx}</div>` + bs.map(b =>
-        `<label class="tog" style="padding:4px 0">${b.sub || b.nome} <span class="hint" style="margin:0 6px 0 auto">+${b.pts}</span><input type="checkbox" data-d="${b.id}" ${S.done[b.id] ? 'checked' : ''}></label>`).join('') : ''; }).join('')}
+      ${CTX.map((cx, i) => { const bs = visibleBeh().filter(b => b.ctx === i && !b.dyn); return bs.length ? `<div class="glab">${cx}</div>` + bs.map(b => b.step || b.fx
+        ? `<div class="sl"><label>${b.lab} <output id="oV_${b.id}">${brl(valOf(b))}</output></label><input type="range" data-v="${b.id}" min="0" max="${b.smax}" step="${b.sstep}" value="${valOf(b)}"></div>`
+        : `<label class="tog" style="padding:4px 0">${b.sub || b.nome} <span class="hint" style="margin:0 6px 0 auto">+${b.pts}</span><input type="checkbox" data-d="${b.id}" ${S.done[b.id] ? 'checked' : ''}></label>`).join('') : ''; }).join('')}
       <label class="tog" style="margin-top:6px">PFM 3.0 já disponível <input type="checkbox" data-c="pfm" ${S.pfm ? 'checked' : ''}></label>
       <h2>Ir direto a um estado</h2>
       ${[['Começo', [['welcome','Boas-vindas'],['zero','Zero XPoint'],['ativo','Benefício em uso']]],
@@ -1522,9 +1532,9 @@ function renderPanel(){
       <h2><button class="h2b" data-a="tog:prem:0">Premissas editáveis <span>${isOpen('prem') ? '−' : '+'}</span></button></h2><div ${isOpen('prem') ? '' : 'hidden'}>
       <label class="fld">Infinite por XPoints (B) <input type="number" data-p="infPts" value="${P.infPts}"></label>
       <label class="fld">Corte patrimonial (R$) <input type="number" data-p="corte" step="1000" value="${P.corte}"></label>
-      <label class="fld">Corretagem 3 / 6 / 9 ordens <span><input type="number" data-p="corr.0" value="${P.corr[0]}" style="width:42px"> <input type="number" data-p="corr.1" value="${P.corr[1]}" style="width:42px"> <input type="number" data-p="corr.2" value="${P.corr[2]}" style="width:42px"></span></label>
+      <label class="fld">Corretagem 3 / 6 / 10 ordens <span><input type="number" data-p="corr.0" value="${P.corr[0]}" style="width:42px"> <input type="number" data-p="corr.1" value="${P.corr[1]}" style="width:42px"> <input type="number" data-p="corr.2" value="${P.corr[2]}" style="width:42px"></span></label>
       <label class="fld">Cofre XP 110 / 115 / 125 <span><input type="number" data-p="cofre.0" value="${P.cofre[0]}" style="width:46px"> <input type="number" data-p="cofre.1" value="${P.cofre[1]}" style="width:46px"> <input type="number" data-p="cofre.2" value="${P.cofre[2]}" style="width:46px"></span></label>
-      <label class="fld">Investback One 0,8 / 1,0 / 1,1 <span><input type="number" data-p="ibOne.0" value="${P.ibOne[0]}" style="width:42px"> <input type="number" data-p="ibOne.1" value="${P.ibOne[1]}" style="width:42px"> <input type="number" data-p="ibOne.2" value="${P.ibOne[2]}" style="width:42px"></span></label>
+      <label class="fld">Investback One 1,0 / 1,2 / 1,5 <span><input type="number" data-p="ibOne.0" value="${P.ibOne[0]}" style="width:42px"> <input type="number" data-p="ibOne.1" value="${P.ibOne[1]}" style="width:42px"> <input type="number" data-p="ibOne.2" value="${P.ibOne[2]}" style="width:42px"></span></label>
       <label class="fld">Investback Infinite 1,2 / 1,5 <span><input type="number" data-p="ibInf.0" value="${P.ibInf[0]}" style="width:46px"> <input type="number" data-p="ibInf.1" value="${P.ibInf[1]}" style="width:46px"></span></label>
       <label class="fld">Acessos incluídos no Infinite <input type="number" data-p="salaIncl" value="${P.salaIncl}"></label>
       <label class="fld txt">Cobertura da corretagem zero <input type="text" data-p="corrCob" value="${P.corrCob}"></label>
@@ -1558,13 +1568,13 @@ const PRESETS = {
   proc(){ loadProfile('p1'); activate('cofrinho', 'c110', true); S.sheet = {t:'done', fam:'cofrinho'}; },
   ativo(){ loadProfile('p1'); S.active.cofrinho = {opt:'c110', status:'active'}; },
   troca(){ loadProfile('p1'); S.active.cofrinho = {opt:'c110', status:'active'}; S.sheet = {t:'confirm', fam:'cofrinho', opt:'c115'}; },
-  trilha(){ loadProfile('p2'); S.screen = 'juntar'; S.done = {of:true, aporte:true, sal:true}; },
+  trilha(){ loadProfile('p2'); S.screen = 'juntar'; S.done = {of:true, aporte:true}; S.val = {sal:4000}; },
   perda(){ loadProfile('p1'); S.active.cofrinho = {opt:'c115', status:'active'}; S.gasto = 4000; S.sheet = {t:'loss'}; },
   legado(){ loadProfile('p1'); S.legacy = true; S.sheet = {t:'legacy'}; },
   bloq(){ S.scen = 'A'; loadProfile('p1'); S.pk = 1; },
   infB(){ S.scen = 'B'; loadProfile('p1'); S.pk = 1; },
   transA(){ S.scen = 'A'; loadProfile('p1'); S.auc = P.corte; S.pk = 1; },
-  transB(){ S.scen = 'B'; loadProfile('p1'); S.inf = 'active'; S.infVia = 'XPoints'; S.seen.req = true; S.auc = P.corte; },
+  transB(){ S.scen = 'B'; loadProfile('p1'); S.inf = 'active'; S.infVia = 'fichas'; S.seen.req = true; S.auc = P.corte; },
   perdaCard(){ S.scen = 'A'; loadProfile('p2'); S.auc = 27000; S.sheet = {t:'lossCard'}; },
 };
 
@@ -1585,14 +1595,14 @@ function act(a){
     case 'do': activate(x, y); if (S.goal && S.goal.fam === x && S.goal.opt === y) S.goal = null; S.sheet = {t:'done', fam:x}; break;
     case 'undo': { const back = optOf(x, S.active[x].opt).price; delete S.active[x]; S.sel = null; S.sheet = {t:'done', fam:x, back}; break; }
     case 'goal': S.goal = {fam:x, opt:y}; S.goalWas = false; go('juntar'); break;
-    case 'simbeh': S.done[x] = true; S.fx = true; S.sheet = {t:'behDone', id:x}; break;
+    case 'simbeh': { const b = beh(x); if (b.step) S.val[x] = (S.val[x] || 0) + b.step; else if (b.fx) S.val[x] = 4000; else S.done[x] = true; } S.fx = true; S.sheet = {t:'behDone', id:x}; break;
     case 'cond': S.cond = true; break;
     case 'noop': break;
     case 'infreq': S.inf = 'requested'; S.infVia = x; S.seen.req = true; S.sheet = {t:'infAsk'};
       timers.push(setTimeout(() => { if (S.inf === 'requested'){ setInfActive(); render(); } }, 1300)); break;
     case 'approve': setInfActive(); break;
     case 'infoff': S.inf = 'none'; S.infVia = null; go('home'); break;
-    case 'keepinf': S.infVia = 'XPoints'; S.sheet = null; break;
+    case 'keepinf': S.infVia = 'fichas'; S.sheet = null; break;
     case 'seenrel': S.released = 0; S.sheet = null; if (x) go(x); break;
     case 'ibnotice': S.ibNotice = null; go('shelf'); break;
     case 'finish': for (const k in S.active) S.active[k].status = 'active'; S.fx = true; break;
@@ -1665,6 +1675,10 @@ document.addEventListener('input', e => {
   if (e.target.id === 'rAuc' || e.target.id === 'rGasto'){
     const k = e.target.id === 'rAuc' ? 'auc' : 'gasto'; S[k] = +e.target.value;
     document.getElementById(k === 'auc' ? 'oAuc' : 'oGasto').textContent = brl(S[k]);
+    reconcile(); renderPhone();
+  } else if (e.target.dataset.v){
+    const id = e.target.dataset.v; S.val[id] = +e.target.value;
+    document.getElementById('oV_' + id).textContent = brl(S.val[id]);
     reconcile(); renderPhone();
   }
 });
