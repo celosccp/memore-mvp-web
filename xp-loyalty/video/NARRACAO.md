@@ -42,3 +42,21 @@ O usuário ainda não confirmou este texto palavra por palavra; perguntar se que
 - A fala da cena do app promete "para onde ir agora"; a gravação atual (`assets/app-demo.mp4`) mostra mais a aba Usar. Avaliar regravar passando pela trilha recomendada (aba Juntar).
 - Melhorias de imagem levantadas e ainda não aplicadas: variar transições e entradas de título, tirar laços pulsantes da cena da órbita, fecho com chamada (botão "Começar minha jornada").
 - A conta do Runway tem cerca de 800 créditos e a chave está salva no ambiente; não gastar sem o usuário pedir.
+
+## Atualização: narração funcionando pela API da ElevenLabs
+
+- A chave da ElevenLabs está salva no ambiente (host `api.elevenlabs.io`, cabeçalho `xi-api-key`); plano Starter. A chave gera fala, mas não tem permissão para listar vozes.
+- Voz escolhida pelo usuário, de ouvido: `lWq4KDY8znfkV0DrK8Vb`, modelo `eleven_multilingual_v2`, saída `mp3_44100_128` (o Starter não libera 192 kbps).
+- Quando uma fala não cabe na cena, a imagem é segurada no fim da cena (antes do fade) em vez de acelerar a voz.
+
+### Roteiro da versão 19 (substitui a tabela acima)
+
+Escrito para o ouvido: gancho, uma ideia por frase, exemplos concretos, marca e chamada no fim. Cerca de 70 palavras.
+
+1. Ninguém organiza a vida financeira de uma vez.
+2. É um avanço de cada vez. E a XP te mostra qual é o próximo.
+3. Pagou no cartão. Recebeu o salário. Guardou um pouco. Aqui, tudo isso conta.
+4. E o prêmio, você escolhe: dinheiro rendendo mais, mais retorno no cartão, sala VIP na viagem. O que fizer sentido agora.
+5. A vida mudou? É só trocar.
+6. E você vê tudo acontecer, na palma da mão.
+7. Jornada XP. O seu sucesso financeiro começa no próximo avanço.
