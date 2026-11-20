@@ -439,7 +439,7 @@ cue(st['s5']+4.75+0.9,'pop',0.45); cue(st['s5']+6.15+0.9,'pop',0.45)       # 110
 cue(st['s5']+7.55+0.9,'impact-bass-2',0.42); cue(st['s5']+7.55+0.95,'sparkle',0.5)   # 125%: o ponto alto
 cue(st['s6']+1.5+1.35,'pop',0.38)                                         # fichas chegam ao saldo
 cue(st['s6']+3.4+0.95,'chime',1.4); cue(st['s6']+3.4+0.95,'pop',0.38)      # Investback turbinado
-for m_ in (3.316,5.286,8.333,10.287): cue(st['s7']+0.1+(m_-1.9)/1.05,'click-soft',0.6)   # toques reais na gravação
+for m_ in (2.812,4.771,7.818,9.769): cue(st['s7']+0.1+(m_-1.506)/1.05,'click-soft',0.6)   # toques reais na gravação
 cue(st['s8']+0.35,'impact-bass-1',0.32); cue(st['s8']+0.55,'sparkle',0.5)   # fecho
 audio=''
 for k,(tc,name,vol) in enumerate(sorted(cues)):

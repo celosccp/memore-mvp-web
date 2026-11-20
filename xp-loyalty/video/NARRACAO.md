@@ -76,3 +76,5 @@ Em discussão: trocar "fichas" por **XPoints** (marca com "XP" grande e "OINTS" 
 Versão 28: o vídeo passou a mostrar **XPoints** no lugar de "fichas" (tratamento B: "XP" pesado e "OINTS" em maiúsculas pequenas e espaçadas, classe `.xpb` no gerador). O protótipo ainda usa "fichas".
 
 Versão 30: na cena do app (s7) uma "câmera" (`#s7-cam`) aproxima o celular em 1,6× e acompanha os toques: plano geral → régua do Cofre XP e painel de confirmação → abas no topo → lista de momentos → plano geral. Pendente: a gravação do app ainda mostra "fichas", enquanto o resto do vídeo já usa XPoints.
+
+Versão 32: o protótipo (`xp-loyalty/index.html`) passou a usar **XPoints** no lugar de "fichas" em todos os textos (os identificadores internos do código, como `infVia === 'fichas'`, foram mantidos). A gravação do app foi refeita com o novo termo. O protótipo publicado continua em https://claude.ai/artifact/X49Vex6VMYR6et9BoRkSGq.
