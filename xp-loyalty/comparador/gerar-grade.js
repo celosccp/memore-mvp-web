@@ -1,31 +1,40 @@
-// Grade do comparador para o protótipo: patrimônio × gasto no cartão, em dois critérios (tudo / só financeiro).
+// Grade do comparador para o protótipo, com a composição do valor de cada oferta.
+// Para cada ponto (patrimônio × gasto no cartão) e cada instituição guarda a melhor modalidade pelo valor total (n)
+// e, quando for outra, a melhor só pelo lado financeiro (f). Entrada: [modalidade, dinheiro de volta, tipo (1 cashback, 2 pontos),
+// rendimento extra, % do CDI, serviços, mensalidade], em R$ por mês arredondados.
 const { chromium } = require('playwright'); const fs = require('fs');
 (async () => {
-  const b = await chromium.launch();
-  const ctx = await b.newContext(); await ctx.route(/^https?:/, r => r.abort());
+  const b = await chromium.launch(); const ctx = await b.newContext(); await ctx.route(/^https?:/, r => r.abort());
   const p = await ctx.newPage(); await p.goto('file://' + process.argv[2]); await p.waitForTimeout(2000);
   const out = await p.evaluate(() => {
-    const names = [], idx = {}; const id = (inst, name) => { const k = inst + '|' + name; if (!(k in idx)) { idx[k] = names.length; names.push([inst, name.replace(' (disponibilidade a confirmar)', '')]); } return idx[k]; };
-    const AUC = [], TPV = []; for (let a = 0; a <= 100000; a += 2500) AUC.push(a); for (let t = 0; t <= 10000; t += 500) TPV.push(t);
-    const modes = { all: q => q.net, fin: q => q.financialNet }, rows = { all: [], fin: [] };
+    const inst = [...new Set(db.products.map(x => x.institution))].filter(i => i !== 'Rico');
+    const prod = [], pidx = {}; const pid = q => { const k = q.product.id; if (!(k in pidx)) { pidx[k] = prod.length; prod.push(q.product.name.replace(' (disponibilidade a confirmar)', '')); } return pidx[k]; };
+    const entry = q => {
+      const it = q.items.filter(i => i.selected !== false && i.amount > 0);
+      const y = it.filter(i => i.b.category === 'yield'), yld = y.reduce((a, i) => a + i.amount, 0), top = y.sort((a, c) => c.amount - a.amount)[0];
+      const cb = it.filter(i => i.b.category === 'cashback').reduce((a, i) => a + i.amount, 0), pt = it.filter(i => i.b.category === 'points').reduce((a, i) => a + i.amount, 0);
+      return [pid(q), Math.round(q.direct - yld), cb >= pt && cb > 0 ? 1 : pt > 0 ? 2 : 0, Math.round(yld), top && top.b.value > 100 ? Math.round(top.b.value) : 0, Math.round(q.services), Math.round(q.cost.value)];
+    };
+    const AUC = [], TPV = []; for (let a = 0; a <= 100000; a += 5000) AUC.push(a); for (let t = 0; t <= 10000; t += 500) TPV.push(t);
+    const N = [], F = [];
     for (const a of AUC) for (const t of TPV) {
       const prof = E.profile({ ...state.profile, auc: a, tpv: t, balance: Math.min(a, 10000), previousTpv: t, averageTpv: t });
-      const all = E.rank(analysisDB(), prof, false).all.filter(q => q.rankable);
-      for (const m in modes) {
-        const v = modes[m], s = all.filter(q => v(q) != null).sort((x, y) => v(y) - v(x));
-        const xp = s.find(q => q.product.institution === 'XP');
-        const seen = new Set(), riv = [];
-        for (const q of s) { const i = q.product.institution; if (['XP', 'Rico', 'XP simulada'].includes(i) || seen.has(i)) continue; seen.add(i); riv.push(q); if (riv.length === 5) break; }
-        const row = [xp ? id('XP', xp.product.name) : -1, xp ? Math.round(v(xp)) : 0];
-        for (const q of riv) row.push(id(q.product.institution, q.product.name), Math.round(v(q)));
-        rows[m].push(row);
-      }
+      const all = E.rank({ ...db, products: db.products.filter(x => x.institution !== 'Rico') }, prof, false).all.filter(q => q.rankable && q.net != null);
+      const n = [], f = [];
+      inst.forEach((name, i) => {
+        const mine = all.filter(q => q.product.institution === name);
+        if (!mine.length) { n.push(0); return; }
+        const bn = mine.slice().sort((x, y) => y.net - x.net)[0], bf = mine.slice().sort((x, y) => y.financialNet - x.financialNet)[0];
+        n.push(entry(bn)); if (bf.product.id !== bn.product.id) f.push([i, ...entry(bf)]);
+      });
+      N.push(n); F.push(f);
     }
-    return { aucStep: 2500, tpvStep: 500, nTpv: TPV.length, date: (typeof db !== 'undefined' && db.researchDate) || '', names, all: rows.all, fin: rows.fin };
+    return { aucStep: 5000, tpvStep: 500, nTpv: TPV.length, date: db.researchDate, inst, prod, n: N, f: F };
   });
-  fs.writeFileSync('sim/grid.json', JSON.stringify(out));
-  console.log('pontos', out.all.length, 'nomes', out.names.length, 'bytes', fs.statSync('sim/grid.json').size, 'data', out.date);
-  const show = (m, a, t) => console.log(m, a, t, JSON.stringify(out[m][(a / 2500) * out.nTpv + t / 500].map((v, i) => i % 2 ? v : (out.names[v] || ['-', '-']).join(' · '))));
-  for (const [a, t] of [[30000, 5000], [25000, 7500], [2500, 500], [100000, 10000], [0, 0]]) { show('all', a, t); show('fin', a, t); }
+  fs.writeFileSync('sim/grid3.json', JSON.stringify(out));
+  console.log('pontos', out.n.length, 'instituições', out.inst.length, 'modalidades', out.prod.length, 'bytes', fs.statSync('sim/grid3.json').size);
+  const k = (30000 / 5000) * out.nTpv + 5000 / 500;
+  out.n[k].forEach((e, i) => e && console.log(out.inst[i].padEnd(16), out.prod[e[0]].padEnd(38), JSON.stringify(e.slice(1)), 'líquido', e[1] + e[3] + e[5] - e[6]));
+  console.log('fin', JSON.stringify(out.f[k].map(e => [out.inst[e[0]], out.prod[e[1]], ...e.slice(2)])));
   await b.close();
 })();
