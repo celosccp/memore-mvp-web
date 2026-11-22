@@ -720,6 +720,7 @@ body.cmpopen #panelToggle{display:none}
 .cr .v small{font-size:10.5px;font-weight:600;color:#8A8A92;margin-left:2px}
 .cr .bar{position:absolute;left:0;bottom:0;height:3px;width:100%;background:#F4F4F2;opacity:.5;transform-origin:0 50%;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
 .cr.xp{background:rgba(255,199,9,.12);box-shadow:inset 0 0 0 1px rgba(255,199,9,.55);margin-bottom:14px}
+.cr.xp.ref{background:#141416;box-shadow:inset 0 0 0 1px #3A3A40}
 .cr.xp .rk{color:#FFC709} .cr.xp .bar{background:#FFC709;opacity:1}
 .cr.xp .rk i{font-style:normal;display:inline-grid;place-items:center;width:22px;height:19px;border-radius:5px;background:#fff;color:#111;font-size:9.5px;font-weight:900;letter-spacing:-.04em}
 #cmp .gl{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:#FFC709;font-weight:700;margin:0 0 8px}
@@ -823,27 +824,42 @@ function cmpEntries(mode){
     const [pi, cash, kind, yld, cdi, serv0, cost] = e, serv = mode === 'fin' ? 0 : serv0;
     return { banco, nome: CMP.prod[pi], cash, kind, yld, cdi, serv, cost, bruto: cash + yld + serv, v: cash + yld + serv - cost }; }).filter(Boolean) };
 }
+// Valor da Jornada XP como está simulada no app, nas mesmas premissas do comparador:
+// CDI de 14,9% ao ano, 22,5% de imposto sobre o rendimento, sala VIP a US$ 50 por acesso com dólar a R$ 5,50; corretagem a R$ 3,50 por ordem (planilha do simulador).
+const CMPX = { cdi: 14.9, tax: 22.5, usd: 5.5, loungeUsd: 50, ordem: 3.5, saldoMax: 10000 };
+function jornadaEntry(mode){
+  const card = activeCard(), on = f => S.active[f] && S.active[f].status === 'active' ? S.active[f].opt : null;
+  const ib = investbackNow(), cof = on('cofrinho'), taxa = cof ? +cof.slice(1) : P.cofBase, cz = on('corretagem'), ordens = cz ? +cz.slice(2) : 0, acessos = salaNow(card, true).n;
+  const mes = Math.pow(1 + CMPX.cdi / 100, 1 / 12) - 1;
+  const yld = Math.round(Math.min(S.auc, CMPX.saldoMax) * mes * Math.max(0, taxa - 100) / 100 * (1 - CMPX.tax / 100));
+  const cash = Math.round(ib.valor), serv = mode === 'fin' ? 0 : Math.round(ordens * CMPX.ordem + acessos * CMPX.loungeUsd * CMPX.usd / 12);
+  const partes = [ordens ? `${ordens} ordens sem corretagem` : '', acessos ? `${acessos} acessos a salas VIP` : ''].filter(Boolean).join(' e ');
+  return { banco: 'XP', nome: `${card === 'infinite' ? 'XP Infinite' : 'XP One'} · como está no app`, cash, kind: 1, yld, cdi: taxa > 100 ? taxa : 0, serv, cost: 0, bruto: cash + yld + serv, v: cash + yld + serv,
+    tpv: S.gasto, lab: { cash: 'Investback', yld: 'Cofre XP', serv: partes ? partes.charAt(0).toUpperCase() + partes.slice(1) : 'Serviços' }, vazio: 'Nenhum benefício ativo. Ative no app para ver o valor subir.' };
+}
 function renderCmp(){
   const el = document.getElementById('cmp'); if (!el) return;
   const mode = S.cmpMode || 'all', off = S.cmpOff || (S.cmpOff = {}), { tpv, list } = cmpEntries(mode);
   const xp = list.find(r => r.banco === 'XP'), bancos = CMP.inst.filter(b => b !== 'XP'), ligados = bancos.filter(b => !off[b]);
-  const riv = list.filter(r => r.banco !== 'XP' && !off[r.banco]).sort((x, y) => y.v - x.v).slice(0, 5);
-  const top = Math.max(1, xp ? xp.bruto : 0, ...riv.map(r => r.bruto));
-  const pct = v => tpv ? ' ' + (v / tpv * 100).toFixed(1).replace('.', ',').replace(',0', '') + '%' : '';
+  const riv = list.filter(r => r.banco !== 'XP' && !off[r.banco]).sort((x, y) => y.v - x.v).slice(0, 10), jx = jornadaEntry(mode);
+  const top = Math.max(1, jx.bruto, xp ? xp.bruto : 0, ...riv.map(r => r.bruto));
+  const pct = (v, base = tpv) => base ? ' ' + (v / base * 100).toFixed(1).replace('.', ',').replace(',0', '') + '%' : '';
   const row = (r, rk, cls = '') => `<div class="cr ${cls}"><div class="rk">${rk}</div><div style="min-width:0"><b>${r.banco}</b><span>${r.nome}</span></div><div class="v">${brl(r.v)}<small>/mês</small></div>
       <div class="sb" style="width:${Math.max(4, r.bruto / top * 100)}%">${r.cash > 0 ? `<i class="k1" style="flex:${r.cash}"></i>` : ''}${r.yld > 0 ? `<i class="k2" style="flex:${r.yld}"></i>` : ''}${r.serv > 0 ? `<i class="k3" style="flex:${r.serv}"></i>` : ''}</div>
-      <div class="tg">${r.cash > 0 ? `<em class="k1">${r.kind === 2 ? 'Pontos' : r.kind === 1 ? 'Cashback' : 'Conta'}${r.kind ? pct(r.cash) : ''} · ${brl(r.cash)}</em>` : ''}${r.yld > 0 ? `<em class="k2">Caixinha${r.cdi ? ' ' + r.cdi + '% CDI' : ''} · ${brl(r.yld)}</em>` : ''}${r.serv > 0 ? `<em class="k3">Serviços · ${brl(r.serv)}</em>` : ''}${r.cost > 0 ? `<em class="k4">Mensalidade · − ${brl(r.cost)}</em>` : ''}${r.bruto <= 0 && r.cost <= 0 ? '<em>Sem valor estimado neste perfil</em>' : ''}</div></div>`;
-  const melhor = riv[0], dif = melhor && xp ? melhor.v - xp.v : 0, pos = xp ? riv.filter(r => r.v > xp.v).length + 1 : null, aberto = isOpen('cmpf');
+      <div class="tg">${r.cash > 0 ? `<em class="k1">${r.lab ? r.lab.cash : r.kind === 2 ? 'Pontos' : r.kind === 1 ? 'Cashback' : 'Conta'}${r.kind ? pct(r.cash, r.tpv) : ''} · ${brl(r.cash)}</em>` : ''}${r.yld > 0 ? `<em class="k2">${r.lab ? r.lab.yld : 'Caixinha'}${r.cdi ? ' ' + r.cdi + '% CDI' : ''} · ${brl(r.yld)}</em>` : ''}${r.serv > 0 ? `<em class="k3">${r.lab ? r.lab.serv : 'Serviços'} · ${brl(r.serv)}</em>` : ''}${r.cost > 0 ? `<em class="k4">Mensalidade · − ${brl(r.cost)}</em>` : ''}${r.bruto <= 0 && r.cost <= 0 ? `<em style="white-space:normal;line-height:1.35;border-radius:10px">${r.vazio || 'Sem valor estimado neste perfil'}</em>` : ''}</div></div>`;
+  const melhor = riv[0], dif = melhor ? melhor.v - jx.v : 0, pos = riv.filter(r => r.v > jx.v).length + 1, ganho = xp ? jx.v - xp.v : jx.v, aberto = isOpen('cmpf');
   el.innerHTML = `<div class="ch"><button class="cx" data-a="cmpopen">Fechar ›</button><h1>Nos outros bancos</h1><p>Quanto este cliente teria por mês com <b>${brl(S.auc)}</b> investidos e <b>${brl(S.gasto)}</b> no cartão.</p></div>
     <div class="cb"><div class="seg"><button class="${mode === 'all' ? 'on' : ''}" data-a="cmp:all">Tudo</button><button class="${mode === 'fin' ? 'on' : ''}" data-a="cmp:fin">Só financeiro</button></div>
     <div class="lg"><span><i class="k1"></i>Cashback ou pontos</span><span><i class="k2"></i>Caixinha (% do CDI)</span>${mode === 'all' ? '<span><i class="k3"></i>Serviços</span>' : ''}</div>
+    <div class="gl">Jornada XP · simulação no app</div>
+    ${row(jx, '<i>XP</i>', 'xp')}
     <div class="gl">XP hoje</div>
-    ${xp ? row({ ...xp, nome: xp.nome + ' · regra atual' }, '<i>XP</i>', 'xp') : `<div class="cr xp"><div class="rk"><i>XP</i></div><div style="min-width:0"><b>Sem cartão elegível</b><span>Abaixo do mínimo de investimento</span></div><div class="v">${brl(0)}<small>/mês</small></div></div>`}
-    <div class="gl" style="display:flex;justify-content:space-between;align-items:center">Top ${riv.length || 5} fora da XP <button class="fb" data-a="tog:cmpf:0">Bancos ${ligados.length}/${bancos.length} ${aberto ? '−' : '+'}</button></div>
+    ${xp ? row({ ...xp, nome: xp.nome + ' · regra atual' }, '<i>XP</i>', 'xp ref') : `<div class="cr xp ref"><div class="rk"><i>XP</i></div><div style="min-width:0"><b>Sem cartão elegível</b><span>Abaixo do mínimo de investimento</span></div><div class="v">${brl(0)}<small>/mês</small></div></div>`}
+    <div class="gl" style="display:flex;justify-content:space-between;align-items:center">Top ${riv.length || 10} fora da XP <button class="fb" data-a="tog:cmpf:0">Bancos ${ligados.length}/${bancos.length} ${aberto ? '−' : '+'}</button></div>
     ${aberto ? `<div class="fbx"><div class="fba"><button data-a="cmpbank:*">Todos</button><button data-a="cmpbank:-">Limpar</button></div>${bancos.map(b => `<button class="chb ${off[b] ? '' : 'on'}" data-a="cmpbank:${b}">${b}</button>`).join('')}</div>` : ''}
     ${riv.length ? riv.map((r, i) => row(r, i + 1)).join('') : '<div class="gap">Nenhum banco selecionado. Abra o filtro e escolha pelo menos um.</div>'}
-    ${melhor ? `<div class="gap">${dif > 0 ? `A melhor oferta ${ligados.length < bancos.length ? 'entre os bancos escolhidos' : 'de fora'} entrega <b>${brl(dif)}</b> a mais por mês que a XP hoje. A XP ficaria em <b>${pos}º</b> entre ${riv.length + 1}.` : `Neste perfil, a XP hoje já entrega mais que ${ligados.length < bancos.length ? 'os bancos escolhidos' : 'as cinco melhores de fora'}.`}</div>` : ''}
-    <p class="src">${mode === 'all' ? 'Valor líquido por mês: dinheiro de volta, rendimento acima de 100% do CDI e serviços pelo preço equivalente, menos a mensalidade.' : 'Só dinheiro de volta, pontos e rendimento acima de 100% do CDI, menos a mensalidade. Não conta serviços como salas VIP e assinaturas.'} A melhor modalidade de cada instituição. Caixinha: rendimento extra sobre até R$ 10 mil. O percentual ao lado de cashback ou pontos é o retorno efetivo sobre o gasto. Fonte: Comparativo econômico das propostas de valor, pesquisa de ${CMP.date.split('-').reverse().join('/')}. Valores da faixa mais próxima (patrimônio de R$ 5 mil em R$ 5 mil, gasto de R$ 500 em R$ 500).</p></div>`;
+    ${melhor ? `<div class="gap">${dif > 0 ? `Com a Jornada XP como está no app, a XP ficaria em <b>${pos}º</b> entre ${riv.length + 1}. A melhor oferta ${ligados.length < bancos.length ? 'entre os bancos escolhidos' : 'de fora'} entrega <b>${brl(dif)}</b> a mais por mês.` : `Com a Jornada XP como está no app, a XP entrega mais que ${ligados.length < bancos.length ? 'os bancos escolhidos' : 'todas as ofertas de fora'}.`}${xp ? ` Em relação à regra de hoje, ${ganho > 0 ? `são <b>${brl(ganho)}</b> a mais` : ganho < 0 ? `são <b>${brl(-ganho)}</b> a menos` : 'o valor é o mesmo'}.` : ''}</div>` : ''}
+    <p class="src">${mode === 'all' ? 'Valor líquido por mês: dinheiro de volta, rendimento acima de 100% do CDI e serviços pelo preço equivalente, menos a mensalidade.' : 'Só dinheiro de volta, pontos e rendimento acima de 100% do CDI, menos a mensalidade. Não conta serviços como salas VIP e assinaturas.'} A melhor modalidade de cada instituição. Caixinha: rendimento extra sobre até R$ 10 mil. O percentual ao lado de cashback ou pontos é o retorno efetivo sobre o gasto. A linha da Jornada XP soma o que está ativo no app, nas mesmas premissas: CDI de 14,9% ao ano com 22,5% de imposto, sala VIP a US$ 50 por acesso e corretagem a R$ 3,50 por ordem. Fonte: Comparativo econômico das propostas de valor, pesquisa de ${CMP.date.split('-').reverse().join('/')}. Valores da faixa mais próxima (patrimônio de R$ 5 mil em R$ 5 mil, gasto de R$ 500 em R$ 500).</p></div>`;
 }
 
 // Régua de ganho: bloco Simulado da aba Earn da planilha (a Referência fica guardada só para comparação). Salário: [piso exclusivo em R$, XPoints].
