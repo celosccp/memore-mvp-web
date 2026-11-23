@@ -1,0 +1,17 @@
+{
+  "v": 5,
+  "createdOnFiles": { "v": 1, "at": "2026-11-23T12:00:00Z" },
+  "lists": "css",
+  "format": { "v": 1, "shared": ["project/deck.css"] },
+  "title": "Benchmark Digital – propostas de valor",
+  "order": ["benchmark"],
+  "cover": "benchmark",
+  "sections": {
+    "s1": { "description": "Benchmark de valor entregue por instituição para o cliente Digital, por patrimônio e gasto no cartão.", "start": "benchmark" }
+  },
+  "faces": {
+    "space-grotesk": { "family": "Space Grotesk", "href": "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Inter:wght@400;600&display=swap" },
+    "inter": { "family": "Inter", "href": "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Inter:wght@400;600&display=swap" }
+  },
+  "designSystems": []
+}

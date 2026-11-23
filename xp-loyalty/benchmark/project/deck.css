@@ -1,0 +1,23 @@
+/* Paleta clara: fundo off-white, texto quase preto e âmbar da XP para o destaque. */
+body { font-family: 'Inter', Arial, sans-serif; color: #17150E; }
+section { padding: 128px 128px 160px; background: #F5F3EB; color: #17150E; box-sizing: border-box; }
+
+.title { font-family: 'Space Grotesk', Arial, sans-serif; font-size: 46px; font-weight: 700; line-height: 1.1; letter-spacing: -1px; margin: 0 0 22px; color: #17150E; }
+
+/* matriz: patrimônio nas linhas, gasto no cartão nas colunas; em cada célula, o ranking dos seis */
+.mx { display: grid; grid-template-columns: 172px 1fr 1fr 1fr 1fr; column-gap: 8px; row-gap: 8px; }
+.axis { font-size: 24px; color: #615F56; margin: 0; padding: 4px 0 6px; }
+.colh { font-family: 'Space Grotesk', Arial, sans-serif; font-size: 26px; font-weight: 700; color: #17150E; margin: 0; padding: 4px 14px 6px; }
+.rowh { display: flex; flex-direction: column; justify-content: center; }
+.rowv { font-family: 'Space Grotesk', Arial, sans-serif; font-size: 30px; font-weight: 700; line-height: 1.15; color: #17150E; margin: 0; }
+.rowl { font-size: 24px; line-height: 1.2; color: #6B6960; margin: 0; }
+
+.cell { display: flex; flex-direction: row; gap: 10px; border-radius: 14px; padding: 12px 14px; background: #FFFEFA; border: 1px solid #E2DFD3; }
+.logos { display: flex; flex-direction: column; gap: 6px; padding-top: 3px; flex: none; }
+.lo { width: 24px; height: 24px; border-radius: 6px; object-fit: contain; }
+.nm { font-size: 24px; line-height: 30px; color: #3B392F; margin: 0; flex: 1; white-space: nowrap; }
+.vl { font-size: 24px; line-height: 30px; font-weight: 600; color: #17150E; margin: 0; text-align: right; white-space: nowrap; }
+/* a linha da XP em âmbar escuro e negrito, dentro de cada ranking */
+.cell .me { color: #8A6200; }
+
+.source { position: absolute; left: 128px; bottom: 64px; width: 1664px; font-size: 24px; line-height: 1.25; color: #6B6960; margin: 0; }

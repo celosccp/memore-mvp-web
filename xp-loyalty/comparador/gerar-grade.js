@@ -7,6 +7,12 @@ const { chromium } = require('playwright'); const fs = require('fs');
   const b = await chromium.launch(); const ctx = await b.newContext(); await ctx.route(/^https?:/, r => r.abort());
   const p = await ctx.newPage(); await p.goto('file://' + process.argv[2]); await p.waitForTimeout(2000);
   const out = await p.evaluate(() => {
+    // Regra da XP usada no benchmark (definida pelo time, diferente da pesquisa original):
+    // XP One com Investback de 0,8% a partir de R$ 2.500 de gasto e de 1% a partir de R$ 5.000.
+    { const cash = db.products.find(q => q.id === 'xp_one').benefits.find(b => b.id === 'xp_one_cash');
+      cash.tiers[0] = { when: { field: 'tpv', op: 'gte', value: 2500 }, value: 0.8 };
+      cash.tiers[1] = { when: { field: 'tpv', op: 'gte', value: 5000 }, value: 1 };
+      cash.tiers[2].when.all[0].value = 2500; }
     const inst = [...new Set(db.products.map(x => x.institution))].filter(i => i !== 'Rico');
     const prod = [], pidx = {}; const pid = q => { const k = q.product.id; if (!(k in pidx)) { pidx[k] = prod.length; prod.push(q.product.name.replace(' (disponibilidade a confirmar)', '')); } return pidx[k]; };
     const entry = q => {
