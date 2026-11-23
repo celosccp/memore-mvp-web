@@ -82,6 +82,28 @@ h1{font:700 clamp(24px,3vw,34px)/1.1 var(--display);letter-spacing:-.02em;margin
 .note{font-size:12.5px;color:var(--muted);margin:0}
 .foot{grid-column:1/-1;font-size:12.5px;color:var(--muted);max-width:110ch;margin:0}
 @media (max-width:900px){ .wrap{grid-template-columns:minmax(0,1fr)} .panel{position:static;max-height:none;order:-1} header{order:-2} }
+
+/* ===== Formato de slide: um quadro 16:9 de 1920×1080 que se ajusta à janela, sem rolagem ===== */
+html.slide,html.slide body{height:100%;overflow:hidden}
+html.slide body{padding:0}
+html.slide .wrap{position:absolute;left:50%;top:50%;width:1920px;height:1080px;max-width:none;margin:0;transform:translate(-50%,-50%) scale(var(--s,1));transform-origin:center;
+  padding:34px 40px 26px;align-items:stretch;grid-template-columns:minmax(0,1fr) 430px;grid-template-rows:auto minmax(0,1fr) auto;column-gap:28px;row-gap:14px}
+html.slide header{grid-column:1}
+html.slide h1{font-size:40px} html.slide .lede{font-size:17px;max-width:none}
+html.slide .mxw{grid-column:1;grid-row:2;overflow:hidden;min-height:0}
+html.slide .mx{min-width:0;height:100%;grid-template-columns:104px repeat(var(--n,4),minmax(0,1fr));grid-template-rows:auto repeat(var(--rows,3),minmax(0,1fr))}
+html.slide .ch{font-size:17px} html.slide .rh b{font-size:21px} html.slide .rh span{font-size:13.5px}
+html.slide .cell{min-height:0;overflow:auto;padding:7px 8px;display:flex;flex-direction:column;justify-content:space-evenly;scrollbar-width:thin}
+html.slide .cell.long{justify-content:flex-start}
+html.slide .r{font-size:var(--fs,15px);min-height:var(--lh,30px);padding:0 6px;grid-template-columns:calc(var(--fs,15px) * 1.9) calc(var(--fs,15px) * 1.4) minmax(0,1fr) auto}
+html.slide .r .rk{font-size:calc(var(--fs,15px) * .88)}
+html.slide .r img,html.slide .r .ph{width:calc(var(--fs,15px) * 1.4);height:calc(var(--fs,15px) * 1.4)}
+html.slide .r .bar{margin-top:0;height:3px}
+html.slide .sep{line-height:calc(var(--lh,30px) * .4)}
+html.slide .panel{grid-column:2;grid-row:1 / -1;position:static;height:100%;max-height:none;overflow:hidden;gap:14px;padding:18px}
+html.slide .panel .note{flex:1;min-height:0;overflow:hidden}
+html.slide .foot{grid-column:1;grid-row:3;max-width:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13.5px}
+html.slide .panel .note{font-size:11.5px;line-height:1.38}
 </style>
 
 <div class="wrap">
@@ -148,6 +170,21 @@ function rows(a, t){
   return list;
 }
 const logo = b => LOGOS[b] ? `<img src="${LOGOS[b]}" alt="">` : '<span class="ph"></span>';
+// formato de slide: o quadro de 1920×1080 é escalado para caber na janela, e a letra das linhas se ajusta à altura de cada faixa
+const SLIDE = () => innerWidth >= 900;
+function frame(){
+  const on = SLIDE(); document.documentElement.classList.toggle('slide', on);
+  if (on) document.querySelector('.wrap').style.setProperty('--s', Math.min(innerWidth / 1920, innerHeight / 1080));
+}
+function fit(nRows){
+  const mx = document.getElementById('mx'); mx.style.setProperty('--rows', Math.max(1, nRows));
+  if (!SLIDE() || !nRows) return;
+  const head = mx.querySelector('.ch'), avail = mx.parentElement.clientHeight - (head ? head.offsetHeight : 26) - 8 * nRows, rowH = avail / nRows;
+  const lines = Math.max(1, ...[...mx.querySelectorAll('.cell')].map(c => c.querySelectorAll('.r').length + c.querySelectorAll('.sep').length * .45));
+  const lh = Math.max(17, Math.min(40, (rowH - 18) / lines - 4)), fs = Math.max(9.5, Math.min(17, lh * .5));   // 4 px por linha para a barrinha
+  mx.querySelectorAll('.cell').forEach(c => c.classList.toggle('long', lines * (lh + 4) > rowH - 16));   // quando não cabe, a célula rola por dentro
+  mx.style.setProperty('--lh', lh + 'px'); mx.style.setProperty('--fs', fs + 'px');
+}
 function render(){
   const aucs = D.auc.filter(a => S.aucs.includes(a)), tpvs = D.tpv.filter(t => S.tpvs.includes(t));
   document.getElementById('mx').style.setProperty('--n', Math.max(1, tpvs.length));
@@ -164,6 +201,7 @@ function render(){
   }
   if (!aucs.length || !tpvs.length) h += `<div class="empty" style="grid-column:1/-1">Escolha pelo menos uma faixa de patrimônio e uma de gasto no painel.</div>`;
   document.getElementById('mx').innerHTML = h;
+  fit(aucs.length);
   document.getElementById('players').innerHTML = D.inst.map(b => `<button class="chip ${S.players.includes(b) ? 'on' : ''}" data-player="${esc(b)}" aria-pressed="${S.players.includes(b)}">${logo(b)}${esc(b)}</button>`).join('');
   document.getElementById('tpvs').innerHTML = D.tpv.map(t => `<button class="chip txt ${S.tpvs.includes(t) ? 'on' : ''}" data-tpv="${t}" aria-pressed="${S.tpvs.includes(t)}">${mil(t)}</button>`).join('');
   document.getElementById('aucs').innerHTML = D.auc.map(a => `<button class="chip txt ${S.aucs.includes(a) ? 'on' : ''}" data-auc="${a}" aria-pressed="${S.aucs.includes(a)}">${mil(a)}</button>`).join('');
@@ -173,8 +211,8 @@ function render(){
   const fin = S.cash && S.yld && !S.lounge && !S.other && S.cost, all = S.cash && S.yld && S.lounge && S.other && S.cost;
   document.getElementById('pFin').classList.toggle('on', fin); document.getElementById('pAll').classList.toggle('on', all);
   const partes = [S.cash && 'cashback e pontos', S.yld && 'rendimento da caixinha acima de 100% do CDI', S.lounge && 'salas VIP pelo preço do acesso', S.other && 'assinaturas e outros serviços pelo preço equivalente'].filter(Boolean);
-  document.getElementById('rule').textContent = 'A barra sob cada nome mostra de onde vem o valor. Passe o mouse ou toque num player para ver como a conta é feita.';
-  document.getElementById('foot').textContent = `Valores em R$ por mês: ${partes.length ? partes.join(', ') : 'nada selecionado'}${S.cost ? ', menos a mensalidade' : ', sem descontar mensalidade'}. A melhor modalidade de cada instituição para o perfil e para o que está marcado. Sala VIP a US$ 50 por acesso. Caixinha sobre até R$ 10 mil. XP One com Investback de 0,8% a partir de R$ 2.500 de gasto e 1% a partir de R$ 5.000; XP Infinite com 1%. Itaú considera o pacote Uniclass. Empates recebem a mesma posição. No modo Top 5, a XP aparece sempre, com a posição real, mesmo quando fica fora das cinco primeiras. Fonte: Comparativo econômico das propostas de valor, pesquisa de ${D.date.split('-').reverse().join('/')}.`;
+  document.getElementById('foot').textContent = `Valores em R$ por mês. A barra sob cada nome mostra de onde vem o valor; passe o mouse ou toque num player para ver a conta. Fonte: Comparativo econômico das propostas de valor, ${D.date.split('-').reverse().join('/')}.`;
+  document.getElementById('rule').textContent = `Valores em R$ por mês: ${partes.length ? partes.join(', ') : 'nada selecionado'}${S.cost ? ', menos a mensalidade' : ', sem descontar mensalidade'}. A melhor modalidade de cada instituição para o perfil e para o que está marcado. Sala VIP a US$ 50 por acesso. Caixinha sobre até R$ 10 mil. XP One com Investback de 0,8% a partir de R$ 2.500 de gasto e 1% a partir de R$ 5.000; XP Infinite com 1%. Itaú considera o pacote Uniclass. Empates recebem a mesma posição. No modo Top 5, a XP aparece sempre, com a posição real, mesmo quando fica fora das cinco primeiras. Fonte: Comparativo econômico das propostas de valor, pesquisa de ${D.date.split('-').reverse().join('/')}.`;
 }
 // ---------- detalhe de uma linha: quais benefícios entram e quanto vale cada um ----------
 const pctf = v => (v * 100).toFixed(1).replace('.', ',').replace(',0', '') + '%';
@@ -228,6 +266,7 @@ document.addEventListener('click', e => {
   save(); render(); hidePop();
 });
 document.addEventListener('change', e => { const k = e.target.dataset && e.target.dataset.k; if (!k) return; S[k] = e.target.checked; save(); render(); });
+frame(); addEventListener('resize', () => { frame(); if (D) render(); });
 // os dados ficam num arquivo ao lado da página
 fetch('benchmark-dados.json').then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }).then(d => { D = d; render(); })
   .catch(() => { document.getElementById('mx').innerHTML = '<div class="empty" style="grid-column:1/-1">Não foi possível carregar os dados do benchmark. Recarregue a página.</div>'; });
