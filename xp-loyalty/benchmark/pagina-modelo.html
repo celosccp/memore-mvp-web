@@ -14,12 +14,12 @@
 :root[data-theme="dark"]{
   --bg:#0F0F11; --surface:#1A1A1E; --line:#2C2C31; --ink:#F4F2EA; --muted:#A3A198; --soft:#232327;
   --xp:#FFC709; --xp-ink:#17150E; --xp-band:#3D3620; --k1:#FFC709; --k2:#7BE3A8; --k3:#8FA8FF; --k4:#C9A0FF; --neg:#FF8A7A; color-scheme:dark }
-*{box-sizing:border-box}
+*{box-sizing:border-box} [hidden]{display:none!important}
 body{background:var(--bg);color:var(--ink);font:15px/1.45 var(--text);padding-block:28px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 button:focus-visible,input:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .wrap{max-width:1500px;margin:0 auto;display:grid;grid-template-columns:minmax(0,3fr) minmax(250px,1fr);gap:24px;align-items:start}
-header{grid-column:1/-1}
+header{grid-column:1/-1;display:flex;justify-content:space-between;align-items:flex-start;gap:20px} header>div:first-child{min-width:0}
 h1{font:700 clamp(24px,3vw,34px)/1.1 var(--display);letter-spacing:-.02em;margin:0 0 6px;text-wrap:balance}
 .lede{color:var(--muted);margin:0;max-width:70ch}
 
@@ -105,13 +105,41 @@ html.slide .panel{grid-column:2;grid-row:1 / -1;position:static;height:100%;max-
 html.slide .panel .note{flex:1;min-height:0;overflow:hidden}
 html.slide .foot{grid-column:1;grid-row:3;max-width:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13.5px}
 html.slide .panel .note{font-size:11.5px;line-height:1.38}
+/* ===== Página 1: o que cada player oferece ===== */
+.nav{display:flex;align-items:center;gap:8px;flex:none}
+.nav button{width:34px;height:34px;border:1px solid var(--line);border-radius:50%;background:var(--surface);font-size:17px;line-height:1}
+.nav button:disabled{opacity:.35;cursor:default}
+.nav span{font-size:13px;color:var(--muted);min-width:3em;text-align:center;font-variant-numeric:tabular-nums}
+html.pg1 .mxw,html.pg1 .panel,html.pg1 #foot{display:none} html:not(.pg1) #cmpv,html:not(.pg1) #foot1{display:none}
+#cmpv{grid-column:1/-1;min-width:0;overflow-x:auto}
+.ct{display:grid;grid-template-columns:140px repeat(5,minmax(180px,1fr));min-width:1040px;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.ct>div{padding:10px 12px;border-top:1px solid var(--line);font-size:13.5px;line-height:1.4}
+.ct .hd{border-top:0;padding:14px 12px}
+.ct .hd b{display:flex;align-items:center;gap:8px;font:700 17px/1.2 var(--display)}
+.ct .hd img,.ct .hd .ph{width:26px;height:26px;border-radius:6px;background:#F4F2EA;object-fit:contain;flex:none}
+.ct .hd span{display:block;color:var(--muted);margin-top:6px}
+.ct .lb{font-weight:700;display:flex;align-items:flex-start;gap:8px} .ct .lb i{width:9px;height:9px;border-radius:50%;margin-top:.42em;flex:none}
+.ct .xpc{background:var(--xp-band)} .ct .no{color:var(--muted)}
+.ct p{margin:0} .ct strong{font-weight:700}
+#foot1{grid-column:1/-1;font-size:12.5px;color:var(--muted);margin:0}
+html.slide.pg1 .wrap{grid-template-columns:minmax(0,1fr)}
+html.slide #cmpv{grid-row:2;overflow:hidden;min-height:0}
+html.slide .ct{height:100%;min-width:0;grid-template-columns:200px repeat(5,minmax(0,1fr))}
+html.slide .ct>div{font-size:18px;padding:12px 18px;display:flex;flex-direction:column;justify-content:center}
+html.slide .ct .lb{flex-direction:row;align-items:center;justify-content:flex-start;font-size:18px} html.slide .ct .lb i{margin-top:0;width:11px;height:11px}
+html.slide .ct .hd{padding:18px} html.slide .ct .hd b{font-size:25px} html.slide .ct .hd img,html.slide .ct .hd .ph{width:34px;height:34px} html.slide .ct .hd span{font-size:17px}
+html.slide #foot1{grid-row:3;font-size:14px}
+html.slide .nav button{width:40px;height:40px;font-size:20px} html.slide .nav span{font-size:16px}
 </style>
 
 <div class="wrap">
   <header>
-    <h1>Benchmark Digital</h1>
-    <p class="lede">Quanto cada instituição entrega por mês ao cliente de até R$ 100 mil investidos, por patrimônio e gasto no cartão. Em cada célula, o ranking dos players escolhidos.</p>
+    <div><h1 id="h1">Benchmark Digital</h1>
+    <p class="lede" id="lede"></p></div>
+    <div class="nav"><button data-go="-1" aria-label="Página anterior">‹</button><span id="pgn"></span><button data-go="1" aria-label="Próxima página">›</button></div>
   </header>
+  <section id="cmpv" aria-label="O que cada player oferece"><div class="ct" id="ct"></div></section>
+  <p id="foot1">Regras dos cartões conforme o Comparativo econômico das propostas de valor, de 13/10/2026. XP One com a regra de Investback simulada. Cartões que exigem renda ou patrimônio acima deste segmento ficaram de fora.</p>
   <div class="mxw"><div class="mx" id="mx"><div class="empty" style="grid-column:1/-1">Carregando o benchmark…</div></div></div>
   <aside class="panel" aria-label="Controles do benchmark">
     <section>
@@ -263,6 +291,7 @@ document.addEventListener('click', e => {
   if (row){ if (popRow === row && e.detail) { /* segundo toque na mesma linha mantém aberto */ } showPop(row); return; }
   if (!e.target.closest('#pop')) hidePop();
   const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.go){ go(+b.dataset.go); return; }
   if (b.dataset.player){ const p = b.dataset.player; S.players = S.players.includes(p) ? S.players.filter(x => x !== p) : [...S.players, p]; }
   else if (b.dataset.top !== undefined){ S.top = +b.dataset.top; }
   else if (b.dataset.tpv){ const t = +b.dataset.tpv; S.tpvs = S.tpvs.includes(t) ? S.tpvs.filter(x => x !== t) : [...S.tpvs, t]; }
@@ -273,6 +302,34 @@ document.addEventListener('click', e => {
   save(); render(); hidePop();
 });
 document.addEventListener('change', e => { const k = e.target.dataset && e.target.dataset.k; if (!k) return; S[k] = e.target.checked; save(); render(); });
+// ---------- página 1: o que cada player oferece ao cliente deste segmento ----------
+const CMP_P = [['XP', 'Cartão sem mensalidade que devolve o gasto como investimento.'], ['Nubank', 'Caixinha que rende mais e cashback nos cartões pagos.'], ['Itaú', 'Benefícios ligados ao relacionamento e ao pacote da conta.'], ['PicPay', 'Cashback e rendimento altos, com isenção fácil de atingir.'], ['BTG Pactual', 'Cartão montado por módulos, pago conforme a escolha.']];
+const NO = t => `<p class="no">${t}</p>`;
+const CMP_R = [
+  ['', 'Cartões no segmento', ['One, a partir de R$ 500 investidos. Infinite, a partir de R$ 30 mil.', 'Roxinho, Croma e Ultravioleta.', 'Uniclass Signature e Uniclass Black.', 'Gold, Platinum, Black e Epic Black.', 'Gold, Platinum e Black, montados por módulos.']],
+  ['k1', 'Cashback ou Investback', ['<strong>0,8% a 1%</strong> de Investback. No One, 0,8% a partir de R$ 2.500 por mês e 1% a partir de R$ 5.000.', '<strong>0,8%</strong> no Croma e <strong>1,25%</strong> no Ultravioleta. O Roxinho não tem.', '<strong>0,5%</strong> no Signature e <strong>0,8%</strong> no Black Cashback.', '<strong>0,5% a 1,3%</strong>: Platinum 0,5%, Black 1,2% e Epic Black 1,3%.', '<strong>0,5% a 1%</strong>, conforme o cartão e o módulo contratado.']],
+  ['k1', 'Pontos', [NO('Pontos Livelo no lugar do Investback. Fora da conta nesta análise.'), '1,4 ponto por dólar no Croma e 2,2 no Ultravioleta, no lugar do cashback.', '2 pontos por dólar no Black Pontos+; 2,5 a partir de R$ 4 mil por mês.', NO('Não tem.'), '1 a 2,2 pontos por dólar, no lugar do cashback.']],
+  ['k2', 'Rendimento do saldo', [NO('Sem rendimento acima de 100% do CDI.'), '<strong>115% do CDI</strong> na Caixinha; 120% com Croma ou Ultravioleta.', NO('Sem rendimento acima de 100% do CDI.'), '<strong>102% do CDI</strong>; 121% com PicPay Mais ou Epic Black.', NO('Sem rendimento acima de 100% do CDI.')]],
+  ['k3', 'Salas VIP', ['<strong>2 acessos por ano</strong> no One e 4 no Infinite.', '4 acessos por ano, só no Ultravioleta.', '4 acessos por ano no Black Pontos+, com condição de uso.', '2 acessos por ano no Epic Black. Sala de Guarulhos no Black.', '4 acessos por ano no Black com módulo Viagem.']],
+  ['k4', 'Assinaturas e serviços', ['Seguro médico internacional e concierge Visa.', 'HBO Max, tag de pedágio sem mensalidade e NuCel.', 'Voucher Uber de R$ 20 por mês e tag de pedágio.', 'Amazon Prime no PicPay Mais e no Epic Black. Tags Sem Parar.', 'IOF zero em compras internacionais.']],
+  ['neg', 'Mensalidade', ['<strong>Sem mensalidade</strong> nos dois cartões.', 'Roxinho grátis. Croma R$ 39 e Ultravioleta R$ 89, com isenção por gasto ou investimento.', 'Signature R$ 60 e Black R$ 80, com isenção por gasto ou investimento. Pacote da conta à parte.', 'Grátis sem cashback. Com cashback, R$ 34,90 a R$ 49,90, com isenção por gasto, investimento ou salário.', 'R$ 20 a R$ 120, com desconto de R$ 10 a cada R$ 10 mil investidos ou R$ 1 mil gasto.']]
+];
+document.getElementById('ct').innerHTML = `<div class="hd"></div>` + CMP_P.map(([b, f], i) => `<div class="hd ${i ? '' : 'xpc'}"><b>${logo(b)}${esc(b)}</b><span>${f}</span></div>`).join('')
+  + CMP_R.map(([c, n, cs]) => `<div class="lb">${c ? `<i ${c === 'neg' ? 'style="background:var(--neg)"' : `class="${c}"`}></i>` : ''}${n}</div>` + cs.map((x, i) => `<div class="${i ? '' : 'xpc'}">${x.startsWith('<p') ? x : `<p>${x}</p>`}</div>`).join('')).join('');
+const PAGES = [['propostas', 'O que cada player oferece ao cliente Digital', 'Proposta de valor para quem tem até R$ 100 mil investidos. Quanto isso vale em R$ por mês, em cada perfil, está na página seguinte.'],
+  ['matriz', 'Benchmark Digital', 'Quanto cada instituição entrega por mês ao cliente de até R$ 100 mil investidos, por patrimônio e gasto no cartão. Em cada célula, o ranking dos players escolhidos.']];
+let PG = Math.max(0, PAGES.findIndex(x => x[0] === location.hash.slice(1)));
+function page(n){
+  PG = Math.max(0, Math.min(PAGES.length - 1, n)); document.documentElement.classList.toggle('pg1', PG === 0);
+  document.getElementById('h1').textContent = PAGES[PG][1]; document.getElementById('lede').textContent = PAGES[PG][2]; document.getElementById('pgn').textContent = (PG + 1) + ' / ' + PAGES.length;
+  document.querySelectorAll('.nav button').forEach(b => b.disabled = +b.dataset.go < 0 ? PG === 0 : PG === PAGES.length - 1);
+  hidePop(); if (D && PG === 1) render();
+}
+function go(d){ if (PG + d < 0 || PG + d >= PAGES.length) return; page(PG + d); try { location.hash = PAGES[PG][0]; } catch (e) {} }
+addEventListener('hashchange', () => { const n = PAGES.findIndex(x => x[0] === location.hash.slice(1)); if (n >= 0 && n !== PG) page(n); });
+addEventListener('keydown', e => { if (e.key === 'Escape') return hidePop(); if (e.target.closest && e.target.closest('input,textarea,select')) return;
+  if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); go(1); } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(-1); } });
+page(PG);
 frame(); addEventListener('resize', () => { frame(); if (D) render(); });
 // os dados ficam num arquivo ao lado da página
 fetch('benchmark-dados.json').then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }).then(d => { D = d; render(); })
