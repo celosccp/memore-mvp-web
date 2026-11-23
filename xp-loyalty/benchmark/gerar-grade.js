@@ -13,6 +13,8 @@ const { chromium } = require('playwright'); const fs = require('fs');
       cash.tiers[0] = { when: { field: 'tpv', op: 'gte', value: 2500 }, value: 0.8 };
       cash.tiers[1] = { when: { field: 'tpv', op: 'gte', value: 5000 }, value: 1 };
       cash.tiers[2].when.all[0].value = 2500; }
+    // Por enquanto a XP entra só com o Investback: os pontos (XP → Livelo) ficam fora da conta em todos os cartões da XP.
+    db.products.filter(q => q.institution === 'XP').forEach(q => { q.benefits = q.benefits.filter(x => x.category !== 'points'); });
     const inst = [...new Set(db.products.map(x => x.institution))].filter(i => i !== 'Rico');
     const prod = [], pidx = {}; const pid = q => { const k = q.product.id; if (!(k in pidx)) { pidx[k] = prod.length; prod.push(q.product.name.replace(' (disponibilidade a confirmar)', '')); } return pidx[k]; };
     const itn = [], itx = {}, cds = [], cdx = {}, CAT = { cashback: 0, points: 1, yield: 2, banking: 3, lounge: 4 };
