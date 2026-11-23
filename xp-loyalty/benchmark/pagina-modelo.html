@@ -112,15 +112,15 @@ html.slide .panel .note{font-size:11.5px;line-height:1.38}
 .nav span{font-size:13px;color:var(--muted);min-width:3em;text-align:center;font-variant-numeric:tabular-nums}
 html.pg1 .mxw,html.pg1 .panel,html.pg1 #foot{display:none} html:not(.pg1) #cmpv,html:not(.pg1) #foot1{display:none}
 #cmpv{grid-column:1/-1;min-width:0;overflow-x:auto}
-.rg{--pXP:var(--ink);--pNu:#820AD1;--pIt:#EC7000;--pPp:#11A85F;--pBt:#1B3F8F;display:grid;grid-template-columns:130px minmax(0,1fr);min-width:1040px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px 14px 14px;row-gap:6px}
+.rg{--pXP:var(--ink);--pNu:#820AD1;--pIt:#EC7000;--pPp:#11A85F;--pBt:#1B3F8F;display:grid;grid-template-columns:64px minmax(0,1fr);min-width:980px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px 14px 14px;row-gap:6px}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .rg{--pNu:#B56BFF;--pIt:#FF9A3D;--pPp:#3DDC8C;--pBt:#7FA0F0} }
 :root[data-theme="dark"] .rg{--pNu:#B56BFF;--pIt:#FF9A3D;--pPp:#3DDC8C;--pBt:#7FA0F0}
-.rg .yl{font:700 13px/1.25 var(--display);align-self:start;padding:2px 10px 0 0}
+.rg .yl{font:700 11.5px/1.25 var(--display);align-self:start;padding:2px 8px 0 0}
 .rgx{position:relative;height:50px}
 .rgx .tk{position:absolute;top:0;transform:translateX(-50%);font:700 16px/1 var(--display);white-space:nowrap} .rgx .tk.f{transform:none} .rgx .tk.l{transform:translateX(-100%)}
 .rgx .bar{position:absolute;left:0;right:0;bottom:7px;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--xp-band),var(--xp))}
 .rgx .dot{position:absolute;bottom:3px;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:var(--surface);border:3px solid var(--ink);box-sizing:border-box} .rgx .dot.f{margin-left:0} .rgx .dot.l{margin-left:-16px}
-.rgn{display:flex;align-items:center;gap:8px;font:700 14px/1.2 var(--display);min-width:0} .rgn img,.rgn .ph{width:22px;height:22px;border-radius:6px;background:#F4F2EA;object-fit:contain;flex:none}
+.rgn{display:flex;align-items:center;gap:8px;font:700 14px/1.2 var(--display);min-width:0} .rgn img,.rgn .ph{width:40px;height:40px;border-radius:10px;background:#F4F2EA;object-fit:contain;flex:none}
 .rgt{display:grid;grid-template-columns:var(--cols,repeat(6,minmax(0,1fr)));column-gap:4px}
 .sg{background:color-mix(in srgb,var(--c) 15%,var(--surface));border-radius:10px;padding:10px 12px;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:6px;overflow:hidden}
 .sg.xp{background:var(--xp-band)}
@@ -140,10 +140,10 @@ html.slide #cmpv.many{overflow-y:auto} html.slide .rg.many{height:auto;grid-temp
 html.slide .rg.many .rgx,html.slide .rg.many .yl{position:sticky;top:0;z-index:2;background:var(--surface);align-self:stretch} html.slide .rg.many{padding-top:0} html.slide .rg.many .rgx{height:84px} html.slide .rg.many .rgx .tk{top:18px} html.slide .rg.many .yl{padding-top:18px}
 html.slide.pg1 .wrap{grid-template-columns:minmax(0,1fr)}
 html.slide #cmpv{grid-row:2;overflow:hidden;min-height:0}
-html.slide .rg{height:100%;min-width:0;grid-template-columns:190px minmax(0,1fr);grid-template-rows:auto repeat(var(--np,5),minmax(0,1fr));padding:18px 24px 20px 22px;row-gap:10px}
-html.slide .rg .yl{font-size:17px}
+html.slide .rg{height:100%;min-width:0;grid-template-columns:104px minmax(0,1fr);grid-template-rows:auto repeat(var(--np,5),minmax(0,1fr));padding:18px 24px 20px 22px;row-gap:10px}
+html.slide .rg .yl{font-size:15px}
 html.slide .rgx{height:66px} html.slide .rgx .tk{font-size:23px} html.slide .rgx .bar{height:10px;bottom:9px} html.slide .rgx .dot{width:20px;height:20px;margin-left:-10px;bottom:4px;border-width:4px} html.slide .rgx .dot.f{margin-left:0} html.slide .rgx .dot.l{margin-left:-20px}
-html.slide .rgn{font-size:21px;gap:11px} html.slide .rgn img,html.slide .rgn .ph{width:32px;height:32px}
+html.slide .rgn{font-size:21px;gap:11px} html.slide .rgn img,html.slide .rgn .ph{width:64px;height:64px;border-radius:14px}
 html.slide .rgt{column-gap:6px}
 html.slide .sg{padding:5px 16px;gap:4px} html.slide .sg .sh b{font-size:20px} html.slide .sg .sh em{font-size:14.5px}
 html.slide .sg .bl{gap:5px 22px} html.slide .sg .bn{font-size:16px} html.slide .sg .bn i{width:10px;height:10px} html.slide .sg .bn strong{font-size:20px} html.slide .sg .bn small{font-size:14px}
@@ -392,7 +392,7 @@ function regua(){
 
   const n = RG_T.length - 1, tot = RG_W.reduce((x, y) => x + y, 0), pos = i => (RG_W.slice(0, i).reduce((x, y) => x + y, 0) / tot * 100) + '%', cl = i => i === 0 ? ' f' : i === n ? ' l' : ''; document.getElementById('rg').style.setProperty('--cols', RG_W.map(w => `minmax(0,${w}fr)`).join(' '));
   document.getElementById('rgx').innerHTML = `<div class="bar"></div>` + RG_T.map((a, i) => `<span class="tk${cl(i)}" style="left:${pos(i)}">${a ? mil(a) : 'R$ 0'}</span><span class="dot${cl(i)}" style="left:${pos(i)}"></span>`).join('');
-  document.getElementById('rgt').innerHTML = (sel.length ? '' : `<div class="empty" style="grid-column:1/-1">Escolha pelo menos um player.</div>`) + sel.map(([b, c, tr]) => `<div class="rgn">${logo(b)}${esc(b)}</div><div class="rgt">` + tr.map(([de, ate, nome, cond, bens, tags]) =>
+  document.getElementById('rgt').innerHTML = (sel.length ? '' : `<div class="empty" style="grid-column:1/-1">Escolha pelo menos um player.</div>`) + sel.map(([b, c, tr]) => `<div class="rgn" title="${esc(b)}">${LOGOS[b] ? `<img src="${LOGOS[b]}" alt="${esc(b)}">` : esc(b)}</div><div class="rgt">` + tr.map(([de, ate, nome, cond, bens, tags]) =>
     `<div class="sg ${b === 'XP' ? 'xp' : ''}" style="grid-column:${de + 1}/${ate + 1};--c:var(--${c})"><div class="sh"><b>${esc(nome)}</b>${cond ? `<em>${esc(cond)}</em>` : ''}</div>`
     + `<div class="bl">${bens.map(([k, v, r, cd]) => `<span class="bn"><i ${k === 'neg' ? 'style="background:var(--neg)"' : `class="${k}"`}></i><strong>${esc(v)}</strong>${esc(r)}${cd ? `<small>${esc(cd)}</small>` : ''}</span>`).join('')}</div>`
     + `<div class="tg">${tags.map(t => `<span>${esc(t)}</span>`).join('')}</div></div>`).join('') + `</div>`).join('');
