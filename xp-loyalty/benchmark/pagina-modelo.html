@@ -124,8 +124,7 @@ html.slide .panel .note{font-size:11.5px;line-height:1.38}
     </section>
     <section>
       <h2>Quais cartões entram</h2>
-      <label class="tg"><input type="checkbox" id="cIsento" data-k="isento">Só com a isenção atingida</label>
-      <p class="note" style="margin-top:2px">Cartão com regra de isenção só entra se o perfil a atinge. Sem regra, entra com a mensalidade na conta.</p>
+      <label class="tg" title="Cartão com regra de isenção só entra se o perfil a atinge. Sem regra de isenção, entra com a mensalidade na conta."><input type="checkbox" id="cIsento" data-k="isento">Só com a isenção atingida</label>
     </section>
     <section>
       <h2>Ranking em cada célula</h2>
@@ -218,7 +217,7 @@ function render(){
   document.getElementById('pFin').classList.toggle('on', fin); document.getElementById('pAll').classList.toggle('on', all);
   const partes = [S.cash && 'cashback e pontos', S.yld && 'rendimento da caixinha acima de 100% do CDI', S.lounge && 'salas VIP pelo preço do acesso', S.other && 'assinaturas e outros serviços pelo preço equivalente'].filter(Boolean);
   document.getElementById('foot').textContent = `Valores em R$ por mês. A barra sob cada nome mostra de onde vem o valor; passe o mouse ou toque num player para ver a conta. Fonte: Comparativo econômico das propostas de valor, ${D.date.split('-').reverse().join('/')}.`;
-  document.getElementById('rule').textContent = `Premissas: caixinha sobre até R$ 10 mil; sala VIP a US$ ${D.loungeUsd} por acesso; ponto a ${brl(D.mile)} o milheiro; XP One com Investback de 0,8% a partir de R$ 2.500 e 1% a partir de R$ 5.000.`;
+  document.getElementById('rule').textContent = `Com a isenção ligada, cartão que tem regra de isenção só entra se o perfil a atinge; sem regra, entra com a mensalidade na conta. Premissas: caixinha sobre até R$ 10 mil; sala VIP a US$ ${D.loungeUsd} por acesso; ponto a ${brl(D.mile)} o milheiro; XP One com Investback de 0,8% a partir de R$ 2.500 e 1% a partir de R$ 5.000.`;
 }
 // ---------- detalhe de uma linha: quais benefícios entram e quanto vale cada um ----------
 const pctf = v => (v * 100).toFixed(1).replace('.', ',').replace(',0', '') + '%';
