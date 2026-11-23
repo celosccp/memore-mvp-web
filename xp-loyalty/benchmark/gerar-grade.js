@@ -26,9 +26,9 @@ const { chromium } = require('playwright'); const fs = require('fs');
         dict(cds, cdx, q.cost.detail || '')];
     };
     const AUC = [5000, 10000, 15000, 30000, 50000, 75000, 100000], TPV = [500, 1000, 1500, 2000, 2500, 3000, 4000, 5000, 6000, 7500, 10000];
-    const pts = {}, prof0 = E.profile(state.profile);
+    const pts = {}, prof0 = E.profile({ ...state.profile, mileValue: 30 });
     for (const a of AUC) for (const t of TPV) {
-      const prof = E.profile({ ...state.profile, auc: a, tpv: t, balance: Math.min(a, 10000), previousTpv: t, averageTpv: t });
+      const prof = E.profile({ ...state.profile, mileValue: 30, auc: a, tpv: t, balance: Math.min(a, 10000), previousTpv: t, averageTpv: t });
       // ficam de fora os pacotes de pontos comprados (paga-se mais do que os pontos valem): não são benefício do cartão
       const comprado = x => x.benefits.some(bn => /pontos (mensais contratados|bônus mensais)/i.test(bn.name));
       const all = E.rank({ ...db, products: db.products.filter(x => x.institution !== 'Rico' && !comprado(x)) }, prof, false).all.filter(q => q.rankable && q.net != null);

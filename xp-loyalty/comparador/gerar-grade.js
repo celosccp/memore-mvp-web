@@ -24,7 +24,7 @@ const { chromium } = require('playwright'); const fs = require('fs');
     const AUC = [], TPV = []; for (let a = 0; a <= 100000; a += 5000) AUC.push(a); for (let t = 0; t <= 10000; t += 500) TPV.push(t);
     const N = [], F = [];
     for (const a of AUC) for (const t of TPV) {
-      const prof = E.profile({ ...state.profile, auc: a, tpv: t, balance: Math.min(a, 10000), previousTpv: t, averageTpv: t });
+      const prof = E.profile({ ...state.profile, mileValue: 30, auc: a, tpv: t, balance: Math.min(a, 10000), previousTpv: t, averageTpv: t });
       const all = E.rank({ ...db, products: db.products.filter(x => x.institution !== 'Rico') }, prof, false).all.filter(q => q.rankable && q.net != null);
       const n = [], f = [];
       inst.forEach((name, i) => {
