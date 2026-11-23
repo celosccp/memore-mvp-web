@@ -138,7 +138,7 @@ html.slide .rg .yl{font-size:17px}
 html.slide .rgx{height:66px} html.slide .rgx .tk{font-size:23px} html.slide .rgx .bar{height:10px;bottom:9px} html.slide .rgx .dot{width:20px;height:20px;margin-left:-10px;bottom:4px;border-width:4px} html.slide .rgx .dot.f{margin-left:0} html.slide .rgx .dot.l{margin-left:-20px}
 html.slide .rgn{font-size:21px;gap:11px} html.slide .rgn img,html.slide .rgn .ph{width:32px;height:32px}
 html.slide .rgt{column-gap:6px}
-html.slide .sg{padding:8px 16px;gap:6px} html.slide .sg .sh b{font-size:20px} html.slide .sg .sh em{font-size:14.5px}
+html.slide .sg{padding:5px 16px;gap:4px} html.slide .sg .sh b{font-size:20px} html.slide .sg .sh em{font-size:14.5px}
 html.slide .sg .bl{gap:5px 22px} html.slide .sg .bn{font-size:16px} html.slide .sg .bn i{width:10px;height:10px} html.slide .sg .bn strong{font-size:20px} html.slide .sg .bn small{font-size:14px}
 html.slide .sg .tg span{font-size:13.5px;padding:2px 11px}
 html.slide #foot1{grid-row:3;font-size:14px}
@@ -321,23 +321,23 @@ document.addEventListener('change', e => { const k = e.target.dataset && e.targe
 const RG_T = [0, 10000, 20000, 30000, 50000, 75000, 100000], RG_W = [.82, .82, .82, 1.3, 1.12, 1.12];   // o eixo não é em escala: os primeiros trechos são mais estreitos
 const RG_P = [
   ['XP', 'pXP', [
-    [0, 3, 'XP One', 'a partir de R$ 500 investidos', [['k1', '0,8%', 'de Investback', 'gasto de R$ 2,5 mil/mês'], ['k1', '1%', 'de Investback', 'gasto de R$ 5 mil/mês'], ['k3', '2', 'salas VIP por ano']], ['Sem mensalidade', 'Investback vira investimento']],
-    [3, 6, 'XP Infinite', 'a partir de R$ 30 mil investidos', [['k1', '1%', 'de Investback', 'em qualquer gasto'], ['k3', '4', 'salas VIP por ano']], ['Sem mensalidade', 'Investback vira investimento', 'Seguro viagem e concierge Visa']]]],
-  ['Nubank', 'pNu', [
-    [0, 3, 'Nubank (Roxinho)', 'sem exigência', [['k2', '115%', 'do CDI na Caixinha', 'até R$ 5 mil'], ['k1', '0,8%', 'de cashback no Croma', 'gasto de R$ 4 mil/mês']], ['Sem mensalidade', 'Sem cashback no cartão de entrada']],
-    [3, 4, 'Nubank Croma', '', [['k1', '0,8%', 'de cashback'], ['k2', '120%', 'do CDI']], ['Isento com R$ 30 mil', 'HBO Max']],
-    [4, 6, 'Nubank Ultravioleta', 'isento com R$ 50 mil investidos', [['k1', '1,25%', 'de cashback'], ['k2', '120%', 'do CDI'], ['k3', '4', 'salas VIP por ano']], ['IOF devolvido no exterior', 'Sala própria em Guarulhos', 'HBO Max']]]],
+    [0, 3, 'XP One', 'a partir de R$ 500 investidos', [['k1', '0,8%', 'de Investback', 'TPV de R$ 2,5 mil/mês'], ['k1', '1%', 'de Investback', 'TPV de R$ 5 mil/mês'], ['k3', '2', 'salas VIP por ano']], ['Sem mensalidade']],
+    [3, 6, 'XP Infinite', 'a partir de R$ 30 mil investidos', [['k1', '1%', 'de Investback'], ['k3', '4', 'salas VIP por ano']], ['Sem mensalidade', 'Seguro viagem e concierge Visa']]]],
   ['Itaú', 'pIt', [
-    [0, 4, 'Uniclass Signature', 'conta com pacote de R$ 80/mês', [['k1', '0,5%', 'de cashback'], ['neg', 'R$ 60', 'de mensalidade do cartão', 'zera com gasto de R$ 4 mil/mês']], ['Voucher Uber de R$ 20/mês', 'Tag de pedágio']],
-    [4, 6, 'Uniclass Black', 'cartão isento com R$ 50 mil investidos', [['k1', '0,8%', 'de cashback', 'ou 2 pontos por dólar'], ['k3', '4', 'salas VIP por ano', 'versão de pontos']], ['Pacote da conta: R$ 40 com R$ 70 mil, zero com R$ 100 mil', 'Voucher Uber']]]],
-  ['PicPay', 'pPp', [
-    [0, 2, 'Card Gold ou Platinum', 'sem exigência', [['k2', '102%', 'do CDI'], ['k1', '0,5%', 'de cashback', 'gasto de R$ 2 mil/mês']], ['Sem mensalidade']],
-    [2, 4, 'PicPay Mais + Platinum', 'isento com R$ 20 mil investidos', [['k1', '0,8%', 'de cashback'], ['k2', '121%', 'do CDI']], ['Amazon Prime incluído']],
-    [4, 6, 'Epic Black', 'isento com R$ 50 mil investidos', [['k1', '1,3%', 'de cashback'], ['k2', '121%', 'do CDI'], ['k3', '2', 'salas VIP por ano']], ['Amazon Prime', '2 tags Sem Parar', 'Sala em Guarulhos']]]],
+    [0, 4, 'Uniclass Signature', 'conta com pacote de R$ 80/mês', [['k1', '0,5%', 'de cashback'], ['neg', 'R$ 60', 'de mensalidade do cartão', 'zera com TPV de R$ 4 mil/mês']], ['Voucher Uber de R$ 20/mês', 'Tag de pedágio']],
+    [4, 6, 'Uniclass Black', 'cartão isento com R$ 50 mil investidos', [['k1', '0,8%', 'de cashback', 'ou 2 pontos por dólar'], ['k3', '4', 'salas VIP por ano', 'versão de pontos']], ['Pacote da conta zera com R$ 100 mil', 'Voucher Uber']]]],
   ['BTG Pactual', 'pBt', [
-    [0, 2, 'Gold', 'sem exigência', [['k1', '0,5%', 'de cashback', 'gasto de R$ 2 mil/mês']], ['Sem mensalidade', 'IOF zero no exterior']],
+    [0, 2, 'Gold', 'sem exigência', [['k1', '0,5%', 'de cashback', 'TPV de R$ 2 mil/mês']], ['Sem mensalidade', 'IOF zero no exterior']],
     [2, 4, 'Gold ou Platinum + Cashback', 'módulo grátis com R$ 20 mil', [['k1', '0,5%', 'de cashback'], ['k1', '0,75%', 'de cashback', 'com R$ 40 mil investidos']], ['IOF zero no exterior']],
-    [4, 6, 'Black + Cashback', 'módulo grátis com R$ 50 mil', [['k1', '1%', 'de cashback'], ['k3', '4', 'salas VIP por ano', 'com R$ 90 mil investidos']], ['IOF zero no exterior', 'Gasto no cartão antecipa os módulos']]]]
+    [4, 6, 'Black + Cashback', 'módulo grátis com R$ 50 mil', [['k1', '1%', 'de cashback'], ['k3', '4', 'salas VIP por ano', 'com R$ 90 mil investidos']], ['IOF zero no exterior', 'Gasto no cartão antecipa os módulos']]]],
+  ['Nubank', 'pNu', [
+    [0, 3, 'Nubank (Roxinho)', 'sem exigência', [['k2', '115%', 'do CDI na Caixinha', 'até R$ 5 mil'], ['k1', '0,8%', 'de cashback no Croma', 'TPV de R$ 4 mil/mês']], ['Sem mensalidade', 'Sem cashback no cartão de entrada']],
+    [3, 4, 'Nubank Croma', 'isento com R$ 30 mil investidos ou TPV de R$ 4 mil/mês', [['k1', '0,8%', 'de cashback'], ['k2', '120%', 'do CDI']], []],
+    [4, 6, 'Nubank Ultravioleta', 'isento com R$ 50 mil investidos ou TPV de R$ 8 mil/mês', [['k1', '1,25%', 'de cashback'], ['k2', '120%', 'do CDI'], ['k3', '4', 'salas VIP por ano']], ['IOF devolvido no exterior', 'Sala própria em Guarulhos', 'HBO Max', '2 tags de pedágio']]]],
+  ['PicPay', 'pPp', [
+    [0, 2, 'Card Gold ou Platinum', 'sem exigência', [['k2', '102%', 'do CDI'], ['k1', '0,5%', 'de cashback', 'TPV de R$ 2 mil/mês ou salário']], ['Sem mensalidade']],
+    [2, 4, 'PicPay Mais + Platinum', 'isento com R$ 20 mil investidos', [['k1', '0,8%', 'de cashback'], ['k2', '121%', 'do CDI']], ['Amazon Prime incluído']],
+    [4, 6, 'Epic Black', 'isento com R$ 50 mil investidos', [['k1', '1,3%', 'de cashback'], ['k2', '121%', 'do CDI'], ['k3', '2', 'salas VIP por ano']], ['Amazon Prime', '2 tags de pedágio', 'Sala em Guarulhos']]]]
 ];
 function regua(){
   const n = RG_T.length - 1, tot = RG_W.reduce((x, y) => x + y, 0), pos = i => (RG_W.slice(0, i).reduce((x, y) => x + y, 0) / tot * 100) + '%', cl = i => i === 0 ? ' f' : i === n ? ' l' : ''; document.getElementById('rg').style.setProperty('--cols', RG_W.map(w => `minmax(0,${w}fr)`).join(' '));
