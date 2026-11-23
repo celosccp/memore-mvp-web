@@ -112,29 +112,35 @@ html.slide .panel .note{font-size:11.5px;line-height:1.38}
 .nav span{font-size:13px;color:var(--muted);min-width:3em;text-align:center;font-variant-numeric:tabular-nums}
 html.pg1 .mxw,html.pg1 .panel,html.pg1 #foot{display:none} html:not(.pg1) #cmpv,html:not(.pg1) #foot1{display:none}
 #cmpv{grid-column:1/-1;min-width:0;overflow-x:auto}
-.ct{display:grid;grid-template-columns:120px repeat(var(--st,6),minmax(150px,1fr));min-width:1060px;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.ct>div{padding:10px 12px;font-size:13px;line-height:1.35;min-width:0}
-.ct .st{position:relative;padding:12px 12px 16px;border-bottom:2px solid var(--ink)}
-.ct .st::after{content:"";position:absolute;left:12px;bottom:-7px;width:12px;height:12px;border-radius:50%;background:var(--xp);border:2px solid var(--ink)}
-.ct .st.ax0::after{display:none}
-.ct .st b{display:block;font:700 18px/1.15 var(--display)} .ct .st span{display:block;color:var(--muted)}
-.ct .pn{display:flex;align-items:center;gap:8px;font:700 15px/1.2 var(--display);border-top:1px solid var(--line)}
-.ct .pn img,.ct .pn .ph{width:24px;height:24px;border-radius:6px;background:#F4F2EA;object-fit:contain;flex:none}
-.ct .rc{border-top:1px solid var(--line);border-left:1px solid var(--line);display:flex;flex-direction:column;gap:2px}
-.ct .st+.st,.ct .ax0+.st{border-left:1px solid transparent}
-.ct .xpc{background:var(--xp-band)}
-.ct .cn{font-weight:600;color:var(--muted)} .ct .cn.new{color:var(--ink);font-weight:700}
-.ct .cv{font:700 20px/1.15 var(--display);font-variant-numeric:tabular-nums} .ct .cv small{font:500 12px var(--text);color:var(--muted)} .ct .cv.neg{color:var(--neg)}
-.ct .cb{display:flex;align-items:baseline;gap:6px} .ct .cb i{width:8px;height:8px;border-radius:50%;flex:none}
-.ct .no{color:var(--muted)}
+.rg{--pXP:var(--ink);--pNu:#820AD1;--pIt:#EC7000;--pPp:#11A85F;--pBt:#1B3F8F;display:grid;grid-template-columns:130px minmax(0,1fr);min-width:1040px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px 14px 14px;row-gap:6px}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .rg{--pNu:#B56BFF;--pIt:#FF9A3D;--pPp:#3DDC8C;--pBt:#7FA0F0} }
+:root[data-theme="dark"] .rg{--pNu:#B56BFF;--pIt:#FF9A3D;--pPp:#3DDC8C;--pBt:#7FA0F0}
+.rg .yl{font-size:12.5px;color:var(--muted);align-self:start;padding-top:6px}
+#rgc{height:300px;min-width:0;position:relative} #rgc svg{display:block;width:100%;height:100%;overflow:visible}
+#rgc text{font-family:var(--text);font-size:12.5px;fill:var(--muted)} #rgc .ev{font:700 14px var(--display);fill:var(--ink)} #rgc .xv{font:700 13.5px var(--display);fill:var(--ink);paint-order:stroke;stroke:var(--surface);stroke-width:5px;stroke-linejoin:round}
+#rgc .hv{fill:transparent;cursor:help} #rgc .hv:hover{fill:color-mix(in srgb,var(--ink) 5%,transparent)}
+.rgx,.rgt{display:grid;grid-template-columns:repeat(var(--st,6),minmax(0,1fr))}
+.rgx>div{text-align:center;padding:6px 4px 8px;border-top:2px solid var(--ink);position:relative}
+.rgx>div::before{content:"";position:absolute;left:50%;top:-7px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:var(--xp);border:2px solid var(--ink);box-sizing:border-box}
+.rgx b{display:block;font:700 17px/1.2 var(--display);margin-top:4px} .rgx span{display:block;font-size:12px;color:var(--muted)}
+.rgn{display:flex;align-items:center;gap:8px;font:700 14px/1.2 var(--display);min-width:0} .rgn img,.rgn .ph{width:22px;height:22px;border-radius:6px;background:#F4F2EA;object-fit:contain;flex:none}
+.rgn i{width:14px;height:4px;border-radius:2px;flex:none}
+.rgt{column-gap:4px}
+.sg{background:color-mix(in srgb,var(--c) 15%,var(--surface));border-radius:8px;padding:5px 10px;min-width:0;display:flex;flex-direction:column;justify-content:center}
+.sg.xp{background:var(--xp-band)}
+.sg b,.sg span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .sg b{font-weight:700;font-size:13px} .sg span{font-size:12px;color:var(--muted)}
+#pop .tr{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:8px;align-items:center;padding:5px 0} #pop .tr img,#pop .tr .ph{width:22px;height:22px;border-radius:6px;background:#F4F2EA;object-fit:contain}
+#pop .tr b{display:block;font-weight:600} #pop .tr span{display:block;color:var(--muted);font-size:12px} #pop .tr strong{font-variant-numeric:tabular-nums;white-space:nowrap}
+#pop .tt{font:700 15px/1.2 var(--display);padding-bottom:8px;border-bottom:1px solid color-mix(in srgb,var(--ink) 12%,transparent);margin-bottom:4px} #pop .tt span{display:block;font:400 12.5px var(--text);color:var(--muted)}
 #foot1{grid-column:1/-1;font-size:12.5px;color:var(--muted);margin:0}
 html.slide.pg1 .wrap{grid-template-columns:minmax(0,1fr)}
 html.slide #cmpv{grid-row:2;overflow:hidden;min-height:0}
-html.slide .ct{height:100%;min-width:0;grid-template-columns:190px repeat(var(--st,6),minmax(0,1fr));grid-template-rows:auto repeat(5,minmax(0,1fr))}
-html.slide .ct>div{font-size:16px;padding:12px 16px}
-html.slide .ct .st{padding:16px 16px 20px} html.slide .ct .st b{font-size:25px} html.slide .ct .st span{font-size:16px} html.slide .ct .st::after{left:16px}
-html.slide .ct .pn{font-size:23px;gap:12px} html.slide .ct .pn img,html.slide .ct .pn .ph{width:34px;height:34px}
-html.slide .ct .rc{justify-content:center;gap:3px} html.slide .ct .cn{font-size:17px} html.slide .ct .cv{font-size:29px} html.slide .ct .cv small{font-size:15px} html.slide .ct .cb i{width:10px;height:10px}
+html.slide .rg{height:100%;min-width:0;grid-template-columns:190px minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto repeat(5,auto);padding:20px 24px 20px 22px;row-gap:8px}
+html.slide #rgc{height:auto;min-height:0} html.slide .rg .yl{font-size:15px}
+html.slide #rgc text{font-size:15px} html.slide #rgc .ev{font-size:19px} html.slide #rgc .xv{font-size:18px}
+html.slide .rgx b{font-size:23px} html.slide .rgx span{font-size:15px} html.slide .rgx>div{padding:8px 4px 12px}
+html.slide .rgn{font-size:20px;gap:11px} html.slide .rgn img,html.slide .rgn .ph{width:30px;height:30px}
+html.slide .sg{padding:7px 14px;min-height:58px} html.slide .sg b{font-size:17px} html.slide .sg span{font-size:14.5px}
 html.slide #foot1{grid-row:3;font-size:14px}
 html.slide .nav button{width:40px;height:40px;font-size:20px} html.slide .nav span{font-size:16px}
 </style>
@@ -145,8 +151,8 @@ html.slide .nav button{width:40px;height:40px;font-size:20px} html.slide .nav sp
     <p class="lede" id="lede"></p></div>
     <div class="nav"><button data-go="-1" aria-label="Página anterior">‹</button><span id="pgn"></span><button data-go="1" aria-label="Próxima página">›</button></div>
   </header>
-  <section id="cmpv" aria-label="O que cada player oferece"><div class="ct" id="ct"></div></section>
-  <p id="foot1">Valor por mês: cashback ou Investback mais o rendimento da caixinha acima de 100% do CDI, menos a mensalidade. Entra o cartão de maior valor entre os que o perfil tem com a isenção atingida; se não houver nenhum, o melhor com a mensalidade descontada. Nome em destaque: cartão novo naquele passo. O gasto no cartão de cada faixa é uma premissa. Fonte: Comparativo econômico das propostas de valor, 13/10/2026.</p>
+  <section id="cmpv" aria-label="O que cada player oferece"><div class="rg" id="rg"><div class="yl">R$ por mês em benefício financeiro</div><div id="rgc"></div><div></div><div class="rgx" id="rgx"></div><div id="rgt" style="display:contents"></div></div></section>
+  <p id="foot1">Valor por mês: cashback ou Investback mais o rendimento da caixinha acima de 100% do CDI, menos a mensalidade. Entra o cartão de maior valor entre os que o perfil tem com a isenção atingida; se não houver nenhum, o melhor com a mensalidade descontada. O gasto no cartão de cada faixa é uma premissa. Fonte: Comparativo econômico das propostas de valor, 13/10/2026.</p>
   <div class="mxw"><div class="mx" id="mx"><div class="empty" style="grid-column:1/-1">Carregando o benchmark…</div></div></div>
   <aside class="panel" aria-label="Controles do benchmark">
     <section>
@@ -310,33 +316,55 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('change', e => { const k = e.target.dataset && e.target.dataset.k; if (!k) return; S[k] = e.target.checked; save(); render(); });
 // ---------- página 1: o que cada player oferece ao cliente deste segmento ----------
-const RG_P = ['XP', 'Nubank', 'Itaú', 'PicPay', 'BTG Pactual'];
+const RG_P = [['XP', 'pXP'], ['Nubank', 'pNu'], ['Itaú', 'pIt'], ['PicPay', 'pPp'], ['BTG Pactual', 'pBt']];
 const RG_S = [[5000, 1000], [10000, 1500], [30000, 2500], [50000, 4000], [75000, 5000], [100000, 7500]];   // régua única: patrimônio e o gasto mensal no cartão assumido para ele
 const pc = v => (v * 100).toFixed(2).replace('.', ',').replace(/,?0+$/, '') + '%';
-function regua(){
-  if (!D) return; const ct = document.getElementById('ct'); ct.style.setProperty('--st', RG_S.length);
-  let h = `<div class="st ax0"><span>Patrimônio investido</span><span>e gasto no cartão</span></div>` + RG_S.map(([a, t]) => `<div class="st"><b>${mil(a)}</b><span>${mil(t)} por mês no cartão</span></div>`).join('');
-  for (const banco of RG_P){
-    const i = D.inst.indexOf(banco), xp = banco === 'XP' ? ' xpc' : ''; let ant = null;
-    h += `<div class="pn${xp}">${logo(banco)}${esc(banco)}</div>`;
-    for (const [a, t] of RG_S){
-      const fin = e => e[1] + e[3] - e[7], todos = (D.pts[a + '|' + t] || [])[i] || [], isentos = todos.filter(e => e[10] !== 3), ok = isentos.length ? isentos : todos;   // sem cartão isento neste perfil: entra o melhor, com a mensalidade
-      const e = ok.slice().sort((x, y) => fin(y) - fin(x) || y[5] - x[5])[0];
-      if (!e){ h += `<div class="rc${xp}"><span class="no">Sem cartão neste perfil.</span></div>`; ant = null; continue; }
-      const its = e[8].filter(x => !x[6]), cb = its.filter(x => x[1] === 0), pt = its.filter(x => x[1] === 1), lg = its.filter(x => x[1] === 4).reduce((n, x) => n + (x[3] || 0), 0), nome = D.prod[e[0]], v = fin(e);
-      h += `<div class="rc${xp}"><span class="cn ${nome !== ant ? 'new' : ''}">${esc(nome)}</span><span class="cv ${v < 0 ? 'neg' : ''}">${brl(v)}<small> por mês</small></span>`
-        + (cb.length ? `<span class="cb"><i class="k1"></i>${pc(cb.reduce((n, x) => n + x[2], 0) / t)} de ${banco === 'XP' ? 'Investback' : 'cashback'}</span>` : '')
-        + (pt.length ? `<span class="cb"><i class="k1"></i>${String(pt[0][3]).replace('.', ',')} ${pt[0][3] === 1 ? 'ponto' : 'pontos'} por ${pt[0][5] ? 'dólar' : 'real'}</span>` : '')
-        + (e[4] > 100 ? `<span class="cb"><i class="k2"></i>${e[4]}% do CDI</span>` : '')
-        + (lg ? `<span class="cb"><i class="k3"></i>${lg} salas VIP por ano</span>` : '')
-        + (e[7] > 0 ? `<span class="cb"><i style="background:var(--neg)"></i>${brl(e[7])} de mensalidade</span>` : '')
-        + (!cb.length && !pt.length && !(e[4] > 100) && !lg ? `<span class="no">Sem benefício financeiro neste passo.</span>` : '') + `</div>`;
-      ant = nome;
-    }
-  }
-  ct.innerHTML = h;
+// o melhor cartão do player num passo da régua: maior valor financeiro entre os isentos; sem nenhum isento, o melhor com a mensalidade
+function passo(banco, a, t){
+  const i = D.inst.indexOf(banco), fin = e => e[1] + e[3] - e[7], todos = (D.pts[a + '|' + t] || [])[i] || [], isentos = todos.filter(e => e[10] !== 3), ok = isentos.length ? isentos : todos;
+  const e = ok.slice().sort((x, y) => fin(y) - fin(x) || y[5] - x[5])[0]; if (!e) return null;
+  const its = e[8].filter(x => !x[6]), cb = its.filter(x => x[1] === 0), pt = its.filter(x => x[1] === 1), lg = its.filter(x => x[1] === 4).reduce((n, x) => n + (x[3] || 0), 0), ch = [];
+  if (cb.length) ch.push(pc(cb.reduce((n, x) => n + x[2], 0) / t) + ' de ' + (banco === 'XP' ? 'Investback' : 'cashback'));
+  if (pt.length) ch.push(String(pt[0][3]).replace('.', ',') + (pt[0][3] === 1 ? ' ponto' : ' pontos') + ' por ' + (pt[0][5] ? 'dólar' : 'real'));
+  if (e[4] > 100) ch.push(e[4] + '% do CDI'); if (lg) ch.push(lg + ' salas VIP por ano'); if (e[7] > 0) ch.push(brl(e[7]) + ' de mensalidade');
+  return { nome: D.prod[e[0]], v: fin(e), ch };
 }
-const PAGES = [['regua', 'Como a proposta de cada player evolui com o patrimônio', 'Uma régua só: para cada faixa de patrimônio, um gasto mensal típico no cartão. Em cada passo, o melhor cartão que o cliente consegue ter, o que ele entrega e quanto isso vale por mês.'],
+let RG = [];
+function regua(){
+  if (!D || PG !== 0) return; const n = RG_S.length, box = document.getElementById('rgc'); document.getElementById('rg').style.setProperty('--st', n);
+  RG = RG_P.map(([b, c]) => ({ b, c, pts: RG_S.map(([a, t]) => passo(b, a, t)) }));
+  document.getElementById('rgx').innerHTML = RG_S.map(([a, t]) => `<div><b>${mil(a)}</b><span>${mil(t)} por mês no cartão</span></div>`).join('');
+  document.getElementById('rgt').innerHTML = RG.map(s => { let h = `<div class="rgn"><i style="background:var(--${s.c})"></i>${logo(s.b)}${esc(s.b)}</div><div class="rgt">`;
+    for (let i = 0; i < n;){ const p = s.pts[i], k = p ? p.nome + '|' + p.ch.join() : ''; let j = i; while (j + 1 < n && (s.pts[j + 1] ? s.pts[j + 1].nome + '|' + s.pts[j + 1].ch.join() : '') === k) j++;
+      h += p ? `<div class="sg ${s.b === 'XP' ? 'xp' : ''}" style="grid-column:${i + 1}/${j + 2};--c:var(--${s.c})"><b>${esc(p.nome)}</b><span>${p.ch.length ? esc(p.ch.join(', ')) : 'Sem benefício financeiro neste passo'}</span></div>` : `<div style="grid-column:${i + 1}/${j + 2}"></div>`; i = j + 1; }
+    return h + `</div>`; }).join('');
+  // gráfico: uma linha por player ao longo da régua
+  const W = box.clientWidth, H = box.clientHeight, cw = W / n, x = i => cw * (i + .5), top = 30, bot = 18;
+  const vs = RG.flatMap(s => s.pts.filter(Boolean).map(p => p.v)), lo = Math.min(0, ...vs), hi = Math.max(10, ...vs), y = v => top + (hi - v) / (hi - lo) * (H - top - bot), st = hi - lo > 150 ? 50 : 25;
+  let g = ''; for (let v = Math.ceil(lo / st) * st; v <= hi; v += st) g += `<line x1="0" x2="${W}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="${v === 0 ? 2 : 1}"${v === 0 ? '' : ' stroke-dasharray="3 5"'}/><text x="2" y="${y(v) - 6}">${brl(v)}</text>`;
+  for (let i = 0; i < n; i++) g += `<line x1="${x(i)}" x2="${x(i)}" y1="${top - 12}" y2="${H}" stroke="var(--line)" stroke-width="1"/>`;
+  const ordem = RG.slice().sort((p, q) => (p.b === 'XP') - (q.b === 'XP'));   // a XP por cima
+  for (const s of ordem){ const xp = s.b === 'XP', d = s.pts.map((p, i) => p ? `${i && s.pts[i - 1] ? 'L' : 'M'}${x(i).toFixed(1)} ${y(p.v).toFixed(1)}` : '').join(' ');
+    g += `<path d="${d}" fill="none" stroke="var(--${s.c})" stroke-width="${xp ? 5 : 3}" stroke-linejoin="round" stroke-linecap="round"/>`
+      + s.pts.map((p, i) => p ? `<circle cx="${x(i)}" cy="${y(p.v)}" r="${xp ? 7 : 4.5}" fill="${xp ? 'var(--xp)' : `var(--${s.c})`}" stroke="${xp ? 'var(--ink)' : 'var(--surface)'}" stroke-width="2"/>` : '').join('')
+      + (xp ? s.pts.map((p, i) => p && i < n - 1 ? `<text class="xv" text-anchor="middle" x="${x(i)}" y="${y(p.v) - 16}">${brl(p.v)}</text>` : '').join('') : ''); }
+  // rótulos no fim de cada linha, afastados para não se sobrepor
+  const lh = document.documentElement.classList.contains('slide') ? 30 : 24, fim = RG.filter(s => s.pts[n - 1]).map(s => ({ s, y: y(s.pts[n - 1].v) })).sort((p, q) => p.y - q.y);
+  fim.forEach((f, k) => { if (k && f.y < fim[k - 1].y + lh) f.y = fim[k - 1].y + lh; }); const sobra = fim.length ? fim[fim.length - 1].y - (H - 10) : 0; if (sobra > 0) fim.forEach(f => f.y -= sobra);
+  g += fim.map(f => `${LOGOS[f.s.b] ? `<image href="${LOGOS[f.s.b]}" x="${x(n - 1) + 14}" y="${f.y - lh * .4}" width="${lh * .8}" height="${lh * .8}"/>` : ''}<text class="ev" x="${x(n - 1) + 18 + lh * .8}" y="${f.y + lh * .2}">${brl(f.s.pts[n - 1].v)}</text>`).join('');
+  g += RG_S.map((_, i) => `<rect class="hv" data-st="${i}" x="${cw * i}" y="0" width="${cw}" height="${H}"/>`).join('');
+  box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Valor por mês de cada player ao longo da régua de patrimônio">${g}</svg>`;
+}
+function popPasso(el){
+  const i = +el.dataset.st, [a, t] = RG_S[i], linhas = RG.filter(s => s.pts[i]).sort((p, q) => q.pts[i].v - p.pts[i].v);
+  pop.innerHTML = `<div class="tt">${mil(a)} investidos<span>${mil(t)} por mês no cartão</span></div>` + linhas.map(s => `<div class="tr">${logo(s.b)}<div><b>${esc(s.b)}</b><span>${esc(s.pts[i].nome)}</span></div><strong class="${s.pts[i].v < 0 ? 'neg' : ''}">${brl(s.pts[i].v)}</strong></div>`).join('');
+  pop.hidden = false; popRow = null; popAt = Date.now(); const r = el.getBoundingClientRect(), w = pop.offsetWidth, hh = pop.offsetHeight, m = 8;
+  let px = r.right + m; if (px + w > innerWidth - m) px = r.left - w - m; pop.style.left = Math.max(m, px) + 'px'; pop.style.top = Math.max(m, Math.min(innerHeight - hh - m, r.top + 20)) + 'px';
+}
+document.getElementById('rgc').addEventListener('mouseover', e => { const el = e.target.closest('.hv'); if (el) popPasso(el); });
+document.getElementById('rgc').addEventListener('click', e => { const el = e.target.closest('.hv'); if (el){ popPasso(el); e.stopPropagation(); } });
+document.getElementById('rgc').addEventListener('mouseleave', () => { if (Date.now() - lastTouch > 900) hidePop(); });
+const PAGES = [['regua', 'Como a proposta de cada player evolui com o patrimônio', 'Uma régua só: para cada faixa de patrimônio, um gasto mensal típico no cartão. A linha mostra quanto cada player entrega por mês; as faixas abaixo, qual cartão o cliente tem em cada passo e o que ele dá.'],
   ['matriz', 'Benchmark Digital', 'Quanto cada instituição entrega por mês ao cliente de até R$ 100 mil investidos, por patrimônio e gasto no cartão. Em cada célula, o ranking dos players escolhidos.']];
 let PG = Math.max(0, PAGES.findIndex(x => x[0] === location.hash.slice(1)));
 function page(n){
@@ -350,7 +378,7 @@ addEventListener('hashchange', () => { const n = PAGES.findIndex(x => x[0] === l
 addEventListener('keydown', e => { if (e.key === 'Escape') return hidePop(); if (e.target.closest && e.target.closest('input,textarea,select')) return;
   if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); go(1); } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(-1); } });
 page(PG);
-frame(); addEventListener('resize', () => { frame(); if (D) render(); });
+frame(); addEventListener('resize', () => { frame(); if (D) { render(); regua(); } });
 // os dados ficam num arquivo ao lado da página
 fetch('benchmark-dados.json').then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }).then(d => { D = d; render(); regua(); })
   .catch(() => { document.getElementById('mx').innerHTML = '<div class="empty" style="grid-column:1/-1">Não foi possível carregar os dados do benchmark. Recarregue a página.</div>'; });
