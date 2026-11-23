@@ -167,6 +167,26 @@ html.slide .sg .bl{gap:5px 22px} html.slide .sg .bn{font-size:16px} html.slide .
 html.slide .sg .tg span{font-size:13.5px;padding:2px 11px}
 html.slide #foot1{grid-row:3;font-size:14px}
 html.slide .nav button{width:40px;height:40px;font-size:20px} html.slide .nav span{font-size:16px}
+/* ===== Vidro fosco sobre um fundo com brilho, e eixos desenhados na matriz ===== */
+:root{--glass:color-mix(in srgb,var(--surface) 52%,transparent);--edge:color-mix(in srgb,#FFFFFF 70%,transparent);--glow-a:rgba(255,199,9,.46);--glow-b:rgba(255,150,90,.20);--glow-c:rgba(120,155,255,.24)}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){--edge:color-mix(in srgb,#FFFFFF 10%,transparent);--glow-a:rgba(255,199,9,.20);--glow-b:rgba(255,150,90,.10);--glow-c:rgba(120,155,255,.16)} }
+:root[data-theme="dark"]{--edge:color-mix(in srgb,#FFFFFF 10%,transparent);--glow-a:rgba(255,199,9,.20);--glow-b:rgba(255,150,90,.10);--glow-c:rgba(120,155,255,.16)}
+body{background:radial-gradient(58% 55% at 90% 6%,var(--glow-a),transparent 70%),radial-gradient(42% 42% at 58% 46%,var(--glow-b),transparent 70%),radial-gradient(55% 60% at 4% 96%,var(--glow-c),transparent 70%),var(--bg);background-attachment:fixed}
+.cell,.panel,.rg{background:var(--glass);-webkit-backdrop-filter:blur(20px) saturate(1.5);backdrop-filter:blur(20px) saturate(1.5);border:1px solid var(--edge);box-shadow:0 12px 34px color-mix(in srgb,var(--ink) 9%,transparent),inset 0 1px 0 var(--edge)}
+.cell{border-radius:16px;transition:transform .18s ease,box-shadow .18s ease}
+.cell:hover{transform:translateY(-3px);box-shadow:0 20px 44px color-mix(in srgb,var(--ink) 15%,transparent),inset 0 1px 0 var(--edge)}
+@media (prefers-reduced-motion: reduce){ .cell{transition:none} .cell:hover{transform:none} }
+.mx{grid-template-columns:84px 18px repeat(var(--n,4),minmax(190px,1fr));min-width:calc(118px + var(--n,4) * 200px)}
+.rh{grid-column:1;text-align:right;align-items:flex-end}
+.yax,.xax{position:relative} .yax{grid-column:2} .xax{height:18px}
+.yax::before{content:"";position:absolute;left:50%;width:8px;margin-left:-4px;top:0;bottom:-17px;border-radius:4px;background:linear-gradient(to top,var(--xp-band),var(--xp))}
+.xax::before{content:"";position:absolute;top:50%;height:8px;margin-top:-4px;left:-17px;right:0;border-radius:4px;background:linear-gradient(to right,var(--xp-band),var(--xp))}
+.yax i,.xax i{position:absolute;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:var(--surface);border:3px solid var(--ink);box-sizing:border-box} .yax i{left:50%} .xax i{top:50%}
+.ch{text-align:center;padding:0;align-self:start} .ch b{display:block;font:700 16px/1.15 var(--display)} .ch span{display:block;font:400 12.5px var(--text);color:var(--muted)}
+html.slide .mx{grid-template-columns:104px 20px repeat(var(--n,4),minmax(0,1fr));grid-template-rows:repeat(var(--rows,3),minmax(0,1fr)) 20px auto;gap:10px}
+.axt{font-size:11.5px;line-height:1.35;color:var(--muted);text-align:right;align-self:start} html.slide .axt{font-size:13px}
+html.slide .xax{height:20px} html.slide .ch b{font-size:21px} html.slide .ch span{font-size:13.5px}
+html.slide .cell{padding:8px 10px}
 </style>
 
 <div class="wrap">
@@ -252,7 +272,7 @@ function frame(){
 function fit(nRows){
   const mx = document.getElementById('mx'); mx.style.setProperty('--rows', Math.max(1, nRows));
   if (!SLIDE() || !nRows) return;
-  const head = mx.querySelector('.ch'), avail = mx.parentElement.clientHeight - (head ? head.offsetHeight : 26) - 8 * nRows, rowH = avail / nRows;
+  const head = mx.querySelector('.ch'), avail = mx.parentElement.clientHeight - (head ? head.offsetHeight : 40) - 20 - 10 * (nRows + 1), rowH = avail / nRows;   // desconta a linha do eixo X e os rótulos
   const lines = Math.max(1, ...[...mx.querySelectorAll('.cell')].map(c => c.querySelectorAll('.r').length + c.querySelectorAll('.sep').length * .45));
   const lh = Math.max(17, Math.min(40, (rowH - 18) / lines - 4)), fs = Math.max(9.5, Math.min(17, lh * .5));   // 4 px por linha para a barrinha
   mx.querySelectorAll('.cell').forEach(c => c.classList.toggle('long', lines * (lh + 4) > rowH - 16));   // quando não cabe, a célula rola por dentro
@@ -262,17 +282,20 @@ function render(){
   document.documentElement.classList.toggle('nopanel', S.panel === false); document.getElementById('tgPanel').textContent = S.panel === false ? 'Mostrar filtros' : 'Ocultar filtros';
   const aucs = D.auc.filter(a => S.aucs.includes(a)), tpvs = D.tpv.filter(t => S.tpvs.includes(t));
   document.getElementById('mx').style.setProperty('--n', Math.max(1, aucs.length));
-  let h = `<div class="ax">No cartão</div>` + aucs.map(a => `<div class="ch">${mil(a)} investidos</div>`).join('');
-  for (const t of tpvs.slice().reverse()){   // eixo Y: o menor gasto fica embaixo
-    h += `<div class="rh"><b>${mil(t)}</b><span>no cartão</span></div>`;
-    for (const a of aucs){
+  const R = tpvs.length, C = aucs.length, meio = (i, n) => `calc((100% + 10px) * ${(i + .5) / n} - 5px)`; let h = '', ri = 0;
+  for (const t of tpvs.slice().reverse()){ ri++; let ci = 0;   // eixo Y: o menor gasto fica embaixo
+    h += `<div class="rh" style="grid-row:${ri}"><b>${mil(t)}</b><span>no cartão</span></div>`;
+    for (const a of aucs){ ci++;
       const todos = rows(a, t), corte = S.top ? todos.slice(0, S.top) : todos, xpFora = S.top ? todos.find(r => r.banco === 'XP' && !corte.includes(r)) : null;
       const rs = xpFora ? [...corte, { sep: true }, xpFora] : corte, top = Math.max(1, ...rs.filter(r => !r.sep).map(r => r.cash + r.yld + r.lounge + r.other));
-      h += `<div class="cell">` + (rs.length ? rs.map(r => r.sep ? `<div class="sep" aria-hidden="true">⋯</div>` : `<div class="r ${r.banco === 'XP' ? 'xp' : ''}" title="${esc(r.banco)}" tabindex="0" data-k="${a}|${t}" data-i="${r.i}" data-c="${r.c}" aria-label="${esc(r.banco)}, ${brl(r.v)} por mês. Ver como a conta é feita.">
+      h += `<div class="cell" style="grid-row:${ri};grid-column:${ci + 2}">` + (rs.length ? rs.map(r => r.sep ? `<div class="sep" aria-hidden="true">⋯</div>` : `<div class="r ${r.banco === 'XP' ? 'xp' : ''}" title="${esc(r.banco)}" tabindex="0" data-k="${a}|${t}" data-i="${r.i}" data-c="${r.c}" aria-label="${esc(r.banco)}, ${brl(r.v)} por mês. Ver como a conta é feita.">
           <span class="rk">${r.rk}º</span>${logo(r.banco)}<span class="nm">${esc(r.banco)}</span><span class="vl ${r.v < 0 ? 'neg' : ''}">${brl(r.v)}</span>
           <span class="bar" style="width:${Math.max(0, (r.cash + r.yld + r.lounge + r.other) / top * 100)}%">${r.cash > 0 ? `<i class="k1" style="flex:${r.cash}"></i>` : ''}${r.yld > 0 ? `<i class="k2" style="flex:${r.yld}"></i>` : ''}${r.lounge > 0 ? `<i class="k3" style="flex:${r.lounge}"></i>` : ''}${r.other > 0 ? `<i class="k4" style="flex:${r.other}"></i>` : ''}</span></div>`).join('') : `<div class="empty">Nenhum player selecionado.</div>`) + `</div>`;
     }
   }
+  if (R && C) h += `<div class="yax" style="grid-row:1/span ${R}" aria-hidden="true">${tpvs.map((_, i) => `<i style="top:${meio(i, R)}"></i>`).join('')}</div><div class="xax" style="grid-row:${R + 1};grid-column:3/span ${C}" aria-hidden="true">${aucs.map((_, j) => `<i style="left:${meio(j, C)}"></i>`).join('')}</div>`
+    + `<div class="axt" style="grid-row:${R + 2};grid-column:1/span 2">↑ gasto por mês<br>patrimônio →</div>`
+    + aucs.map((a, j) => `<div class="ch" style="grid-row:${R + 2};grid-column:${j + 3}"><b>${mil(a)}</b><span>investidos</span></div>`).join('');
   if (!aucs.length || !tpvs.length) h += `<div class="empty" style="grid-column:1/-1">Escolha pelo menos uma faixa de patrimônio e uma de gasto no painel.</div>`;
   document.getElementById('mx').innerHTML = h;
   fit(tpvs.length);
