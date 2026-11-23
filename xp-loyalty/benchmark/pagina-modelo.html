@@ -39,6 +39,25 @@ h1{font:700 clamp(24px,3vw,34px)/1.1 var(--display);letter-spacing:-.02em;margin
 .r .vl.neg{color:var(--neg)}
 .r .bar{grid-column:3/-1;display:flex;gap:1px;height:3px;margin-top:2px;border-radius:2px;overflow:hidden}
 .r .bar i{display:block;height:100%} .k1{background:var(--k1)} .k2{background:var(--k2)} .k3{background:var(--k3)} .k4{background:var(--k4)}
+.r{cursor:help}
+.r:hover,.r:focus-visible{outline:1px solid var(--ink);outline-offset:-1px}
+/* detalhe em vidro fosco */
+#pop{position:fixed;z-index:50;width:min(360px,calc(100vw - 16px));max-height:calc(100vh - 16px);overflow:auto;padding:14px;border-radius:16px;
+  background:color-mix(in srgb,var(--surface) 58%,transparent);-webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5);
+  border:1px solid color-mix(in srgb,var(--ink) 14%,transparent);box-shadow:0 18px 50px color-mix(in srgb,var(--ink) 22%,transparent);font-size:13px;pointer-events:none}
+#pop .ph{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:9px;align-items:center;padding-bottom:10px;border-bottom:1px solid color-mix(in srgb,var(--ink) 12%,transparent)}
+#pop .ph img,#pop .ph .ph{width:28px;height:28px;border-radius:7px;background:#F4F2EA;object-fit:contain}
+#pop .ph b{display:block;font:700 15px/1.2 var(--display)} #pop .ph span{display:block;color:var(--muted);font-size:12.5px}
+#pop .ph strong{font:700 18px/1 var(--display);white-space:nowrap} #pop .ph strong small{font:500 11px var(--text);color:var(--muted);margin-left:2px}
+#pop .neg{color:var(--neg)}
+#pop .pg{padding:9px 0 2px;border-bottom:1px solid color-mix(in srgb,var(--ink) 8%,transparent)}
+#pop .pt{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+#pop .pt i{width:8px;height:8px;border-radius:50%} #pop .pt em{font-style:normal;letter-spacing:0;text-transform:none;font-weight:500;margin-left:auto}
+#pop .pl{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:7px}
+#pop .pl b{display:block;font-weight:600} #pop .pl span{display:block;color:var(--muted);font-size:12px;line-height:1.35}
+#pop .pl .pv{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--ink);font-size:13px}
+#pop .pg.off .pl{opacity:.45} #pop .pg.off .pv{text-decoration:line-through}
+#pop .pf{margin:9px 0 0;color:var(--muted);font-size:12px}
 .r.xp{background:var(--xp-band);font-weight:700} .r.xp .rk{color:var(--ink)}
 .sep{text-align:center;color:var(--muted);font-size:13px;line-height:12px;letter-spacing:2px}
 .empty{color:var(--muted);font-size:13px;padding:10px 6px}
@@ -70,7 +89,7 @@ h1{font:700 clamp(24px,3vw,34px)/1.1 var(--display);letter-spacing:-.02em;margin
     <h1>Benchmark Digital</h1>
     <p class="lede">Quanto cada instituição entrega por mês ao cliente de até R$ 100 mil investidos, por patrimônio e gasto no cartão. Em cada célula, o ranking dos players escolhidos.</p>
   </header>
-  <div class="mxw"><div class="mx" id="mx"></div></div>
+  <div class="mxw"><div class="mx" id="mx"><div class="empty" style="grid-column:1/-1">Carregando o benchmark…</div></div></div>
   <aside class="panel" aria-label="Controles do benchmark">
     <section>
       <h2>O que entra na conta</h2>
@@ -102,9 +121,11 @@ h1{font:700 clamp(24px,3vw,34px)/1.1 var(--display);letter-spacing:-.02em;margin
   </aside>
   <p class="foot" id="foot"></p>
 </div>
+<div id="pop" role="tooltip" hidden></div>
 
 <script>
-const D = /*__DATA__*/null;
+let D = null;
+const LOGOS = /*__LOGOS__*/{};
 const SIX = ['XP', 'PicPay', 'Nubank', 'BTG Pactual', 'C6 Bank', 'Itaú'];
 const DEF = { cash: true, yld: true, lounge: false, other: false, cost: true, players: SIX.slice(), aucs: [10000, 30000, 50000, 75000], tpvs: [1000, 2500, 5000, 7500], top: 5 };
 let S = JSON.parse(JSON.stringify(DEF));
@@ -113,20 +134,20 @@ const save = () => { try { localStorage.setItem('bench-digital-v4', JSON.stringi
 const brl = v => (v < 0 ? '− ' : '') + 'R$ ' + Math.abs(Math.round(v)).toLocaleString('pt-BR');
 const mil = v => v < 1000 ? 'R$ ' + v : 'R$ ' + (v / 1000).toLocaleString('pt-BR') + ' mil';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-// entrada: [modalidade, dinheiro de volta, tipo, rendimento extra, % do CDI, salas VIP, outros serviços, mensalidade]
+// entrada: [modalidade, dinheiro de volta, tipo, rendimento extra, % do CDI, salas VIP, outros serviços, mensalidade, itens, regra da mensalidade]
 const val = e => (S.cash ? e[1] : 0) + (S.yld ? e[3] : 0) + (S.lounge ? e[5] : 0) + (S.other ? e[6] : 0) - (S.cost ? e[7] : 0);
 function rows(a, t){
   const list = [];
   D.pts[a + '|' + t].forEach((cands, i) => {
     const banco = D.inst[i]; if (!cands || !S.players.includes(banco)) return;
     const e = cands.slice().sort((x, y) => val(y) - val(x))[0];   // a melhor modalidade da instituição para o que está marcado
-    list.push({ banco, nome: D.prod[e[0]], v: val(e), cash: S.cash ? e[1] : 0, yld: S.yld ? e[3] : 0, lounge: S.lounge ? e[5] : 0, other: S.other ? e[6] : 0, cdi: e[4] });
+    list.push({ i, c: cands.indexOf(e), banco, nome: D.prod[e[0]], v: val(e), cash: S.cash ? e[1] : 0, yld: S.yld ? e[3] : 0, lounge: S.lounge ? e[5] : 0, other: S.other ? e[6] : 0, cdi: e[4] });
   });
   list.sort((x, y) => y.v - x.v || (x.banco === 'XP' ? -1 : y.banco === 'XP' ? 1 : 0));
   list.forEach(r => r.rk = 1 + list.filter(o => o.v > r.v).length);
   return list;
 }
-const logo = b => D.logos[b] ? `<img src="${D.logos[b]}" alt="">` : '<span class="ph"></span>';
+const logo = b => LOGOS[b] ? `<img src="${LOGOS[b]}" alt="">` : '<span class="ph"></span>';
 function render(){
   const aucs = D.auc.filter(a => S.aucs.includes(a)), tpvs = D.tpv.filter(t => S.tpvs.includes(t));
   document.getElementById('mx').style.setProperty('--n', Math.max(1, tpvs.length));
@@ -136,7 +157,7 @@ function render(){
     for (const t of tpvs){
       const todos = rows(a, t), corte = S.top ? todos.slice(0, S.top) : todos, xpFora = S.top ? todos.find(r => r.banco === 'XP' && !corte.includes(r)) : null;
       const rs = xpFora ? [...corte, { sep: true }, xpFora] : corte, top = Math.max(1, ...rs.filter(r => !r.sep).map(r => r.cash + r.yld + r.lounge + r.other));
-      h += `<div class="cell">` + (rs.length ? rs.map(r => r.sep ? `<div class="sep" aria-hidden="true">⋯</div>` : `<div class="r ${r.banco === 'XP' ? 'xp' : ''}" title="${esc(r.nome)}${r.yld && r.cdi ? ' · caixinha a ' + r.cdi + '% do CDI' : ''}">
+      h += `<div class="cell">` + (rs.length ? rs.map(r => r.sep ? `<div class="sep" aria-hidden="true">⋯</div>` : `<div class="r ${r.banco === 'XP' ? 'xp' : ''}" tabindex="0" data-k="${a}|${t}" data-i="${r.i}" data-c="${r.c}" aria-label="${esc(r.banco)}, ${brl(r.v)} por mês. Ver como a conta é feita.">
           <span class="rk">${r.rk}º</span>${logo(r.banco)}<span class="nm">${esc(r.banco)}</span><span class="vl ${r.v < 0 ? 'neg' : ''}">${brl(r.v)}</span>
           <span class="bar" style="width:${Math.max(0, (r.cash + r.yld + r.lounge + r.other) / top * 100)}%">${r.cash > 0 ? `<i class="k1" style="flex:${r.cash}"></i>` : ''}${r.yld > 0 ? `<i class="k2" style="flex:${r.yld}"></i>` : ''}${r.lounge > 0 ? `<i class="k3" style="flex:${r.lounge}"></i>` : ''}${r.other > 0 ? `<i class="k4" style="flex:${r.other}"></i>` : ''}</span></div>`).join('') : `<div class="empty">Nenhum player selecionado.</div>`) + `</div>`;
     }
@@ -152,10 +173,50 @@ function render(){
   const fin = S.cash && S.yld && !S.lounge && !S.other && S.cost, all = S.cash && S.yld && S.lounge && S.other && S.cost;
   document.getElementById('pFin').classList.toggle('on', fin); document.getElementById('pAll').classList.toggle('on', all);
   const partes = [S.cash && 'cashback e pontos', S.yld && 'rendimento da caixinha acima de 100% do CDI', S.lounge && 'salas VIP pelo preço do acesso', S.other && 'assinaturas e outros serviços pelo preço equivalente'].filter(Boolean);
-  document.getElementById('rule').textContent = 'A barra sob cada nome mostra de onde vem o valor. Passe o mouse numa linha para ver o cartão considerado.';
+  document.getElementById('rule').textContent = 'A barra sob cada nome mostra de onde vem o valor. Passe o mouse ou toque num player para ver como a conta é feita.';
   document.getElementById('foot').textContent = `Valores em R$ por mês: ${partes.length ? partes.join(', ') : 'nada selecionado'}${S.cost ? ', menos a mensalidade' : ', sem descontar mensalidade'}. A melhor modalidade de cada instituição para o perfil e para o que está marcado. Sala VIP a US$ 50 por acesso. Caixinha sobre até R$ 10 mil. XP One com Investback de 0,8% a partir de R$ 2.500 de gasto e 1% a partir de R$ 5.000; XP Infinite com 1%. Itaú considera o pacote Uniclass. Empates recebem a mesma posição. No modo Top 5, a XP aparece sempre, com a posição real, mesmo quando fica fora das cinco primeiras. Fonte: Comparativo econômico das propostas de valor, pesquisa de ${D.date.split('-').reverse().join('/')}.`;
 }
+// ---------- detalhe de uma linha: quais benefícios entram e quanto vale cada um ----------
+const pctf = v => (v * 100).toFixed(1).replace('.', ',').replace(',0', '') + '%';
+function detail(k, i, c){
+  const [a, t] = k.split('|').map(Number), e = D.pts[k][i][c], banco = D.inst[i], saldo = Math.min(a, 10000);
+  const G = [['cash', 'k1', 'Cashback, Investback e pontos'], ['yld', 'k2', 'Caixinha acima de 100% do CDI'], ['lounge', 'k3', 'Salas VIP'], ['other', 'k4', 'Assinaturas e outros serviços']];
+  const grp = cat => cat <= 1 || cat === 3 ? 'cash' : cat === 2 ? 'yld' : cat === 4 ? 'lounge' : 'other';
+  const sub = ([n, cat, amt, rate]) => cat === 0 ? `${pctf(amt / t)} de ${brl(t)} no cartão` : cat === 1 ? `pontos que equivalem a ${pctf(amt / t)} do gasto`
+    : cat === 2 ? `${rate}% do CDI sobre ${brl(saldo)} · só o que passa de 100%, já sem imposto` : cat === 4 ? `US$ ${D.loungeUsd} por acesso, com dólar a R$ ${D.usd.toFixed(2).replace('.', ',')}` : cat === 5 ? 'preço equivalente do serviço' : 'conta e câmbio';
+  let h = `<div class="ph">${logo(banco)}<div><b>${esc(banco)}</b><span>${esc(D.prod[e[0]])}</span></div><strong class="${val(e) < 0 ? 'neg' : ''}">${brl(val(e))}<small>/mês</small></strong></div>`;
+  for (const [key, cls, nome] of G){
+    const its = e[8].filter(x => grp(x[1]) === key); if (!its.length) continue;
+    h += `<div class="pg ${S[key] ? '' : 'off'}"><div class="pt"><i class="${cls}"></i>${nome}${S[key] ? '' : '<em>fora da conta</em>'}</div>` + its.map(x => `<div class="pl"><div><b>${esc(D.itn[x[0]])}</b><span>${sub(x)}</span></div><span class="pv">${brl(x[2])}</span></div>`).join('') + `</div>`;
+  }
+  if (!e[8].length) h += `<div class="pg"><div class="pl"><div><span>Nenhum benefício com valor estimado neste perfil.</span></div></div></div>`;
+  const regra = (D.cds[e[9]] || '').split(';').map(x => x.trim()).filter(Boolean);
+  h += `<div class="pg ${S.cost ? '' : 'off'}"><div class="pt"><i style="background:var(--neg)"></i>Mensalidade${S.cost ? '' : '<em>fora da conta</em>'}</div><div class="pl"><div><b>${e[7] > 0 ? 'Custo do pacote ou do cartão' : 'Sem custo neste perfil'}</b>${regra.map(x => `<span>${esc(x)}</span>`).join('')}</div><span class="pv ${e[7] > 0 ? 'neg' : ''}">${e[7] > 0 ? '− ' + brl(e[7]).replace('− ', '') : brl(0)}</span></div></div>`;
+  h += `<p class="pf">Perfil: ${mil(a)} investidos, ${mil(t)} por mês no cartão e ${brl(saldo)} na caixinha.</p>`;
+  return h;
+}
+const pop = document.getElementById('pop'); let popRow = null, popAt = 0;
+function showPop(row){
+  if (!D || !row) return; popRow = row; popAt = Date.now();
+  pop.innerHTML = detail(row.dataset.k, +row.dataset.i, +row.dataset.c); pop.hidden = false;
+  const r = row.getBoundingClientRect(), cell = row.closest('.cell').getBoundingClientRect(), w = pop.offsetWidth, hh = pop.offsetHeight, vw = innerWidth, vh = innerHeight, m = 8;
+  let x = cell.right + m; if (x + w > vw - m) x = cell.left - w - m; if (x < m) x = Math.max(m, Math.min(vw - w - m, r.left));
+  let y = r.top - 12; if (y + hh > vh - m) y = vh - hh - m; if (y < m) y = m;
+  if (x >= cell.left - 1 && x <= cell.right) y = Math.min(vh - hh - m, r.bottom + 6);   // sem espaço dos lados: abre abaixo da linha
+  pop.style.left = x + 'px'; pop.style.top = Math.max(m, y) + 'px';
+}
+function hidePop(){ pop.hidden = true; popRow = null; }
+const mx = document.getElementById('mx');
+mx.addEventListener('mouseover', e => { const r = e.target.closest('.r[data-k]'); if (r && r !== popRow) showPop(r); });
+let lastTouch = 0; addEventListener('touchstart', () => { lastTouch = Date.now(); }, { passive: true, capture: true });
+mx.addEventListener('mouseleave', () => { if (Date.now() - lastTouch > 900) hidePop(); });   // no toque, o navegador simula a saída do mouse
+mx.addEventListener('focusin', e => { const r = e.target.closest('.r[data-k]'); if (r) showPop(r); });
+mx.addEventListener('focusout', e => { if (!e.relatedTarget || !e.relatedTarget.closest || !e.relatedTarget.closest('.r[data-k]')) hidePop(); });
+addEventListener('scroll', () => { if (Date.now() - popAt > 350) hidePop(); }, true);   // o toque pode rolar a página para mostrar a linha addEventListener('keydown', e => { if (e.key === 'Escape') hidePop(); });
 document.addEventListener('click', e => {
+  const row = e.target.closest('.r[data-k]');
+  if (row){ if (popRow === row && e.detail) { /* segundo toque na mesma linha mantém aberto */ } showPop(row); return; }
+  if (!e.target.closest('#pop')) hidePop();
   const b = e.target.closest('button'); if (!b) return;
   if (b.dataset.player){ const p = b.dataset.player; S.players = S.players.includes(p) ? S.players.filter(x => x !== p) : [...S.players, p]; }
   else if (b.dataset.top !== undefined){ S.top = +b.dataset.top; }
@@ -164,8 +225,10 @@ document.addEventListener('click', e => {
   else if (b.dataset.players){ S.players = b.dataset.players === 'six' ? SIX.slice() : b.dataset.players === 'all' ? D.inst.slice() : []; }
   else if (b.dataset.preset){ Object.assign(S, { cash: true, yld: true, cost: true, lounge: b.dataset.preset === 'all', other: b.dataset.preset === 'all' }); }
   else return;
-  save(); render();
+  save(); render(); hidePop();
 });
 document.addEventListener('change', e => { const k = e.target.dataset && e.target.dataset.k; if (!k) return; S[k] = e.target.checked; save(); render(); });
-render();
+// os dados ficam num arquivo ao lado da página
+fetch('benchmark-dados.json').then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }).then(d => { D = d; render(); })
+  .catch(() => { document.getElementById('mx').innerHTML = '<div class="empty" style="grid-column:1/-1">Não foi possível carregar os dados do benchmark. Recarregue a página.</div>'; });
 </script>
