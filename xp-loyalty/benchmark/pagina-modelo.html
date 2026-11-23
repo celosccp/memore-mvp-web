@@ -220,7 +220,7 @@ function detail(k, i, c){
   const [a, t] = k.split('|').map(Number), e = D.pts[k][i][c], banco = D.inst[i], saldo = Math.min(a, 10000);
   const G = [['cash', 'k1', 'Cashback, Investback e pontos'], ['yld', 'k2', 'Caixinha acima de 100% do CDI'], ['lounge', 'k3', 'Salas VIP'], ['other', 'k4', 'Assinaturas e outros serviços']];
   const grp = cat => cat <= 1 || cat === 3 ? 'cash' : cat === 2 ? 'yld' : cat === 4 ? 'lounge' : 'other';
-  const sub = ([n, cat, amt, rate]) => cat === 0 ? `${pctf(amt / t)} de ${brl(t)} no cartão` : cat === 1 ? `pontos que equivalem a ${pctf(amt / t)} do gasto`
+  const sub = ([n, cat, amt, rate, pts]) => cat === 0 ? `${pctf(amt / t)} de ${brl(t)} no cartão` : cat === 1 ? `${pts ? pts.toLocaleString('pt-BR') + ' pontos por mês, a ' + brl(D.mile) + ' o milheiro · ' : 'pontos que '}equivalem a ${pctf(amt / t)} do gasto`
     : cat === 2 ? `${rate}% do CDI sobre ${brl(saldo)} · só o que passa de 100%, já sem imposto` : cat === 4 ? `US$ ${D.loungeUsd} por acesso, com dólar a R$ ${D.usd.toFixed(2).replace('.', ',')}` : cat === 5 ? 'preço equivalente do serviço' : 'conta e câmbio';
   let h = `<div class="ph">${logo(banco)}<div><b>${esc(banco)}</b><span>${esc(D.prod[e[0]])}</span></div><strong class="${val(e) < 0 ? 'neg' : ''}">${brl(val(e))}<small>/mês</small></strong></div>`;
   for (const [key, cls, nome] of G){

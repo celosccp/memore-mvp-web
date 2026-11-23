@@ -22,14 +22,16 @@ const { chromium } = require('playwright'); const fs = require('fs');
       const yld = sum('yield'), lounge = sum('lounge'), top = it.filter(i => i.b.category === 'yield').sort((a, c) => c.amount - a.amount)[0];
       const cb = sum('cashback'), pt = sum('points');
       return [pid(q), Math.round(q.direct - yld), cb >= pt && cb > 0 ? 1 : pt > 0 ? 2 : 0, Math.round(yld), top && top.b.value > 100 ? Math.round(top.b.value) : 0, Math.round(lounge), Math.round(q.services - lounge), Math.round(q.cost.value),
-        it.map(i => [dict(itn, itx, i.b.name), i.b.category in CAT ? CAT[i.b.category] : 5, Math.round(i.amount * 100) / 100, typeof i.b.value === 'number' ? i.b.value : 0]),
+        it.map(i => [dict(itn, itx, i.b.name), i.b.category in CAT ? CAT[i.b.category] : 5, Math.round(i.amount * 100) / 100, typeof i.b.value === 'number' ? i.b.value : 0, Math.round(i.points || 0)]),
         dict(cds, cdx, q.cost.detail || '')];
     };
     const AUC = [5000, 10000, 15000, 30000, 50000, 75000, 100000], TPV = [500, 1000, 1500, 2000, 2500, 3000, 4000, 5000, 6000, 7500, 10000];
     const pts = {}, prof0 = E.profile(state.profile);
     for (const a of AUC) for (const t of TPV) {
       const prof = E.profile({ ...state.profile, auc: a, tpv: t, balance: Math.min(a, 10000), previousTpv: t, averageTpv: t });
-      const all = E.rank({ ...db, products: db.products.filter(x => x.institution !== 'Rico') }, prof, false).all.filter(q => q.rankable && q.net != null);
+      // ficam de fora os pacotes de pontos comprados (paga-se mais do que os pontos valem): não são benefício do cartão
+      const comprado = x => x.benefits.some(bn => /pontos (mensais contratados|bônus mensais)/i.test(bn.name));
+      const all = E.rank({ ...db, products: db.products.filter(x => x.institution !== 'Rico' && !comprado(x)) }, prof, false).all.filter(q => q.rankable && q.net != null);
       pts[a + '|' + t] = inst.map(name => {
         const mine = all.filter(q => q.product.institution === name).map(entry); if (!mine.length) return 0;
         const keep = new Set();
@@ -38,12 +40,12 @@ const { chromium } = require('playwright'); const fs = require('fs');
         return [...keep].map(i => mine[i]);
       });
     }
-    return { auc: AUC, tpv: TPV, inst, prod, itn, cds, pts, date: db.researchDate, cdi: prof0.cdi, tax: prof0.tax, usd: prof0.usd, loungeUsd: prof0.loungeUsd };
+    return { auc: AUC, tpv: TPV, inst, prod, itn, cds, pts, date: db.researchDate, cdi: prof0.cdi, tax: prof0.tax, usd: prof0.usd, loungeUsd: prof0.loungeUsd, mile: prof0.mileValue };
   });
   fs.writeFileSync('sim/grid5.json', JSON.stringify(out));
   const n = Object.values(out.pts).flat().filter(Boolean).map(x => x.length);
   console.log('pontos', Object.keys(out.pts).length, 'bytes', fs.statSync('sim/grid5.json').size, 'candidatos por instituição: média', (n.reduce((a, c) => a + c, 0) / n.length).toFixed(2), 'máx', Math.max(...n));
-  const e = out.pts['30000|5000'][out.inst.indexOf('PicPay')].find(x => out.prod[x[0]] === 'Epic Black');
-  console.log('itens', out.itn.length, 'regras', out.cds.length, '| PicPay Epic:', JSON.stringify(e[8].map(i => [out.itn[i[0]], i[1], i[2], i[3]])), '|', out.cds[e[9]]);
+  for (const k of ['10000|1000', '10000|5000', '50000|7500']) console.log(k, out.pts[k][out.inst.indexOf('C6 Bank')].map(x => out.prod[x[0]] + ' ' + JSON.stringify(x.slice(1, 8)) + ' ' + JSON.stringify(x[8].map(i => [out.itn[i[0]], i[2], i[4]]))).join('  ||  '));
+  console.log('milheiro', out.mile, 'modalidades', out.prod.length);
   await b.close();
 })();
