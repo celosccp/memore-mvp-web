@@ -4,26 +4,24 @@
 <style>
 /* Layout: matriz de patrimônio × gasto no cartão à esquerda (3/4); painel de controles fixo à direita (1/4). */
 :root{
-  --bg:#F1F2F4; --surface:#FFFFFF; --line:#DCDFE5; --ink:#111318; --muted:#5C616C; --soft:#E6E8ED;
-  --xp:#FFC709; --xp-ink:#111318; --xp-band:#FFF4C7; --xp-top:#FFD84D; --k1:#A87B00; --k2:#1F9D62; --k3:#3B6FE0; --k4:#C2408F; --neg:#C2412D;
+  --bg:#F5F3EB; --surface:#FFFEFA; --line:#E2DFD3; --ink:#17150E; --muted:#6B6960; --soft:#EDEADF;
+  --xp:#FFC709; --xp-ink:#17150E; --xp-band:#FFF1B8; --k1:#C99700; --k2:#1F9D62; --k3:#4F6FE0; --k4:#9A5BD0; --neg:#C2412D;
   --display:'Space Grotesk','Inter',Arial,sans-serif; --text:'Inter',Arial,sans-serif;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --bg:#0E0F12; --surface:#1A1B1F; --line:#2D2F36; --ink:#F2F3F5; --muted:#A1A5AF; --soft:#24262C;
-  --xp:#FFC709; --xp-ink:#111318; --xp-band:#33301F; --xp-top:#5C4A0C; --k1:#B88A00; --k2:#2AA574; --k3:#5A80EC; --k4:#CF5A9D; --neg:#FF8A7A; color-scheme:dark } }
+  --bg:#0F0F11; --surface:#1A1A1E; --line:#2C2C31; --ink:#F4F2EA; --muted:#A3A198; --soft:#232327;
+  --xp:#FFC709; --xp-ink:#17150E; --xp-band:#3D3620; --k1:#FFC709; --k2:#7BE3A8; --k3:#8FA8FF; --k4:#C9A0FF; --neg:#FF8A7A; color-scheme:dark } }
 :root[data-theme="dark"]{
-  --bg:#0E0F12; --surface:#1A1B1F; --line:#2D2F36; --ink:#F2F3F5; --muted:#A1A5AF; --soft:#24262C;
-  --xp:#FFC709; --xp-ink:#111318; --xp-band:#33301F; --xp-top:#5C4A0C; --k1:#B88A00; --k2:#2AA574; --k3:#5A80EC; --k4:#CF5A9D; --neg:#FF8A7A; color-scheme:dark }
+  --bg:#0F0F11; --surface:#1A1A1E; --line:#2C2C31; --ink:#F4F2EA; --muted:#A3A198; --soft:#232327;
+  --xp:#FFC709; --xp-ink:#17150E; --xp-band:#3D3620; --k1:#FFC709; --k2:#7BE3A8; --k3:#8FA8FF; --k4:#C9A0FF; --neg:#FF8A7A; color-scheme:dark }
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font:15px/1.45 var(--text);padding-block:28px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 button:focus-visible,input:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .wrap{max-width:1500px;margin:0 auto;display:grid;grid-template-columns:minmax(0,3fr) minmax(250px,1fr);gap:24px;align-items:start}
-header{grid-column:1/-1;display:flex;justify-content:space-between;align-items:flex-start;gap:20px} header>div{min-width:0}
-.tgp{flex:none;font-size:13px;font-weight:600;border:1px solid var(--line);border-radius:999px;padding:6px 14px;background:var(--surface);white-space:nowrap}
-html.nopanel .panel{display:none}
+header{grid-column:1/-1}
 h1{font:700 clamp(24px,3vw,34px)/1.1 var(--display);letter-spacing:-.02em;margin:0 0 6px;text-wrap:balance}
-.lede{color:var(--muted);margin:0;max-width:90ch}
+.lede{color:var(--muted);margin:0;max-width:70ch}
 
 /* matriz */
 .mxw{min-width:0;overflow-x:auto}
@@ -35,12 +33,12 @@ h1{font:700 clamp(24px,3vw,34px)/1.1 var(--display);letter-spacing:-.02em;margin
 .cell{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px}
 .r{display:grid;grid-template-columns:26px 22px minmax(0,1fr) auto;align-items:center;column-gap:7px;padding:3px 6px;border-radius:7px;font-size:14px}
 .r .rk{color:var(--muted);font-variant-numeric:tabular-nums;font-size:12.5px}
-.r img,.r .ph{width:20px;height:20px;border-radius:5px;object-fit:contain;background:#FFFFFF}
+.r img,.r .ph{width:20px;height:20px;border-radius:5px;object-fit:contain;background:#F4F2EA}
 .r .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .r .vl{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
 .r .vl.neg{color:var(--neg)}
-.r .bar{grid-column:3/-1;display:flex;gap:2px;height:4px;margin-top:2px}
-.r .bar i{display:block;height:100%;border-radius:2px} .k1{background:var(--k1)} .k2{background:var(--k2)} .k3{background:var(--k3)} .k4{background:var(--k4)}
+.r .bar{grid-column:3/-1;display:flex;gap:1px;height:3px;margin-top:2px;border-radius:2px;overflow:hidden}
+.r .bar i{display:block;height:100%} .k1{background:var(--k1)} .k2{background:var(--k2)} .k3{background:var(--k3)} .k4{background:var(--k4)}
 .r{cursor:help}
 .r:hover,.r:focus-visible{outline:1px solid var(--ink);outline-offset:-1px}
 /* detalhe em vidro fosco */
@@ -48,32 +46,32 @@ h1{font:700 clamp(24px,3vw,34px)/1.1 var(--display);letter-spacing:-.02em;margin
   background:color-mix(in srgb,var(--surface) 58%,transparent);-webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5);
   border:1px solid color-mix(in srgb,var(--ink) 14%,transparent);box-shadow:0 18px 50px color-mix(in srgb,var(--ink) 22%,transparent);font-size:13px;pointer-events:none}
 #pop .ph{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:9px;align-items:center;padding-bottom:10px;border-bottom:1px solid color-mix(in srgb,var(--ink) 12%,transparent)}
-#pop .ph img,#pop .ph .ph{width:28px;height:28px;border-radius:7px;background:#FFFFFF;object-fit:contain}
+#pop .ph img,#pop .ph .ph{width:28px;height:28px;border-radius:7px;background:#F4F2EA;object-fit:contain}
 #pop .ph b{display:block;font:700 15px/1.2 var(--display)} #pop .ph span{display:block;color:var(--muted);font-size:12.5px}
 #pop .ph strong{font:700 18px/1 var(--display);white-space:nowrap} #pop .ph strong small{font:500 11px var(--text);color:var(--muted);margin-left:2px}
 #pop .neg{color:var(--neg)}
 #pop .pg{padding:9px 0 2px;border-bottom:1px solid color-mix(in srgb,var(--ink) 8%,transparent)}
-#pop .pt{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:5px}
-#pop .pt i{width:8px;height:8px;border-radius:50%} #pop .pt em{font-style:normal;font-weight:500;margin-left:auto}
+#pop .pt{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+#pop .pt i{width:8px;height:8px;border-radius:50%} #pop .pt em{font-style:normal;letter-spacing:0;text-transform:none;font-weight:500;margin-left:auto}
 #pop .pl{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:7px}
 #pop .pl b{display:block;font-weight:600} #pop .pl span{display:block;color:var(--muted);font-size:12px;line-height:1.35}
 #pop .pl .pv{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--ink);font-size:13px}
 #pop .pl.alt{opacity:.6} #pop .pl.alt .pv{font-weight:500}
 #pop .pg.off .pl{opacity:.45} #pop .pg.off .pv{text-decoration:line-through}
 #pop .pf{margin:9px 0 0;color:var(--muted);font-size:12px}
-.r.xp{background:var(--xp-band);font-weight:700} .r.xp .rk{color:var(--ink)} .r.xp.top{background:var(--xp-top)}
+.r.xp{background:var(--xp-band);font-weight:700} .r.xp .rk{color:var(--ink)}
 .sep{text-align:center;color:var(--muted);font-size:13px;line-height:12px;letter-spacing:2px}
 .empty{color:var(--muted);font-size:13px;padding:10px 6px}
 
 /* painel */
 .panel{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:18px;max-height:calc(100vh - 24px);overflow:auto}
-.panel h2{font:700 14px/1.2 var(--display);color:var(--ink);margin:0 0 6px;display:flex;justify-content:space-between;align-items:center;gap:8px}
-.panel h2 span{font:500 12.5px var(--text);color:var(--muted)}
+.panel h2{font:700 12px/1.2 var(--text);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.panel h2 span{font-weight:500;letter-spacing:0;text-transform:none}
 .mini{display:flex;gap:6px;margin-bottom:8px}
 .mini button{font-size:12.5px;font-weight:600;border:1px solid var(--line);border-radius:999px;padding:3px 10px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;border:1px solid var(--line);border-radius:999px;padding:4px 10px 4px 5px;color:var(--muted);background:var(--bg)}
-.chip img{width:18px;height:18px;border-radius:5px;background:#FFFFFF;opacity:.55}
+.chip img{width:18px;height:18px;border-radius:5px;background:#F4F2EA;opacity:.55}
 .chip.on{color:var(--ink);border-color:var(--ink);background:var(--surface)} .chip.on img{opacity:1}
 .chip.txt{padding:4px 11px}
 .seg{display:grid;grid-template-columns:1fr 1fr;background:var(--soft);border-radius:999px;padding:3px;margin-bottom:10px}
@@ -83,8 +81,7 @@ h1{font:700 clamp(24px,3vw,34px)/1.1 var(--display);letter-spacing:-.02em;margin
 .tg input{width:17px;height:17px;accent-color:var(--ink);flex:none}
 .tg i{width:9px;height:9px;border-radius:50%;flex:none}
 .note{font-size:12.5px;color:var(--muted);margin:0}
-.foot{grid-column:1/-1;font-size:12.5px;color:var(--muted);margin:0;display:flex;flex-wrap:wrap;gap:4px 18px;align-items:center}
-.foot .lg{display:inline-flex;align-items:center;gap:6px;color:var(--ink);font-weight:500;white-space:nowrap} .foot .lg i{width:14px;height:4px;border-radius:2px}
+.foot{grid-column:1/-1;font-size:12.5px;color:var(--muted);max-width:110ch;margin:0}
 @media (max-width:900px){ .wrap{grid-template-columns:minmax(0,1fr)} .panel{position:static;max-height:none;order:-1} header{order:-2} }
 
 /* ===== Formato de slide: um quadro 16:9 de 1920×1080 que se ajusta à janela, sem rolagem ===== */
@@ -93,7 +90,7 @@ html.slide body{padding:0}
 html.slide .wrap{position:absolute;left:50%;top:50%;width:1920px;height:1080px;max-width:none;margin:0;transform:translate(-50%,-50%) scale(var(--s,1));transform-origin:center;
   padding:34px 40px 26px;align-items:stretch;grid-template-columns:minmax(0,1fr) 430px;grid-template-rows:auto minmax(0,1fr) auto;column-gap:28px;row-gap:14px}
 html.slide header{grid-column:1}
-html.slide h1{font-size:38px} html.slide .lede{font-size:17px;max-width:none}
+html.slide h1{font-size:40px} html.slide .lede{font-size:17px;max-width:none}
 html.slide .mxw{grid-column:1;grid-row:2;overflow:hidden;min-height:0}
 html.slide .mx{min-width:0;height:100%;grid-template-columns:104px repeat(var(--n,4),minmax(0,1fr));grid-template-rows:auto repeat(var(--rows,3),minmax(0,1fr))}
 html.slide .ch{font-size:17px} html.slide .rh b{font-size:21px} html.slide .rh span{font-size:13.5px}
@@ -102,20 +99,18 @@ html.slide .cell.long{justify-content:flex-start}
 html.slide .r{font-size:var(--fs,15px);min-height:var(--lh,30px);padding:0 6px;grid-template-columns:calc(var(--fs,15px) * 1.9) calc(var(--fs,15px) * 1.4) minmax(0,1fr) auto}
 html.slide .r .rk{font-size:calc(var(--fs,15px) * .88)}
 html.slide .r img,html.slide .r .ph{width:calc(var(--fs,15px) * 1.4);height:calc(var(--fs,15px) * 1.4)}
-html.slide .r .bar{margin-top:0;height:4px}
+html.slide .r .bar{margin-top:0;height:3px}
 html.slide .sep{line-height:calc(var(--lh,30px) * .4)}
-html.slide .panel{grid-column:2;grid-row:1 / -1;position:static;height:100%;max-height:none;overflow:hidden;gap:11px;padding:18px}
+html.slide .panel{grid-column:2;grid-row:1 / -1;position:static;height:100%;max-height:none;overflow:hidden;gap:14px;padding:18px}
 html.slide .panel .note{flex:1;min-height:0;overflow:hidden}
-html.slide .foot{grid-column:1;grid-row:3;flex-wrap:nowrap;overflow:hidden;font-size:13.5px} html.slide .foot .src{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-html.slide.nopanel .wrap{grid-template-columns:minmax(0,1fr)}
+html.slide .foot{grid-column:1;grid-row:3;max-width:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13.5px}
 html.slide .panel .note{font-size:11.5px;line-height:1.38}
 </style>
 
 <div class="wrap">
   <header>
-    <div><h1 id="h1">Benchmark Digital</h1>
-    <p class="lede" id="lede">Quanto cada instituição entrega por mês ao cliente de até R$ 100 mil investidos, por patrimônio e gasto no cartão.</p></div>
-    <button class="tgp" id="tgPanel">Ocultar filtros</button>
+    <h1>Benchmark Digital</h1>
+    <p class="lede">Quanto cada instituição entrega por mês ao cliente de até R$ 100 mil investidos, por patrimônio e gasto no cartão. Em cada célula, o ranking dos players escolhidos.</p>
   </header>
   <div class="mxw"><div class="mx" id="mx"><div class="empty" style="grid-column:1/-1">Carregando o benchmark…</div></div></div>
   <aside class="panel" aria-label="Controles do benchmark">
@@ -159,7 +154,7 @@ html.slide .panel .note{font-size:11.5px;line-height:1.38}
 let D = null;
 const LOGOS = /*__LOGOS__*/{};
 const SIX = ['XP', 'PicPay', 'Nubank', 'BTG Pactual', 'C6 Bank', 'Itaú'];
-const DEF = { cash: true, yld: true, lounge: false, other: false, cost: true, isento: true, players: SIX.slice(), aucs: [10000, 30000, 50000, 75000], tpvs: [1000, 2500, 5000, 7500], top: 5, panel: true };
+const DEF = { cash: true, yld: true, lounge: false, other: false, cost: true, isento: true, players: SIX.slice(), aucs: [10000, 30000, 50000, 75000], tpvs: [1000, 2500, 5000, 7500], top: 5 };
 let S = JSON.parse(JSON.stringify(DEF));
 try { const saved = JSON.parse(localStorage.getItem('bench-digital-v5') || 'null'); if (saved && Array.isArray(saved.players) && Array.isArray(saved.aucs) && Array.isArray(saved.tpvs)) S = { ...DEF, ...saved }; } catch (e) {}
 const save = () => { try { localStorage.setItem('bench-digital-v5', JSON.stringify(S)); } catch (e) {} };
@@ -197,17 +192,15 @@ function fit(nRows){
   mx.style.setProperty('--lh', lh + 'px'); mx.style.setProperty('--fs', fs + 'px');
 }
 function render(){
-  document.documentElement.classList.toggle('nopanel', !S.panel); document.getElementById('tgPanel').textContent = S.panel ? 'Ocultar filtros' : 'Mostrar filtros'; const st = [];
   const aucs = D.auc.filter(a => S.aucs.includes(a)), tpvs = D.tpv.filter(t => S.tpvs.includes(t));
   document.getElementById('mx').style.setProperty('--n', Math.max(1, tpvs.length));
   let h = `<div class="ax">Investido</div>` + tpvs.map(t => `<div class="ch">${mil(t)} no cartão</div>`).join('');
   for (const a of aucs){
     h += `<div class="rh"><b>${mil(a)}</b><span>investidos</span></div>`;
     for (const t of tpvs){
-      const todos = rows(a, t); const x0 = todos.find(r => r.banco === 'XP'); if (x0 && todos.length > 1) st.push({ a, t, rk: x0.v > 0 ? x0.rk : 99, gap: todos[0].v - x0.v, lead: todos[0].banco });
-      const corte = S.top ? todos.slice(0, S.top) : todos, xpFora = S.top ? todos.find(r => r.banco === 'XP' && !corte.includes(r)) : null;
+      const todos = rows(a, t), corte = S.top ? todos.slice(0, S.top) : todos, xpFora = S.top ? todos.find(r => r.banco === 'XP' && !corte.includes(r)) : null;
       const rs = xpFora ? [...corte, { sep: true }, xpFora] : corte, top = Math.max(1, ...rs.filter(r => !r.sep).map(r => r.cash + r.yld + r.lounge + r.other));
-      h += `<div class="cell">` + (rs.length ? rs.map(r => r.sep ? `<div class="sep" aria-hidden="true">⋯</div>` : `<div class="r ${r.banco === 'XP' ? 'xp' + (r.rk <= 3 && r.v > 0 ? ' top' : '') : ''}" tabindex="0" data-k="${a}|${t}" data-i="${r.i}" data-c="${r.c}" aria-label="${esc(r.banco)}, ${brl(r.v)} por mês. Ver como a conta é feita.">
+      h += `<div class="cell">` + (rs.length ? rs.map(r => r.sep ? `<div class="sep" aria-hidden="true">⋯</div>` : `<div class="r ${r.banco === 'XP' ? 'xp' : ''}" tabindex="0" data-k="${a}|${t}" data-i="${r.i}" data-c="${r.c}" aria-label="${esc(r.banco)}, ${brl(r.v)} por mês. Ver como a conta é feita.">
           <span class="rk">${r.rk}º</span>${logo(r.banco)}<span class="nm">${esc(r.banco)}</span><span class="vl ${r.v < 0 ? 'neg' : ''}">${brl(r.v)}</span>
           <span class="bar" style="width:${Math.max(0, (r.cash + r.yld + r.lounge + r.other) / top * 100)}%">${r.cash > 0 ? `<i class="k1" style="flex:${r.cash}"></i>` : ''}${r.yld > 0 ? `<i class="k2" style="flex:${r.yld}"></i>` : ''}${r.lounge > 0 ? `<i class="k3" style="flex:${r.lounge}"></i>` : ''}${r.other > 0 ? `<i class="k4" style="flex:${r.other}"></i>` : ''}</span></div>`).join('') : `<div class="empty">Nenhum player selecionado.</div>`) + `</div>`;
     }
@@ -224,13 +217,7 @@ function render(){
   const fin = S.cash && S.yld && !S.lounge && !S.other && S.cost, all = S.cash && S.yld && S.lounge && S.other && S.cost;
   document.getElementById('pFin').classList.toggle('on', fin); document.getElementById('pAll').classList.toggle('on', all);
   const partes = [S.cash && 'cashback e pontos', S.yld && 'rendimento da caixinha acima de 100% do CDI', S.lounge && 'salas VIP pelo preço do acesso', S.other && 'assinaturas e outros serviços pelo preço equivalente'].filter(Boolean);
-  const LG = [['cash', 'k1', 'Cashback, Investback e pontos'], ['yld', 'k2', 'Caixinha acima de 100% do CDI'], ['lounge', 'k3', 'Salas VIP'], ['other', 'k4', 'Assinaturas e outros']];
-  document.getElementById('foot').innerHTML = LG.filter(g => S[g[0]]).map(g => `<span class="lg"><i class="${g[1]}"></i>${g[2]}</span>`).join('') + `<span class="src">Valores em R$ por mês${S.cost ? ', já com a mensalidade descontada' : ''}. Passe o mouse ou toque num player para ver a conta. Fonte: Comparativo econômico das propostas de valor, ${D.date.split('-').reverse().join('/')}.</span>`;
-  // título: a conclusão do que está na tela
-  const pf = n => n === 1 ? '1 perfil' : n + ' perfis', N = st.length, L = st.filter(x => x.rk === 1).length, T = st.filter(x => x.rk <= 3).length, onde = x => `${mil(x.a)} investidos e ${mil(x.t)} no cartão`;
-  document.getElementById('h1').textContent = !N ? 'Benchmark Digital' : L === N ? `A XP lidera em ${N === 1 ? 'o perfil' : 'todos os ' + pf(N)}` : L ? `A XP lidera em ${L} e fica entre as 3 primeiras em ${T} dos ${pf(N)}` : T ? `A XP fica entre as 3 primeiras em ${T} dos ${pf(N)}, sem liderar nenhum` : `A XP fica fora das 3 primeiras nos ${pf(N)}`;
-  const best = st.slice().sort((x, y) => x.rk - y.rk || x.gap - y.gap)[0], worst = st.slice().sort((x, y) => y.gap - x.gap)[0];
-  document.getElementById('lede').textContent = `Valor entregue por mês ao cliente de até R$ 100 mil, entre os ${S.players.length} players escolhidos.` + (N ? ` ${best.rk < 99 ? `Melhor posição da XP: ${best.rk}º, com ${onde(best)}.` : ''}` + (worst.gap > 0 ? ` Maior distância para o líder: ${brl(worst.gap)} por mês atrás de ${worst.lead}, com ${onde(worst)}.` : '') : '');
+  document.getElementById('foot').textContent = `Valores em R$ por mês. A barra sob cada nome mostra de onde vem o valor; passe o mouse ou toque num player para ver a conta. Fonte: Comparativo econômico das propostas de valor, ${D.date.split('-').reverse().join('/')}.`;
   document.getElementById('rule').textContent = `Com a isenção ligada, cartão que tem regra de isenção só entra se o perfil a atinge; sem regra, entra com a mensalidade na conta. Premissas: caixinha sobre até R$ 10 mil; sala VIP a US$ ${D.loungeUsd} por acesso; ponto a ${brl(D.mile)} o milheiro; XP One com Investback de 0,8% a partir de R$ 2.500 e 1% a partir de R$ 5.000.`;
 }
 // ---------- detalhe de uma linha: quais benefícios entram e quanto vale cada um ----------
@@ -276,8 +263,7 @@ document.addEventListener('click', e => {
   if (row){ if (popRow === row && e.detail) { /* segundo toque na mesma linha mantém aberto */ } showPop(row); return; }
   if (!e.target.closest('#pop')) hidePop();
   const b = e.target.closest('button'); if (!b) return;
-  if (b.id === 'tgPanel'){ S.panel = !S.panel; }
-  else if (b.dataset.player){ const p = b.dataset.player; S.players = S.players.includes(p) ? S.players.filter(x => x !== p) : [...S.players, p]; }
+  if (b.dataset.player){ const p = b.dataset.player; S.players = S.players.includes(p) ? S.players.filter(x => x !== p) : [...S.players, p]; }
   else if (b.dataset.top !== undefined){ S.top = +b.dataset.top; }
   else if (b.dataset.tpv){ const t = +b.dataset.tpv; S.tpvs = S.tpvs.includes(t) ? S.tpvs.filter(x => x !== t) : [...S.tpvs, t]; }
   else if (b.dataset.auc){ const a = +b.dataset.auc; S.aucs = S.aucs.includes(a) ? S.aucs.filter(x => x !== a) : [...S.aucs, a]; }
