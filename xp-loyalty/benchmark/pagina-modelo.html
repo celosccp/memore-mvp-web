@@ -254,7 +254,7 @@ function render(){
   const aucs = D.auc.filter(a => S.aucs.includes(a)), tpvs = D.tpv.filter(t => S.tpvs.includes(t));
   document.getElementById('mx').style.setProperty('--n', Math.max(1, aucs.length));
   let h = `<div class="ax">No cartão</div>` + aucs.map(a => `<div class="ch">${mil(a)} investidos</div>`).join('');
-  for (const t of tpvs){
+  for (const t of tpvs.slice().reverse()){   // eixo Y: o menor gasto fica embaixo
     h += `<div class="rh"><b>${mil(t)}</b><span>no cartão</span></div>`;
     for (const a of aucs){
       const todos = rows(a, t), corte = S.top ? todos.slice(0, S.top) : todos, xpFora = S.top ? todos.find(r => r.banco === 'XP' && !corte.includes(r)) : null;
