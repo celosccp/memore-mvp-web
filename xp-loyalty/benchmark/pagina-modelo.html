@@ -25,7 +25,7 @@ h1{font:700 clamp(24px,3vw,34px)/1.1 var(--display);letter-spacing:-.02em;margin
 
 /* matriz */
 .mxw{min-width:0;overflow-x:auto}
-.mx{display:grid;grid-template-columns:96px repeat(4,minmax(190px,1fr));gap:8px;min-width:900px}
+.mx{display:grid;grid-template-columns:96px repeat(var(--n,4),minmax(190px,1fr));gap:8px;min-width:calc(96px + var(--n,4) * 200px)}
 .ax{font-size:12.5px;color:var(--muted);align-self:end;padding-bottom:4px}
 .ch{font:700 15px/1.2 var(--display);padding:0 12px 4px;align-self:end}
 .rh{display:flex;flex-direction:column;justify-content:center}
@@ -85,6 +85,10 @@ h1{font:700 clamp(24px,3vw,34px)/1.1 var(--display);letter-spacing:-.02em;margin
       <div class="chips" id="players"></div>
     </section>
     <section>
+      <h2>Gasto no cartão por mês</h2>
+      <div class="chips" id="tpvs"></div>
+    </section>
+    <section>
       <h2>Patrimônio investido</h2>
       <div class="chips" id="aucs"></div>
     </section>
@@ -96,12 +100,12 @@ h1{font:700 clamp(24px,3vw,34px)/1.1 var(--display);letter-spacing:-.02em;margin
 <script>
 const D = /*__DATA__*/null;
 const SIX = ['XP', 'PicPay', 'Nubank', 'BTG Pactual', 'C6 Bank', 'Itaú'];
-const DEF = { cash: true, yld: true, serv: false, cost: true, players: SIX.slice(), aucs: [10000, 30000, 75000] };
+const DEF = { cash: true, yld: true, serv: false, cost: true, players: SIX.slice(), aucs: [10000, 30000, 50000, 75000], tpvs: [1000, 2500, 5000, 7500] };
 let S = JSON.parse(JSON.stringify(DEF));
-try { const saved = JSON.parse(localStorage.getItem('bench-digital') || 'null'); if (saved && Array.isArray(saved.players) && Array.isArray(saved.aucs)) S = { ...DEF, ...saved }; } catch (e) {}
-const save = () => { try { localStorage.setItem('bench-digital', JSON.stringify(S)); } catch (e) {} };
+try { const saved = JSON.parse(localStorage.getItem('bench-digital-v2') || 'null'); if (saved && Array.isArray(saved.players) && Array.isArray(saved.aucs) && Array.isArray(saved.tpvs)) S = { ...DEF, ...saved }; } catch (e) {}
+const save = () => { try { localStorage.setItem('bench-digital-v2', JSON.stringify(S)); } catch (e) {} };
 const brl = v => (v < 0 ? '− ' : '') + 'R$ ' + Math.abs(Math.round(v)).toLocaleString('pt-BR');
-const mil = v => 'R$ ' + (v / 1000).toLocaleString('pt-BR') + ' mil';
+const mil = v => v < 1000 ? 'R$ ' + v : 'R$ ' + (v / 1000).toLocaleString('pt-BR') + ' mil';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 // entrada: [modalidade, dinheiro de volta, tipo, rendimento extra, % do CDI, serviços, mensalidade]
 const val = e => (S.cash ? e[1] : 0) + (S.yld ? e[3] : 0) + (S.serv ? e[5] : 0) - (S.cost ? e[6] : 0);
@@ -118,20 +122,22 @@ function rows(a, t){
 }
 const logo = b => D.logos[b] ? `<img src="${D.logos[b]}" alt="">` : '<span class="ph"></span>';
 function render(){
-  const aucs = D.auc.filter(a => S.aucs.includes(a));
-  let h = `<div class="ax">Investido</div>` + D.tpv.map(t => `<div class="ch">${mil(t)} no cartão</div>`).join('');
+  const aucs = D.auc.filter(a => S.aucs.includes(a)), tpvs = D.tpv.filter(t => S.tpvs.includes(t));
+  document.getElementById('mx').style.setProperty('--n', Math.max(1, tpvs.length));
+  let h = `<div class="ax">Investido</div>` + tpvs.map(t => `<div class="ch">${mil(t)} no cartão</div>`).join('');
   for (const a of aucs){
     h += `<div class="rh"><b>${mil(a)}</b><span>investidos</span></div>`;
-    for (const t of D.tpv){
+    for (const t of tpvs){
       const rs = rows(a, t), top = Math.max(1, ...rs.map(r => r.cash + r.yld + r.serv));
       h += `<div class="cell">` + (rs.length ? rs.map(r => `<div class="r ${r.banco === 'XP' ? 'xp' : ''}" title="${esc(r.nome)}${r.yld && r.cdi ? ' · caixinha a ' + r.cdi + '% do CDI' : ''}">
           <span class="rk">${r.rk}º</span>${logo(r.banco)}<span class="nm">${esc(r.banco)}</span><span class="vl ${r.v < 0 ? 'neg' : ''}">${brl(r.v)}</span>
           <span class="bar" style="width:${Math.max(0, (r.cash + r.yld + r.serv) / top * 100)}%">${r.cash > 0 ? `<i class="k1" style="flex:${r.cash}"></i>` : ''}${r.yld > 0 ? `<i class="k2" style="flex:${r.yld}"></i>` : ''}${r.serv > 0 ? `<i class="k3" style="flex:${r.serv}"></i>` : ''}</span></div>`).join('') : `<div class="empty">Nenhum player selecionado.</div>`) + `</div>`;
     }
   }
-  if (!aucs.length) h += `<div class="empty" style="grid-column:1/-1">Escolha pelo menos uma faixa de patrimônio no painel.</div>`;
+  if (!aucs.length || !tpvs.length) h += `<div class="empty" style="grid-column:1/-1">Escolha pelo menos uma faixa de patrimônio e uma de gasto no painel.</div>`;
   document.getElementById('mx').innerHTML = h;
   document.getElementById('players').innerHTML = D.inst.map(b => `<button class="chip ${S.players.includes(b) ? 'on' : ''}" data-player="${esc(b)}" aria-pressed="${S.players.includes(b)}">${logo(b)}${esc(b)}</button>`).join('');
+  document.getElementById('tpvs').innerHTML = D.tpv.map(t => `<button class="chip txt ${S.tpvs.includes(t) ? 'on' : ''}" data-tpv="${t}" aria-pressed="${S.tpvs.includes(t)}">${mil(t)}</button>`).join('');
   document.getElementById('aucs').innerHTML = D.auc.map(a => `<button class="chip txt ${S.aucs.includes(a) ? 'on' : ''}" data-auc="${a}" aria-pressed="${S.aucs.includes(a)}">${mil(a)}</button>`).join('');
   document.getElementById('nP').textContent = S.players.length + ' de ' + D.inst.length;
   for (const [id, k] of [['cCash', 'cash'], ['cYld', 'yld'], ['cServ', 'serv'], ['cCost', 'cost']]) document.getElementById(id).checked = S[k];
@@ -144,6 +150,7 @@ function render(){
 document.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   if (b.dataset.player){ const p = b.dataset.player; S.players = S.players.includes(p) ? S.players.filter(x => x !== p) : [...S.players, p]; }
+  else if (b.dataset.tpv){ const t = +b.dataset.tpv; S.tpvs = S.tpvs.includes(t) ? S.tpvs.filter(x => x !== t) : [...S.tpvs, t]; }
   else if (b.dataset.auc){ const a = +b.dataset.auc; S.aucs = S.aucs.includes(a) ? S.aucs.filter(x => x !== a) : [...S.aucs, a]; }
   else if (b.dataset.players){ S.players = b.dataset.players === 'six' ? SIX.slice() : b.dataset.players === 'all' ? D.inst.slice() : []; }
   else if (b.dataset.preset){ Object.assign(S, { cash: true, yld: true, cost: true, serv: b.dataset.preset === 'all' }); }

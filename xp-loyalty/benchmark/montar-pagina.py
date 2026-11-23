@@ -3,7 +3,7 @@ import json, re, sys
 S = '/tmp/claude-0/-home-user-memore-mvp-web/cb0f6e45-b126-5c62-bffa-408e7affbee5/scratchpad'
 SRC = '/root/.claude/uploads/cb0f6e45-b126-5c62-bffa-408e7affbee5/67fa081b-Simulador_Proposta_Valor_XP.html'
 g = json.load(open(S + '/sim/grid3.json'))
-AUC = [5000, 10000, 15000, 30000, 50000, 75000, 100000]; TPV = [1000, 2500, 5000, 10000]
+AUC = [5000, 10000, 15000, 30000, 50000, 75000, 100000]; TPV = [500, 1000, 1500, 2000, 2500, 3000, 4000, 5000, 6000, 7500, 10000]
 pts = {}
 for a in AUC:
     for t in TPV:
