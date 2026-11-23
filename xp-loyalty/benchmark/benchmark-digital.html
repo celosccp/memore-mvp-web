@@ -121,7 +121,7 @@ html.pg1 .mxw,html.pg1 .panel,html.pg1 #foot{display:none} html:not(.pg1) #cmpv,
 .rgx .bar{position:absolute;left:0;right:0;bottom:7px;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--xp-band),var(--xp))}
 .rgx .dot{position:absolute;bottom:3px;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:var(--surface);border:3px solid var(--ink);box-sizing:border-box} .rgx .dot.f{margin-left:0} .rgx .dot.l{margin-left:-16px}
 .rgn{display:flex;align-items:center;gap:8px;font:700 14px/1.2 var(--display);min-width:0} .rgn img,.rgn .ph{width:22px;height:22px;border-radius:6px;background:#F4F2EA;object-fit:contain;flex:none}
-.rgt{display:grid;grid-template-columns:repeat(var(--st,6),minmax(0,1fr));column-gap:4px}
+.rgt{display:grid;grid-template-columns:var(--cols,repeat(6,minmax(0,1fr)));column-gap:4px}
 .sg{background:color-mix(in srgb,var(--c) 15%,var(--surface));border-radius:10px;padding:10px 12px;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:6px;overflow:hidden}
 .sg.xp{background:var(--xp-band)}
 .sg .sh{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px} .sg .sh b{font:700 15px/1.2 var(--display)} .sg .sh em{font-style:normal;font-size:12px;color:var(--muted)}
@@ -318,20 +318,20 @@ document.addEventListener('change', e => { const k = e.target.dataset && e.targe
 // ---------- página 1: o que cada player oferece ao cliente deste segmento ----------
 // Página 1: o cartão que o cliente tem em cada player só pelo patrimônio investido (sem contar gasto no cartão).
 // Cada trecho: [de, até (índices das marcas da régua), cartão, benefícios [cor, texto], descrição]. Regras do cadastro do comparador.
-const RG_T = [0, 10000, 20000, 30000, 50000, 75000, 100000];
+const RG_T = [0, 10000, 20000, 30000, 50000, 75000, 100000], RG_W = [.82, .82, .82, 1.3, 1.12, 1.12];   // o eixo não é em escala: os primeiros trechos são mais estreitos
 const RG_P = [
   ['XP', 'pXP', [
     [0, 3, 'XP One', 'a partir de R$ 500 investidos', [['k1', '0,8%', 'de Investback', 'gasto de R$ 2,5 mil/mês'], ['k1', '1%', 'de Investback', 'gasto de R$ 5 mil/mês'], ['k3', '2', 'salas VIP por ano']], ['Sem mensalidade', 'Investback vira investimento']],
     [3, 6, 'XP Infinite', 'a partir de R$ 30 mil investidos', [['k1', '1%', 'de Investback', 'em qualquer gasto'], ['k3', '4', 'salas VIP por ano']], ['Sem mensalidade', 'Investback vira investimento', 'Seguro viagem e concierge Visa']]]],
   ['Nubank', 'pNu', [
     [0, 3, 'Nubank (Roxinho)', 'sem exigência', [['k2', '115%', 'do CDI na Caixinha', 'até R$ 5 mil'], ['k1', '0,8%', 'de cashback no Croma', 'gasto de R$ 4 mil/mês']], ['Sem mensalidade', 'Sem cashback no cartão de entrada']],
-    [3, 4, 'Nubank Croma', '', [['k1', '0,8%', 'de cashback'], ['k2', '120%', 'do CDI']], ['Isento com R$ 30 mil']],
+    [3, 4, 'Nubank Croma', '', [['k1', '0,8%', 'de cashback'], ['k2', '120%', 'do CDI']], ['Isento com R$ 30 mil', 'HBO Max']],
     [4, 6, 'Nubank Ultravioleta', 'isento com R$ 50 mil investidos', [['k1', '1,25%', 'de cashback'], ['k2', '120%', 'do CDI'], ['k3', '4', 'salas VIP por ano']], ['IOF devolvido no exterior', 'Sala própria em Guarulhos', 'HBO Max']]]],
   ['Itaú', 'pIt', [
     [0, 4, 'Uniclass Signature', 'conta com pacote de R$ 80/mês', [['k1', '0,5%', 'de cashback'], ['neg', 'R$ 60', 'de mensalidade do cartão', 'zera com gasto de R$ 4 mil/mês']], ['Voucher Uber de R$ 20/mês', 'Tag de pedágio']],
-    [4, 6, 'Uniclass Black', 'cartão isento com R$ 50 mil investidos', [['k1', '0,8%', 'de cashback', 'ou 2 pontos por dólar'], ['k3', '4', 'salas VIP por ano', 'versão de pontos']], ['Pacote da conta zera com R$ 100 mil', 'Voucher Uber']]]],
+    [4, 6, 'Uniclass Black', 'cartão isento com R$ 50 mil investidos', [['k1', '0,8%', 'de cashback', 'ou 2 pontos por dólar'], ['k3', '4', 'salas VIP por ano', 'versão de pontos']], ['Pacote da conta: R$ 40 com R$ 70 mil, zero com R$ 100 mil', 'Voucher Uber']]]],
   ['PicPay', 'pPp', [
-    [0, 2, 'Card Gold ou Platinum', 'sem exigência', [['k2', '102%', 'do CDI'], ['k1', '0,5%', 'de cashback', 'gasto de R$ 2 mil/mês ou salário']], ['Sem mensalidade']],
+    [0, 2, 'Card Gold ou Platinum', 'sem exigência', [['k2', '102%', 'do CDI'], ['k1', '0,5%', 'de cashback', 'gasto de R$ 2 mil/mês']], ['Sem mensalidade']],
     [2, 4, 'PicPay Mais + Platinum', 'isento com R$ 20 mil investidos', [['k1', '0,8%', 'de cashback'], ['k2', '121%', 'do CDI']], ['Amazon Prime incluído']],
     [4, 6, 'Epic Black', 'isento com R$ 50 mil investidos', [['k1', '1,3%', 'de cashback'], ['k2', '121%', 'do CDI'], ['k3', '2', 'salas VIP por ano']], ['Amazon Prime', '2 tags Sem Parar', 'Sala em Guarulhos']]]],
   ['BTG Pactual', 'pBt', [
@@ -340,7 +340,7 @@ const RG_P = [
     [4, 6, 'Black + Cashback', 'módulo grátis com R$ 50 mil', [['k1', '1%', 'de cashback'], ['k3', '4', 'salas VIP por ano', 'com R$ 90 mil investidos']], ['IOF zero no exterior', 'Gasto no cartão antecipa os módulos']]]]
 ];
 function regua(){
-  const n = RG_T.length - 1, pos = i => (i / n * 100) + '%', cl = i => i === 0 ? ' f' : i === n ? ' l' : ''; document.getElementById('rg').style.setProperty('--st', n);
+  const n = RG_T.length - 1, tot = RG_W.reduce((x, y) => x + y, 0), pos = i => (RG_W.slice(0, i).reduce((x, y) => x + y, 0) / tot * 100) + '%', cl = i => i === 0 ? ' f' : i === n ? ' l' : ''; document.getElementById('rg').style.setProperty('--cols', RG_W.map(w => `minmax(0,${w}fr)`).join(' '));
   document.getElementById('rgx').innerHTML = `<div class="bar"></div>` + RG_T.map((a, i) => `<span class="tk${cl(i)}" style="left:${pos(i)}">${a ? mil(a) : 'R$ 0'}</span><span class="dot${cl(i)}" style="left:${pos(i)}"></span>`).join('');
   document.getElementById('rgt').innerHTML = RG_P.map(([b, c, tr]) => `<div class="rgn">${logo(b)}${esc(b)}</div><div class="rgt">` + tr.map(([de, ate, nome, cond, bens, tags]) =>
     `<div class="sg ${b === 'XP' ? 'xp' : ''}" style="grid-column:${de + 1}/${ate + 1};--c:var(--${c})"><div class="sh"><b>${esc(nome)}</b>${cond ? `<em>${esc(cond)}</em>` : ''}</div>`
