@@ -261,11 +261,11 @@ function fit(nRows){
 function render(){
   document.documentElement.classList.toggle('nopanel', S.panel === false); document.getElementById('tgPanel').textContent = S.panel === false ? 'Mostrar filtros' : 'Ocultar filtros';
   const aucs = D.auc.filter(a => S.aucs.includes(a)), tpvs = D.tpv.filter(t => S.tpvs.includes(t));
-  document.getElementById('mx').style.setProperty('--n', Math.max(1, tpvs.length));
-  let h = `<div class="ax">Investido</div>` + tpvs.map(t => `<div class="ch">${mil(t)} no cartão</div>`).join('');
-  for (const a of aucs){
-    h += `<div class="rh"><b>${mil(a)}</b><span>investidos</span></div>`;
-    for (const t of tpvs){
+  document.getElementById('mx').style.setProperty('--n', Math.max(1, aucs.length));
+  let h = `<div class="ax">No cartão</div>` + aucs.map(a => `<div class="ch">${mil(a)} investidos</div>`).join('');
+  for (const t of tpvs){
+    h += `<div class="rh"><b>${mil(t)}</b><span>no cartão</span></div>`;
+    for (const a of aucs){
       const todos = rows(a, t), corte = S.top ? todos.slice(0, S.top) : todos, xpFora = S.top ? todos.find(r => r.banco === 'XP' && !corte.includes(r)) : null;
       const rs = xpFora ? [...corte, { sep: true }, xpFora] : corte, top = Math.max(1, ...rs.filter(r => !r.sep).map(r => r.cash + r.yld + r.lounge + r.other));
       h += `<div class="cell">` + (rs.length ? rs.map(r => r.sep ? `<div class="sep" aria-hidden="true">⋯</div>` : `<div class="r ${r.banco === 'XP' ? 'xp' : ''}" title="${esc(r.banco)}" tabindex="0" data-k="${a}|${t}" data-i="${r.i}" data-c="${r.c}" aria-label="${esc(r.banco)}, ${brl(r.v)} por mês. Ver como a conta é feita.">
@@ -275,7 +275,7 @@ function render(){
   }
   if (!aucs.length || !tpvs.length) h += `<div class="empty" style="grid-column:1/-1">Escolha pelo menos uma faixa de patrimônio e uma de gasto no painel.</div>`;
   document.getElementById('mx').innerHTML = h;
-  fit(aucs.length);
+  fit(tpvs.length);
   document.getElementById('players').innerHTML = D.inst.map(b => `<button class="chip ${S.players.includes(b) ? 'on' : ''}" data-player="${esc(b)}" aria-pressed="${S.players.includes(b)}">${logo(b)}${esc(b)}</button>`).join('');
   document.getElementById('tpvs').innerHTML = D.tpv.map(t => `<button class="chip txt ${S.tpvs.includes(t) ? 'on' : ''}" data-tpv="${t}" aria-pressed="${S.tpvs.includes(t)}">${mil(t)}</button>`).join('');
   document.getElementById('aucs').innerHTML = D.auc.map(a => `<button class="chip txt ${S.aucs.includes(a) ? 'on' : ''}" data-auc="${a}" aria-pressed="${S.aucs.includes(a)}">${mil(a)}</button>`).join('');
