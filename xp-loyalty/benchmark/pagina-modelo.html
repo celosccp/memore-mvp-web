@@ -5,15 +5,15 @@
 /* Layout: matriz de patrimônio × gasto no cartão à esquerda (3/4); painel de controles fixo à direita (1/4). */
 :root{
   --bg:#F5F3EB; --surface:#FFFEFA; --line:#E2DFD3; --ink:#17150E; --muted:#6B6960; --soft:#EDEADF;
-  --xp:#FFC709; --xp-ink:#17150E; --xp-band:#FFF1B8; --k1:#2B2A26; --k2:#1F9D62; --k3:#4F6FE0; --k4:#9A5BD0; --neg:#C2412D;
+  --xp:#FFC709; --xp-ink:#17150E; --xp-band:#FFF1B8; --k1:#8792A4; --k2:#1F9D62; --k3:#4F6FE0; --k4:#9A5BD0; --neg:#C2412D;
   --display:'Space Grotesk','Inter',Arial,sans-serif; --text:'Inter',Arial,sans-serif;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
   --bg:#0F0F11; --surface:#1A1A1E; --line:#2C2C31; --ink:#F4F2EA; --muted:#A3A198; --soft:#232327;
-  --xp:#FFC709; --xp-ink:#17150E; --xp-band:#3D3620; --k1:#E9E6DA; --k2:#7BE3A8; --k3:#8FA8FF; --k4:#C9A0FF; --neg:#FF8A7A; color-scheme:dark } }
+  --xp:#FFC709; --xp-ink:#17150E; --xp-band:#3D3620; --k1:#A9B2C2; --k2:#7BE3A8; --k3:#8FA8FF; --k4:#C9A0FF; --neg:#FF8A7A; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#0F0F11; --surface:#1A1A1E; --line:#2C2C31; --ink:#F4F2EA; --muted:#A3A198; --soft:#232327;
-  --xp:#FFC709; --xp-ink:#17150E; --xp-band:#3D3620; --k1:#E9E6DA; --k2:#7BE3A8; --k3:#8FA8FF; --k4:#C9A0FF; --neg:#FF8A7A; color-scheme:dark }
+  --xp:#FFC709; --xp-ink:#17150E; --xp-band:#3D3620; --k1:#A9B2C2; --k2:#7BE3A8; --k3:#8FA8FF; --k4:#C9A0FF; --neg:#FF8A7A; color-scheme:dark }
 *{box-sizing:border-box} [hidden]{display:none!important}
 body{background:var(--bg);color:var(--ink);font:15px/1.45 var(--text);padding-block:28px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
