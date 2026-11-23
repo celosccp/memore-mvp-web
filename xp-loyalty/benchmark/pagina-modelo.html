@@ -131,9 +131,16 @@ html.pg1 .mxw,html.pg1 .panel,html.pg1 #foot{display:none} html:not(.pg1) #cmpv,
 .sg .bn small{font-size:12px;font-weight:600;border:1px solid color-mix(in srgb,var(--ink) 30%,transparent);border-radius:999px;padding:1px 8px;white-space:nowrap}
 .sg .tg{display:flex;flex-wrap:wrap;gap:4px 6px} .sg .tg span{font-size:11.5px;color:var(--muted);background:color-mix(in srgb,var(--surface) 70%,transparent);border-radius:999px;padding:2px 9px;white-space:nowrap}
 #foot1{grid-column:1/-1;font-size:12.5px;color:var(--muted);margin:0}
+.rg{--pOt:#6B7280}
+.nav #rgBtn{width:auto;border-radius:999px;padding:0 14px;font-size:13px;font-weight:600} html:not(.pg1) #rgBtn,html:not(.pg1) #rgp{display:none}
+#rgp{position:fixed;z-index:40;right:16px;top:64px;width:min(380px,calc(100vw - 32px));max-height:calc(100vh - 80px);overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 18px 50px color-mix(in srgb,var(--ink) 22%,transparent)}
+#rgp h2{font:700 15px/1.2 var(--display);margin:0 0 10px;display:flex;justify-content:space-between;align-items:center} #rgp h2 button{font:600 12.5px var(--text);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+html.slide .nav #rgBtn{width:auto;font-size:15px;padding:0 18px}
+html.slide #cmpv.many{overflow-y:auto} html.slide .rg.many{height:auto;grid-template-rows:auto} html.slide .rg.many .sg{min-height:132px}
+html.slide .rg.many .rgx,html.slide .rg.many .yl{position:sticky;top:0;z-index:2;background:var(--surface);align-self:stretch} html.slide .rg.many{padding-top:0} html.slide .rg.many .rgx{height:84px} html.slide .rg.many .rgx .tk{top:18px} html.slide .rg.many .yl{padding-top:18px}
 html.slide.pg1 .wrap{grid-template-columns:minmax(0,1fr)}
 html.slide #cmpv{grid-row:2;overflow:hidden;min-height:0}
-html.slide .rg{height:100%;min-width:0;grid-template-columns:190px minmax(0,1fr);grid-template-rows:auto repeat(5,minmax(0,1fr));padding:18px 24px 20px 22px;row-gap:10px}
+html.slide .rg{height:100%;min-width:0;grid-template-columns:190px minmax(0,1fr);grid-template-rows:auto repeat(var(--np,5),minmax(0,1fr));padding:18px 24px 20px 22px;row-gap:10px}
 html.slide .rg .yl{font-size:17px}
 html.slide .rgx{height:66px} html.slide .rgx .tk{font-size:23px} html.slide .rgx .bar{height:10px;bottom:9px} html.slide .rgx .dot{width:20px;height:20px;margin-left:-10px;bottom:4px;border-width:4px} html.slide .rgx .dot.f{margin-left:0} html.slide .rgx .dot.l{margin-left:-20px}
 html.slide .rgn{font-size:21px;gap:11px} html.slide .rgn img,html.slide .rgn .ph{width:32px;height:32px}
@@ -149,7 +156,7 @@ html.slide .nav button{width:40px;height:40px;font-size:20px} html.slide .nav sp
   <header>
     <div><h1 id="h1">Benchmark Digital</h1>
     <p class="lede" id="lede"></p></div>
-    <div class="nav"><button data-go="-1" aria-label="Página anterior">‹</button><span id="pgn"></span><button data-go="1" aria-label="Próxima página">›</button></div>
+    <div class="nav"><button id="rgBtn" aria-controls="rgp">Players</button><button data-go="-1" aria-label="Página anterior">‹</button><span id="pgn"></span><button data-go="1" aria-label="Próxima página">›</button></div>
   </header>
   <section id="cmpv" aria-label="O que cada player oferece"><div class="rg" id="rg"><div class="yl">Patrimônio investido</div><div class="rgx" id="rgx"></div><div id="rgt" style="display:contents"></div></div></section>
   <p id="foot1">Faixas cortadas só pelo patrimônio investido: cada uma começa no valor em que o cartão passa a estar disponível ou isento. No Itaú, o cartão de entrada aparece mesmo com custo. XP One com a régua de Investback simulada. Regras conforme o Comparativo econômico das propostas de valor, 13/10/2026.</p>
@@ -189,6 +196,7 @@ html.slide .nav button{width:40px;height:40px;font-size:20px} html.slide .nav sp
   </aside>
   <p class="foot" id="foot"></p>
 </div>
+<aside id="rgp" aria-label="Players na régua" hidden><h2>Players na régua <button id="rgClose">Fechar</button></h2><div class="mini"><button data-rgset="five">Os 5 principais</button><button data-rgset="all">Todos</button></div><div class="chips" id="rgchips"></div><p class="note" style="margin-top:12px">Com mais de 5 players, a página passa a rolar.</p></aside>
 <div id="pop" role="tooltip" hidden></div>
 
 <script>
@@ -305,6 +313,8 @@ document.addEventListener('click', e => {
   if (!e.target.closest('#pop')) hidePop();
   const b = e.target.closest('button'); if (!b) return;
   if (b.dataset.go){ go(+b.dataset.go); return; }
+  if (b.id === 'rgBtn' || b.id === 'rgClose'){ const d = document.getElementById('rgp'); d.hidden = b.id === 'rgClose' ? true : !d.hidden; return; }
+  if (b.dataset.rg || b.dataset.rgset){ const x = b.dataset.rg; S.rgp = b.dataset.rgset ? (b.dataset.rgset === 'all' ? RG_P.map(q => q[0]) : RG_5.slice()) : S.rgp.includes(x) ? S.rgp.filter(q => q !== x) : [...S.rgp, x]; save(); regua(); return; }
   if (b.dataset.player){ const p = b.dataset.player; S.players = S.players.includes(p) ? S.players.filter(x => x !== p) : [...S.players, p]; }
   else if (b.dataset.top !== undefined){ S.top = +b.dataset.top; }
   else if (b.dataset.tpv){ const t = +b.dataset.tpv; S.tpvs = S.tpvs.includes(t) ? S.tpvs.filter(x => x !== t) : [...S.tpvs, t]; }
@@ -337,12 +347,52 @@ const RG_P = [
   ['PicPay', 'pPp', [
     [0, 2, 'Card Gold ou Platinum', 'sem exigência', [['k2', '102%', 'do CDI'], ['k1', '0,5%', 'de cashback', 'TPV de R$ 2 mil/mês ou salário']], ['Sem mensalidade']],
     [2, 4, 'PicPay Mais + Platinum', 'isento com R$ 20 mil investidos', [['k1', '0,8%', 'de cashback'], ['k2', '121%', 'do CDI']], ['Amazon Prime incluído']],
-    [4, 6, 'Epic Black', 'isento com R$ 50 mil investidos', [['k1', '1,3%', 'de cashback'], ['k2', '121%', 'do CDI'], ['k3', '2', 'salas VIP por ano']], ['Amazon Prime', '2 tags de pedágio', 'Sala em Guarulhos']]]]
+    [4, 6, 'Epic Black', 'isento com R$ 50 mil investidos', [['k1', '1,3%', 'de cashback'], ['k2', '121%', 'do CDI'], ['k3', '2', 'salas VIP por ano']], ['Amazon Prime', '2 tags de pedágio', 'Sala em Guarulhos']]]],
+  ['C6 Bank', 'pOt', [
+    [0, 2, 'C6 Platinum', 'sem exigência', [['k1', '0,05', 'ponto por real'], ['k1', '2', 'pontos por dólar no Black', 'TPV de R$ 3,5 mil/mês']], ['Sem mensalidade', 'Tag de pedágio']],
+    [2, 4, 'C6 Black', 'isento com R$ 20 mil investidos', [['k1', '2', 'pontos por dólar']], ['Tag de pedágio', 'Sala em Guarulhos']],
+    [4, 6, 'C6 Carbon', 'isento com R$ 50 mil investidos', [['k1', '2,5', 'pontos por dólar'], ['k3', '4', 'salas VIP por ano']], ['4 tags de pedágio', 'Sala em Guarulhos']]]],
+  ['Inter', 'pOt', [
+    [0, 4, 'Inter Gold', 'sem exigência', [['k1', '0,1', 'ponto por real'], ['k1', '0,2', 'ponto por real no Platinum', 'TPV de R$ 5 mil/mês']], ['Sem mensalidade']],
+    [4, 6, 'Inter Platinum', 'a partir de R$ 50 mil investidos', [['k1', '0,2', 'ponto por real'], ['k3', '6', 'salas VIP por ano no Prime', 'TPV de R$ 7 mil/mês']], ['Sem mensalidade', 'Prime por patrimônio só com R$ 150 mil']]]],
+  ['Santander', 'pOt', [
+    [0, 4, 'Santander Free', 'sem exigência', [['k1', '0,8%', 'de cashback no Elite', 'R$ 55/mês; metade com TPV de R$ 2 mil']], ['Sem mensalidade', 'Sem benefício no cartão de entrada']],
+    [4, 6, 'Santander Unique', 'mensalidade cai à metade com R$ 50 mil investidos', [['k1', '1,2%', 'de cashback', 'ou 2,2 pontos por dólar'], ['k3', '2', 'salas VIP por ano'], ['neg', 'R$ 48', 'de mensalidade', 'zera com TPV de R$ 8 mil/mês']], ['Tag Sem Parar']]]],
+  ['Bradesco', 'pOt', [
+    [0, 6, 'Neo Visa Platinum', 'isento com TPV de R$ 100/mês', [['k1', '2,2', 'pontos por dólar no Prime Infinite', 'isento com TPV de R$ 10 mil/mês']], ['50% na Cinemark', 'Isenção por patrimônio só acima de R$ 250 mil']]]],
+  ['Banco do Brasil', 'pOt', [
+    [0, 6, 'Ourocard Fácil', 'sem exigência', [['k1', '0,3%', 'de cashback no Gold', 'R$ 34/mês'], ['k1', '0,75%', 'de cashback no Platinum', 'isento com TPV de R$ 6 mil/mês']], ['Sem mensalidade', 'Isenção por patrimônio só com R$ 250 mil']]]],
+  ['Caixa', 'pOt', [
+    [0, 6, 'Caixa SIM', 'sem exigência', [['k1', '1,2', 'ponto por dólar no Gold', 'TPV de R$ 2 mil/mês'], ['k1', '1,6', 'ponto por dólar no Platinum', 'TPV de R$ 4 mil/mês'], ['k1', '2,3', 'pontos por dólar no Infinite', 'TPV de R$ 8 mil/mês']], ['Sem mensalidade', 'Isenção só por TPV']]]],
+  ['Mercado Pago', 'pOt', [
+    [0, 6, 'Conta + cartão Mercado Pago', 'sem exigência', [['k2', '115%', 'do CDI'], ['k2', '120%', 'do CDI com Meli+', 'assinatura de R$ 9,90/mês'], ['k1', '0,5%', 'de cashback com Meli+']], ['Sem mensalidade', 'Até 3% de volta no Mercado Livre com Meli+']]]],
+  ['PagBank', 'pOt', [
+    [0, 6, 'Conta + Cartão PagBank', 'a partir de R$ 300 investidos', [['k1', '0,5%', 'de cashback'], ['k1', '1%', 'de cashback', 'TPV de R$ 3 mil/mês']], ['Sem mensalidade', 'IOF devolvido no exterior', 'CDB vira limite']]]],
+  ['RecargaPay', 'pOt', [
+    [0, 3, 'CDB Platinum', 'a partir de R$ 3 mil investidos', [['k1', '0,8%', 'de cashback'], ['k2', '120%', 'do CDI']], ['Sem mensalidade', 'CDB vira limite']],
+    [3, 6, 'Titan', 'a partir de R$ 30 mil investidos', [['k1', '2%', 'de cashback'], ['k2', '120%', 'do CDI'], ['k3', '2', 'salas VIP por ano']], ['Sem mensalidade', 'Spread zero no exterior', 'Sala Mastercard Black']]]],
+  ['Revolut Brasil', 'pOt', [
+    [0, 6, 'Revolut Standard', 'sem exigência', [['k1', '0,2', 'ponto por dólar'], ['k1', '1', 'ponto por dólar no Premium', 'TPV de R$ 3,5 mil/mês'], ['k1', '2,5', 'pontos por dólar no Metal', 'TPV de R$ 8 mil/mês']], ['Conta global e câmbio', 'Isenção só por TPV']]]],
+  ['Sofisa', 'pOt', [
+    [0, 2, 'Visa Platinum', 'a partir de R$ 1 mil investidos', [], ['Sem mensalidade', 'Tag ConectCar', 'Seguro médico internacional']],
+    [2, 6, 'Visa Infinite', 'a partir de R$ 15 mil investidos', [['k1', '0,5%', 'de cashback'], ['k1', '1%', 'de cashback', 'TPV de R$ 5 mil/mês'], ['k3', '2', 'salas VIP por ano']], ['Sem mensalidade', 'Tag ConectCar', 'Cashback extra em restaurantes']]]],
+  ['Pierre', 'pOt', [
+    [0, 2, 'Pierre Básico', 'sem exigência', [['k2', '111%', 'do CDI no CDB']], ['Assistente financeiro com IA']],
+    [2, 6, 'Pierre One', 'a partir de R$ 20 mil investidos, disponibilidade a confirmar', [['k1', '3%', 'de cashback'], ['k2', '106%', 'do CDI no CDB garantidor']], ['Proteções Mastercard Black']]]],
+  ['Neon', 'pOt', [
+    [0, 6, 'Neon', 'sem exigência', [['k1', '0,5%', 'de cashback', 'programa de R$ 4,90/mês']], ['Sem mensalidade']]]]
 ];
+const RG_5 = ['XP', 'Itaú', 'BTG Pactual', 'Nubank', 'PicPay'];
 function regua(){
+  if (!Array.isArray(S.rgp)) S.rgp = RG_5.slice();
+  const sel = RG_P.filter(x => S.rgp.includes(x[0])), muitos = sel.length > 5;
+  document.getElementById('rg').style.setProperty('--np', Math.max(1, sel.length)); document.getElementById('rg').classList.toggle('many', muitos); document.getElementById('cmpv').classList.toggle('many', muitos);
+  document.getElementById('rgBtn').textContent = 'Players (' + sel.length + ')';
+  document.getElementById('rgchips').innerHTML = RG_P.map(([b]) => `<button class="chip ${S.rgp.includes(b) ? 'on' : ''}" data-rg="${esc(b)}" aria-pressed="${S.rgp.includes(b)}">${logo(b)}${esc(b)}</button>`).join('');
+
   const n = RG_T.length - 1, tot = RG_W.reduce((x, y) => x + y, 0), pos = i => (RG_W.slice(0, i).reduce((x, y) => x + y, 0) / tot * 100) + '%', cl = i => i === 0 ? ' f' : i === n ? ' l' : ''; document.getElementById('rg').style.setProperty('--cols', RG_W.map(w => `minmax(0,${w}fr)`).join(' '));
   document.getElementById('rgx').innerHTML = `<div class="bar"></div>` + RG_T.map((a, i) => `<span class="tk${cl(i)}" style="left:${pos(i)}">${a ? mil(a) : 'R$ 0'}</span><span class="dot${cl(i)}" style="left:${pos(i)}"></span>`).join('');
-  document.getElementById('rgt').innerHTML = RG_P.map(([b, c, tr]) => `<div class="rgn">${logo(b)}${esc(b)}</div><div class="rgt">` + tr.map(([de, ate, nome, cond, bens, tags]) =>
+  document.getElementById('rgt').innerHTML = (sel.length ? '' : `<div class="empty" style="grid-column:1/-1">Escolha pelo menos um player.</div>`) + sel.map(([b, c, tr]) => `<div class="rgn">${logo(b)}${esc(b)}</div><div class="rgt">` + tr.map(([de, ate, nome, cond, bens, tags]) =>
     `<div class="sg ${b === 'XP' ? 'xp' : ''}" style="grid-column:${de + 1}/${ate + 1};--c:var(--${c})"><div class="sh"><b>${esc(nome)}</b>${cond ? `<em>${esc(cond)}</em>` : ''}</div>`
     + `<div class="bl">${bens.map(([k, v, r, cd]) => `<span class="bn"><i ${k === 'neg' ? 'style="background:var(--neg)"' : `class="${k}"`}></i><strong>${esc(v)}</strong>${esc(r)}${cd ? `<small>${esc(cd)}</small>` : ''}</span>`).join('')}</div>`
     + `<div class="tg">${tags.map(t => `<span>${esc(t)}</span>`).join('')}</div></div>`).join('') + `</div>`).join('');
@@ -354,7 +404,7 @@ let PG = Math.max(0, PAGES.findIndex(x => x[0] === location.hash.slice(1)));
 function page(n){
   PG = Math.max(0, Math.min(PAGES.length - 1, n)); document.documentElement.classList.toggle('pg1', PG === 0);
   document.getElementById('h1').textContent = PAGES[PG][1]; document.getElementById('lede').textContent = PAGES[PG][2]; document.getElementById('pgn').textContent = (PG + 1) + ' / ' + PAGES.length;
-  document.querySelectorAll('.nav button').forEach(b => b.disabled = +b.dataset.go < 0 ? PG === 0 : PG === PAGES.length - 1);
+  document.querySelectorAll('.nav button[data-go]').forEach(b => b.disabled = +b.dataset.go < 0 ? PG === 0 : PG === PAGES.length - 1);
   hidePop(); if (D && PG === 1) render(); if (D && PG === 0) regua();
 }
 function go(d){ if (PG + d < 0 || PG + d >= PAGES.length) return; page(PG + d); try { location.hash = PAGES[PG][0]; } catch (e) {} }
