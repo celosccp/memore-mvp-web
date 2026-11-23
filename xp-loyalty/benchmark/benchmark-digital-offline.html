@@ -120,22 +120,29 @@ html.slide .panel .note{font-size:11.5px;line-height:1.38}
 .nav span{font-size:13px;color:var(--muted);min-width:3em;text-align:center;font-variant-numeric:tabular-nums}
 html.pg1 .mxw,html.pg1 .panel,html.pg1 #foot{display:none} html:not(.pg1) #cmpv,html:not(.pg1) #foot1{display:none}
 #cmpv{grid-column:1/-1;min-width:0;overflow-x:auto}
-.ct{display:grid;grid-template-columns:140px repeat(5,minmax(180px,1fr));min-width:1040px;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.ct>div{padding:10px 12px;border-top:1px solid var(--line);font-size:13.5px;line-height:1.4}
-.ct .hd{border-top:0;padding:14px 12px}
-.ct .hd b{display:flex;align-items:center;gap:8px;font:700 17px/1.2 var(--display)}
-.ct .hd img,.ct .hd .ph{width:26px;height:26px;border-radius:6px;background:#F4F2EA;object-fit:contain;flex:none}
-.ct .hd span{display:block;color:var(--muted);margin-top:6px}
-.ct .lb{font-weight:700;display:flex;align-items:flex-start;gap:8px} .ct .lb i{width:9px;height:9px;border-radius:50%;margin-top:.42em;flex:none}
-.ct .xpc{background:var(--xp-band)} .ct .no{color:var(--muted)}
-.ct p{margin:0} .ct strong{font-weight:700}
+.ct{display:grid;grid-template-columns:120px repeat(var(--st,6),minmax(150px,1fr));min-width:1060px;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.ct>div{padding:10px 12px;font-size:13px;line-height:1.35;min-width:0}
+.ct .st{position:relative;padding:12px 12px 16px;border-bottom:2px solid var(--ink)}
+.ct .st::after{content:"";position:absolute;left:12px;bottom:-7px;width:12px;height:12px;border-radius:50%;background:var(--xp);border:2px solid var(--ink)}
+.ct .st.ax0::after{display:none}
+.ct .st b{display:block;font:700 18px/1.15 var(--display)} .ct .st span{display:block;color:var(--muted)}
+.ct .pn{display:flex;align-items:center;gap:8px;font:700 15px/1.2 var(--display);border-top:1px solid var(--line)}
+.ct .pn img,.ct .pn .ph{width:24px;height:24px;border-radius:6px;background:#F4F2EA;object-fit:contain;flex:none}
+.ct .rc{border-top:1px solid var(--line);border-left:1px solid var(--line);display:flex;flex-direction:column;gap:2px}
+.ct .st+.st,.ct .ax0+.st{border-left:1px solid transparent}
+.ct .xpc{background:var(--xp-band)}
+.ct .cn{font-weight:600;color:var(--muted)} .ct .cn.new{color:var(--ink);font-weight:700}
+.ct .cv{font:700 20px/1.15 var(--display);font-variant-numeric:tabular-nums} .ct .cv small{font:500 12px var(--text);color:var(--muted)} .ct .cv.neg{color:var(--neg)}
+.ct .cb{display:flex;align-items:baseline;gap:6px} .ct .cb i{width:8px;height:8px;border-radius:50%;flex:none}
+.ct .no{color:var(--muted)}
 #foot1{grid-column:1/-1;font-size:12.5px;color:var(--muted);margin:0}
 html.slide.pg1 .wrap{grid-template-columns:minmax(0,1fr)}
 html.slide #cmpv{grid-row:2;overflow:hidden;min-height:0}
-html.slide .ct{height:100%;min-width:0;grid-template-columns:200px repeat(5,minmax(0,1fr))}
-html.slide .ct>div{font-size:18px;padding:12px 18px;display:flex;flex-direction:column;justify-content:center}
-html.slide .ct .lb{flex-direction:row;align-items:center;justify-content:flex-start;font-size:18px} html.slide .ct .lb i{margin-top:0;width:11px;height:11px}
-html.slide .ct .hd{padding:18px} html.slide .ct .hd b{font-size:25px} html.slide .ct .hd img,html.slide .ct .hd .ph{width:34px;height:34px} html.slide .ct .hd span{font-size:17px}
+html.slide .ct{height:100%;min-width:0;grid-template-columns:190px repeat(var(--st,6),minmax(0,1fr));grid-template-rows:auto repeat(5,minmax(0,1fr))}
+html.slide .ct>div{font-size:16px;padding:12px 16px}
+html.slide .ct .st{padding:16px 16px 20px} html.slide .ct .st b{font-size:25px} html.slide .ct .st span{font-size:16px} html.slide .ct .st::after{left:16px}
+html.slide .ct .pn{font-size:23px;gap:12px} html.slide .ct .pn img,html.slide .ct .pn .ph{width:34px;height:34px}
+html.slide .ct .rc{justify-content:center;gap:3px} html.slide .ct .cn{font-size:17px} html.slide .ct .cv{font-size:29px} html.slide .ct .cv small{font-size:15px} html.slide .ct .cb i{width:10px;height:10px}
 html.slide #foot1{grid-row:3;font-size:14px}
 html.slide .nav button{width:40px;height:40px;font-size:20px} html.slide .nav span{font-size:16px}
 </style>
@@ -147,7 +154,7 @@ html.slide .nav button{width:40px;height:40px;font-size:20px} html.slide .nav sp
     <div class="nav"><button data-go="-1" aria-label="Página anterior">‹</button><span id="pgn"></span><button data-go="1" aria-label="Próxima página">›</button></div>
   </header>
   <section id="cmpv" aria-label="O que cada player oferece"><div class="ct" id="ct"></div></section>
-  <p id="foot1">Regras dos cartões conforme o Comparativo econômico das propostas de valor, de 13/10/2026. XP One com a regra de Investback simulada. Cartões que exigem renda ou patrimônio acima deste segmento ficaram de fora.</p>
+  <p id="foot1">Valor por mês: cashback ou Investback mais o rendimento da caixinha acima de 100% do CDI, menos a mensalidade. Entra o cartão de maior valor entre os que o perfil tem com a isenção atingida; se não houver nenhum, o melhor com a mensalidade descontada. Nome em destaque: cartão novo naquele passo. O gasto no cartão de cada faixa é uma premissa. Fonte: Comparativo econômico das propostas de valor, 13/10/2026.</p>
   <div class="mxw"><div class="mx" id="mx"><div class="empty" style="grid-column:1/-1">Carregando o benchmark…</div></div></div>
   <aside class="panel" aria-label="Controles do benchmark">
     <section>
@@ -312,27 +319,40 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('change', e => { const k = e.target.dataset && e.target.dataset.k; if (!k) return; S[k] = e.target.checked; save(); render(); });
 // ---------- página 1: o que cada player oferece ao cliente deste segmento ----------
-const CMP_P = [['XP', 'Cartão sem mensalidade que devolve o gasto como investimento.'], ['Nubank', 'Caixinha que rende mais e cashback nos cartões pagos.'], ['Itaú', 'Benefícios ligados ao relacionamento e ao pacote da conta.'], ['PicPay', 'Cashback e rendimento altos, com isenção fácil de atingir.'], ['BTG Pactual', 'Cartão montado por módulos, pago conforme a escolha.']];
-const NO = t => `<p class="no">${t}</p>`;
-const CMP_R = [
-  ['', 'Cartões no segmento', ['One, a partir de R$ 500 investidos. Infinite, a partir de R$ 30 mil.', 'Roxinho, Croma e Ultravioleta.', 'Uniclass Signature e Uniclass Black.', 'Gold, Platinum, Black e Epic Black.', 'Gold, Platinum e Black, montados por módulos.']],
-  ['k1', 'Cashback ou Investback', ['<strong>0,8% a 1%</strong> de Investback. No One, 0,8% a partir de R$ 2.500 por mês e 1% a partir de R$ 5.000.', '<strong>0,8%</strong> no Croma e <strong>1,25%</strong> no Ultravioleta. O Roxinho não tem.', '<strong>0,5%</strong> no Signature e <strong>0,8%</strong> no Black Cashback.', '<strong>0,5% a 1,3%</strong>: Platinum 0,5%, Black 1,2% e Epic Black 1,3%.', '<strong>0,5% a 1%</strong>, conforme o cartão e o módulo contratado.']],
-  ['k1', 'Pontos', [NO('Pontos Livelo no lugar do Investback. Fora da conta nesta análise.'), '1,4 ponto por dólar no Croma e 2,2 no Ultravioleta, no lugar do cashback.', '2 pontos por dólar no Black Pontos+; 2,5 a partir de R$ 4 mil por mês.', NO('Não tem.'), '1 a 2,2 pontos por dólar, no lugar do cashback.']],
-  ['k2', 'Rendimento do saldo', [NO('Sem rendimento acima de 100% do CDI.'), '<strong>115% do CDI</strong> na Caixinha; 120% com Croma ou Ultravioleta.', NO('Sem rendimento acima de 100% do CDI.'), '<strong>102% do CDI</strong>; 121% com PicPay Mais ou Epic Black.', NO('Sem rendimento acima de 100% do CDI.')]],
-  ['k3', 'Salas VIP', ['<strong>2 acessos por ano</strong> no One e 4 no Infinite.', '4 acessos por ano, só no Ultravioleta.', '4 acessos por ano no Black Pontos+, com condição de uso.', '2 acessos por ano no Epic Black. Sala de Guarulhos no Black.', '4 acessos por ano no Black com módulo Viagem.']],
-  ['k4', 'Assinaturas e serviços', ['Seguro médico internacional e concierge Visa.', 'HBO Max, tag de pedágio sem mensalidade e NuCel.', 'Voucher Uber de R$ 20 por mês e tag de pedágio.', 'Amazon Prime no PicPay Mais e no Epic Black. Tags Sem Parar.', 'IOF zero em compras internacionais.']],
-  ['neg', 'Mensalidade', ['<strong>Sem mensalidade</strong> nos dois cartões.', 'Roxinho grátis. Croma R$ 39 e Ultravioleta R$ 89, com isenção por gasto ou investimento.', 'Signature R$ 60 e Black R$ 80, com isenção por gasto ou investimento. Pacote da conta à parte.', 'Grátis sem cashback. Com cashback, R$ 34,90 a R$ 49,90, com isenção por gasto, investimento ou salário.', 'R$ 20 a R$ 120, com desconto de R$ 10 a cada R$ 10 mil investidos ou R$ 1 mil gasto.']]
-];
-document.getElementById('ct').innerHTML = `<div class="hd"></div>` + CMP_P.map(([b, f], i) => `<div class="hd ${i ? '' : 'xpc'}"><b>${logo(b)}${esc(b)}</b><span>${f}</span></div>`).join('')
-  + CMP_R.map(([c, n, cs]) => `<div class="lb">${c ? `<i ${c === 'neg' ? 'style="background:var(--neg)"' : `class="${c}"`}></i>` : ''}${n}</div>` + cs.map((x, i) => `<div class="${i ? '' : 'xpc'}">${x.startsWith('<p') ? x : `<p>${x}</p>`}</div>`).join('')).join('');
-const PAGES = [['propostas', 'O que cada player oferece ao cliente Digital', 'Proposta de valor para quem tem até R$ 100 mil investidos. Quanto isso vale em R$ por mês, em cada perfil, está na página seguinte.'],
+const RG_P = ['XP', 'Nubank', 'Itaú', 'PicPay', 'BTG Pactual'];
+const RG_S = [[5000, 1000], [10000, 1500], [30000, 2500], [50000, 4000], [75000, 5000], [100000, 7500]];   // régua única: patrimônio e o gasto mensal no cartão assumido para ele
+const pc = v => (v * 100).toFixed(2).replace('.', ',').replace(/,?0+$/, '') + '%';
+function regua(){
+  if (!D) return; const ct = document.getElementById('ct'); ct.style.setProperty('--st', RG_S.length);
+  let h = `<div class="st ax0"><span>Patrimônio investido</span><span>e gasto no cartão</span></div>` + RG_S.map(([a, t]) => `<div class="st"><b>${mil(a)}</b><span>${mil(t)} por mês no cartão</span></div>`).join('');
+  for (const banco of RG_P){
+    const i = D.inst.indexOf(banco), xp = banco === 'XP' ? ' xpc' : ''; let ant = null;
+    h += `<div class="pn${xp}">${logo(banco)}${esc(banco)}</div>`;
+    for (const [a, t] of RG_S){
+      const fin = e => e[1] + e[3] - e[7], todos = (D.pts[a + '|' + t] || [])[i] || [], isentos = todos.filter(e => e[10] !== 3), ok = isentos.length ? isentos : todos;   // sem cartão isento neste perfil: entra o melhor, com a mensalidade
+      const e = ok.slice().sort((x, y) => fin(y) - fin(x) || y[5] - x[5])[0];
+      if (!e){ h += `<div class="rc${xp}"><span class="no">Sem cartão neste perfil.</span></div>`; ant = null; continue; }
+      const its = e[8].filter(x => !x[6]), cb = its.filter(x => x[1] === 0), pt = its.filter(x => x[1] === 1), lg = its.filter(x => x[1] === 4).reduce((n, x) => n + (x[3] || 0), 0), nome = D.prod[e[0]], v = fin(e);
+      h += `<div class="rc${xp}"><span class="cn ${nome !== ant ? 'new' : ''}">${esc(nome)}</span><span class="cv ${v < 0 ? 'neg' : ''}">${brl(v)}<small> por mês</small></span>`
+        + (cb.length ? `<span class="cb"><i class="k1"></i>${pc(cb.reduce((n, x) => n + x[2], 0) / t)} de ${banco === 'XP' ? 'Investback' : 'cashback'}</span>` : '')
+        + (pt.length ? `<span class="cb"><i class="k1"></i>${String(pt[0][3]).replace('.', ',')} ${pt[0][3] === 1 ? 'ponto' : 'pontos'} por ${pt[0][5] ? 'dólar' : 'real'}</span>` : '')
+        + (e[4] > 100 ? `<span class="cb"><i class="k2"></i>${e[4]}% do CDI</span>` : '')
+        + (lg ? `<span class="cb"><i class="k3"></i>${lg} salas VIP por ano</span>` : '')
+        + (e[7] > 0 ? `<span class="cb"><i style="background:var(--neg)"></i>${brl(e[7])} de mensalidade</span>` : '')
+        + (!cb.length && !pt.length && !(e[4] > 100) && !lg ? `<span class="no">Sem benefício financeiro neste passo.</span>` : '') + `</div>`;
+      ant = nome;
+    }
+  }
+  ct.innerHTML = h;
+}
+const PAGES = [['regua', 'Como a proposta de cada player evolui com o patrimônio', 'Uma régua só: para cada faixa de patrimônio, um gasto mensal típico no cartão. Em cada passo, o melhor cartão que o cliente consegue ter, o que ele entrega e quanto isso vale por mês.'],
   ['matriz', 'Benchmark Digital', 'Quanto cada instituição entrega por mês ao cliente de até R$ 100 mil investidos, por patrimônio e gasto no cartão. Em cada célula, o ranking dos players escolhidos.']];
 let PG = Math.max(0, PAGES.findIndex(x => x[0] === location.hash.slice(1)));
 function page(n){
   PG = Math.max(0, Math.min(PAGES.length - 1, n)); document.documentElement.classList.toggle('pg1', PG === 0);
   document.getElementById('h1').textContent = PAGES[PG][1]; document.getElementById('lede').textContent = PAGES[PG][2]; document.getElementById('pgn').textContent = (PG + 1) + ' / ' + PAGES.length;
   document.querySelectorAll('.nav button').forEach(b => b.disabled = +b.dataset.go < 0 ? PG === 0 : PG === PAGES.length - 1);
-  hidePop(); if (D && PG === 1) render();
+  hidePop(); if (D && PG === 1) render(); if (D && PG === 0) regua();
 }
 function go(d){ if (PG + d < 0 || PG + d >= PAGES.length) return; page(PG + d); try { location.hash = PAGES[PG][0]; } catch (e) {} }
 addEventListener('hashchange', () => { const n = PAGES.findIndex(x => x[0] === location.hash.slice(1)); if (n >= 0 && n !== PG) page(n); });
@@ -341,7 +361,7 @@ addEventListener('keydown', e => { if (e.key === 'Escape') return hidePop(); if 
 page(PG);
 frame(); addEventListener('resize', () => { frame(); if (D) render(); });
 // os dados ficam num arquivo ao lado da página
-Promise.resolve(JSON.parse(document.getElementById('dados').textContent)).then(d => { D = d; render(); })
+Promise.resolve(JSON.parse(document.getElementById('dados').textContent)).then(d => { D = d; render(); regua(); })
   .catch(() => { document.getElementById('mx').innerHTML = '<div class="empty" style="grid-column:1/-1">Não foi possível carregar os dados do benchmark. Recarregue a página.</div>'; });
 </script>
 
