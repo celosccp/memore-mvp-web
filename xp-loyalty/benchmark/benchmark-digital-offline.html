@@ -125,8 +125,9 @@ html.pg1 .mxw,html.pg1 .panel,html.pg1 #foot{display:none} html:not(.pg1) #cmpv,
 :root[data-theme="dark"] .rg{--pNu:#B56BFF;--pIt:#FF9A3D;--pPp:#3DDC8C;--pBt:#7FA0F0}
 .rg .yl{font-size:12.5px;color:var(--muted);align-self:center;padding-right:10px}
 .rgx,.rgt{display:grid;grid-template-columns:repeat(var(--st,6),minmax(0,1fr))}
-.rgx>div{text-align:center;padding:4px 4px 14px;border-bottom:2px solid var(--ink);position:relative}
-.rgx>div::before{content:"";position:absolute;left:50%;bottom:-7px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:var(--xp);border:2px solid var(--ink);box-sizing:border-box}
+.rgx>div{text-align:left;padding:4px 0 14px;border-bottom:2px solid var(--ink);position:relative}
+.rgx .end{position:absolute;right:0;top:4px} .rgx>div:last-child::after{content:"";position:absolute;right:-6px;bottom:-7px;width:12px;height:12px;border-radius:50%;background:var(--xp);border:2px solid var(--ink);box-sizing:border-box}
+.rgx>div::before{content:"";position:absolute;left:0;bottom:-7px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:var(--xp);border:2px solid var(--ink);box-sizing:border-box}
 .rgx b{display:block;font:700 17px/1.2 var(--display)} .rgx span{display:block;font-size:12px;color:var(--muted)}
 .rgn{display:flex;align-items:center;gap:8px;font:700 14px/1.2 var(--display);min-width:0} .rgn img,.rgn .ph{width:22px;height:22px;border-radius:6px;background:#F4F2EA;object-fit:contain;flex:none}
 .rgn i{width:14px;height:4px;border-radius:2px;flex:none}
@@ -136,13 +137,12 @@ html.pg1 .mxw,html.pg1 .panel,html.pg1 #foot{display:none} html:not(.pg1) #cmpv,
 .sg b{font:700 15px/1.2 var(--display)}
 .sg .bs{display:flex;flex-wrap:wrap;gap:3px 12px} .sg .bs span{display:inline-flex;align-items:baseline;gap:6px;font-size:13px;font-weight:600} .sg .bs i{width:8px;height:8px;border-radius:50%;flex:none}
 .sg p{margin:0;font-size:12.5px;line-height:1.35;color:var(--muted)}
-.sg.n1 p{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 #foot1{grid-column:1/-1;font-size:12.5px;color:var(--muted);margin:0}
 html.slide.pg1 .wrap{grid-template-columns:minmax(0,1fr)}
 html.slide #cmpv{grid-row:2;overflow:hidden;min-height:0}
 html.slide .rg{height:100%;min-width:0;grid-template-columns:190px minmax(0,1fr);grid-template-rows:auto repeat(5,minmax(0,1fr));padding:18px 24px 20px 22px;row-gap:10px}
 html.slide .rg .yl{font-size:15px}
-html.slide .rgx b{font-size:24px} html.slide .rgx span{font-size:15px} html.slide .rgx>div{padding:4px 4px 16px}
+html.slide .rgx b{font-size:24px} html.slide .rgx span{font-size:15px} html.slide .rgx>div{padding:4px 0 16px}
 html.slide .rgn{font-size:21px;gap:11px} html.slide .rgn img,html.slide .rgn .ph{width:32px;height:32px}
 html.slide .rgt{column-gap:6px}
 html.slide .sg{padding:12px 16px;gap:6px;justify-content:center} html.slide .sg b{font-size:20px}
@@ -158,8 +158,8 @@ html.slide .nav button{width:40px;height:40px;font-size:20px} html.slide .nav sp
     <p class="lede" id="lede"></p></div>
     <div class="nav"><button data-go="-1" aria-label="Página anterior">‹</button><span id="pgn"></span><button data-go="1" aria-label="Próxima página">›</button></div>
   </header>
-  <section id="cmpv" aria-label="O que cada player oferece"><div class="rg" id="rg"><div class="yl">Patrimônio investido e gasto no cartão</div><div class="rgx" id="rgx"></div><div id="rgt" style="display:contents"></div></div></section>
-  <p id="foot1">Em cada trecho entra o cartão de maior valor financeiro (cashback ou Investback, mais caixinha acima de 100% do CDI, menos mensalidade) entre os que o perfil tem com a isenção atingida; se não houver nenhum, o melhor com a mensalidade. O gasto no cartão de cada faixa é uma premissa. Fonte: Comparativo econômico das propostas de valor, 13/10/2026.</p>
+  <section id="cmpv" aria-label="O que cada player oferece"><div class="rg" id="rg"><div class="yl">Patrimônio investido</div><div class="rgx" id="rgx"></div><div id="rgt" style="display:contents"></div></div></section>
+  <p id="foot1">Faixas cortadas só pelo patrimônio investido: cada uma começa no valor em que o cartão passa a estar disponível ou isento. No Itaú, o cartão de entrada aparece mesmo com custo. XP One com a régua de Investback simulada. Regras conforme o Comparativo econômico das propostas de valor, 13/10/2026.</p>
   <div class="mxw"><div class="mx" id="mx"><div class="empty" style="grid-column:1/-1">Carregando o benchmark…</div></div></div>
   <aside class="panel" aria-label="Controles do benchmark">
     <section>
@@ -324,40 +324,37 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('change', e => { const k = e.target.dataset && e.target.dataset.k; if (!k) return; S[k] = e.target.checked; save(); render(); });
 // ---------- página 1: o que cada player oferece ao cliente deste segmento ----------
-const RG_P = [['XP', 'pXP'], ['Nubank', 'pNu'], ['Itaú', 'pIt'], ['PicPay', 'pPp'], ['BTG Pactual', 'pBt']];
-const RG_S = [[5000, 1000], [10000, 1500], [30000, 2500], [50000, 4000], [75000, 5000], [100000, 7500]];   // régua única: patrimônio e o gasto mensal no cartão assumido para ele
-const pc = v => (v * 100).toFixed(2).replace('.', ',').replace(/,?0+$/, '') + '%';
-// o melhor cartão do player num passo da régua: maior valor financeiro entre os isentos; sem nenhum isento, o melhor com a mensalidade
-function passo(banco, a, t){
-  const i = D.inst.indexOf(banco), fin = e => e[1] + e[3] - e[7], todos = (D.pts[a + '|' + t] || [])[i] || [], isentos = todos.filter(e => e[10] !== 3), ok = isentos.length ? isentos : todos;
-  const e = ok.slice().sort((x, y) => fin(y) - fin(x) || y[5] - x[5])[0]; if (!e) return null;
-  const its = e[8].filter(x => !x[6]), cb = its.filter(x => x[1] === 0), pt = its.filter(x => x[1] === 1), lg = its.filter(x => x[1] === 4).reduce((n, x) => n + (x[3] || 0), 0), ch = [];
-  if (cb.length) ch.push(['k1', pc(cb.reduce((n, x) => n + x[2], 0) / t) + ' de ' + (banco === 'XP' ? 'Investback' : 'cashback')]);
-  if (pt.length) ch.push(['k1', String(pt[0][3]).replace('.', ',') + (pt[0][3] === 1 ? ' ponto' : ' pontos') + ' por ' + (pt[0][5] ? 'dólar' : 'real')]);
-  if (e[4] > 100) ch.push(['k2', e[4] + '% do CDI']); if (lg) ch.push(['k3', lg + ' salas VIP por ano']); if (e[7] > 0) ch.push(['neg', brl(e[7]) + ' de mensalidade']);
-  return { nome: D.prod[e[0]], v: fin(e), ch };
-}
-// diferenciais de cada cartão que não entram na conta em R$ (do cadastro do comparador)
-const EXTRA = { 'XP One': ['Sem mensalidade. Investback vira investimento.', 'Sem mensalidade. O Investback cai direto como investimento. Seguro médico internacional e concierge Visa.'],
-  'XP Infinite': ['Sem mensalidade. Investback vira investimento.', 'Sem mensalidade. O Investback cai direto como investimento. Seguro médico internacional, concierge e Fast Pass Visa.'],
-  'Nubank gratuito (Roxinho)': 'Sem mensalidade. Conta e Caixinhas, sem cashback nem pontos.', 'Nubank Croma': ['HBO Max, tag de pedágio e 5% de volta em assinaturas.', 'HBO Max, tag de pedágio sem mensalidade e 5% de volta em assinaturas digitais. Pode trocar o cashback por pontos.'],
-  'Nubank Ultravioleta': ['IOF devolvido no exterior, HBO Max e sala em Guarulhos.', 'IOF devolvido em compras internacionais, HBO Max com preço exclusivo, 2 tags de pedágio e sala própria em Guarulhos. Pode trocar o cashback por pontos.'],
-  'Conta Uniclass + Minhas Vantagens': ['Pacote da conta pago. Voucher Uber de R$ 20 por mês.', 'Pacote da conta pago até subir de nível no relacionamento. Voucher Uber de R$ 20 por mês e tag de pedágio.'],
-  'Uniclass Black Pontos+': ['Voucher Uber de R$ 20 por mês e sala em Guarulhos.', 'Voucher Uber de R$ 20 por mês, tag de pedágio e sala Mastercard Black em Guarulhos.'],
-  'Conta + Card Gold gratuito': 'Sem mensalidade. Cartão internacional com Mastercard Surpreenda, sem cashback.', 'PicPay Mais + Platinum com cashback': 'Assinatura PicPay Mais, com Amazon Prime incluído.',
-  'Epic Black': ['Amazon Prime, 2 tags e atendimento Einstein.', 'Amazon Prime, 2 tags Sem Parar, pronto atendimento virtual Einstein e sala de Guarulhos ilimitada.'] };
-const extra = (banco, nome, curto) => { const x = EXTRA[nome] || (banco === 'BTG Pactual' ? ['IOF zero no exterior. Mensalidade cai com investimento e gasto.', 'IOF zero em compras internacionais. A mensalidade cai R$ 10 a cada R$ 10 mil investidos ou R$ 1 mil gasto no mês.'] : ''); return Array.isArray(x) ? x[curto ? 0 : 1] : x; };
-const curto = n => n.replace(' com cashback', '').replace(' gratuito', '');
+// Página 1: o cartão que o cliente tem em cada player só pelo patrimônio investido (sem contar gasto no cartão).
+// Cada trecho: [de, até (índices das marcas da régua), cartão, benefícios [cor, texto], descrição]. Regras do cadastro do comparador.
+const RG_T = [0, 10000, 20000, 30000, 50000, 75000, 100000];
+const RG_P = [
+  ['XP', 'pXP', [
+    [0, 3, 'XP One', [['k1', 'Investback de 0,8% a 1%'], ['k3', '2 salas VIP por ano']], 'Sem mensalidade, a partir de R$ 500 investidos. Investback de 0,8% com R$ 2.500 por mês no cartão e de 1% com R$ 5.000; abaixo de R$ 2.500 não tem. Cai direto como investimento.'],
+    [3, 6, 'XP Infinite', [['k1', '1% de Investback'], ['k3', '4 salas VIP por ano']], 'Sem mensalidade, a partir de R$ 30 mil investidos. Investback de 1% em qualquer valor de fatura, direto como investimento. Seguro médico internacional, concierge e Fast Pass Visa.']]],
+  ['Nubank', 'pNu', [
+    [0, 3, 'Nubank (Roxinho)', [['k2', 'Caixinha a 115% do CDI']], 'Sem mensalidade, sem cashback nem pontos. A Caixinha turbinada vale para até R$ 5 mil. Quem gasta R$ 4 mil por mês no cartão já tem o Croma sem mensalidade.'],
+    [3, 4, 'Nubank Croma', [['k1', '0,8% de cashback'], ['k2', '120% do CDI']], 'Isento com R$ 30 mil investidos. HBO Max e tag de pedágio.'],
+    [4, 6, 'Nubank Ultravioleta', [['k1', '1,25% de cashback'], ['k2', '120% do CDI'], ['k3', '4 salas VIP por ano']], 'Isento com R$ 50 mil investidos ou mais de R$ 8 mil por mês no cartão. IOF devolvido no exterior e sala própria em Guarulhos. O cashback pode virar 2,2 pontos por dólar.']]],
+  ['Itaú', 'pIt', [
+    [0, 4, 'Uniclass Signature', [['k1', '0,5% de cashback'], ['neg', 'R$ 80 de pacote da conta']], 'Cartão de R$ 60 por mês: cai à metade com R$ 2 mil no cartão e zera com R$ 4 mil. O pacote da conta é cobrado à parte. Voucher Uber de R$ 20 por mês e tag de pedágio.'],
+    [4, 6, 'Uniclass Black', [['k1', '0,8% de cashback ou 2 pontos por dólar'], ['k3', '4 salas VIP por ano (versão de pontos)']], 'Cartão isento com R$ 50 mil investidos. O pacote da conta de R$ 80 cai para R$ 40 com R$ 70 mil e zera com R$ 100 mil.']]],
+  ['PicPay', 'pPp', [
+    [0, 2, 'Card Gold ou Platinum', [['k2', '102% do CDI']], 'Sem mensalidade e sem cashback. Com R$ 2 mil por mês no cartão ou salário no PicPay, o Platinum com 0,5% de cashback sai sem mensalidade.'],
+    [2, 4, 'PicPay Mais + Platinum', [['k1', '0,8% de cashback'], ['k2', '121% do CDI']], 'Isento com R$ 20 mil investidos. Assinatura PicPay Mais com Amazon Prime incluído e rendimento turbinado.'],
+    [4, 6, 'Epic Black', [['k1', '1,3% de cashback'], ['k2', '121% do CDI'], ['k3', '2 salas VIP por ano']], 'Isento com R$ 50 mil investidos ou R$ 5 mil por mês no cartão; senão, R$ 49,90. Amazon Prime, 2 tags Sem Parar, pronto atendimento virtual Einstein e sala de Guarulhos ilimitada.']]],
+  ['BTG Pactual', 'pBt', [
+    [0, 2, 'Gold', [], 'Sem mensalidade e sem cashback. IOF zero em compras internacionais. Cashback e pontos são módulos pagos, com R$ 10 de desconto a cada R$ 10 mil investidos ou R$ 1 mil gasto no mês.'],
+    [2, 4, 'Gold ou Platinum + Cashback', [['k1', '0,5% de cashback']], 'O módulo de R$ 20 sai de graça com R$ 20 mil investidos; o de 0,75% (R$ 40), com R$ 40 mil. Quem gasta no cartão chega antes.'],
+    [4, 6, 'Black + Cashback', [['k1', '1% de cashback']], 'O módulo de R$ 50 sai de graça com R$ 50 mil investidos. Pontos (2,2 por dólar) com R$ 80 mil; salas VIP (4 por ano) com R$ 90 mil. Quem gasta no cartão chega antes.']]]
+];
 function regua(){
-  if (!D || PG !== 0) return; const n = RG_S.length; document.getElementById('rg').style.setProperty('--st', n);
-  document.getElementById('rgx').innerHTML = RG_S.map(([a, t]) => `<div><b>${mil(a)}</b><span>${mil(t)} por mês no cartão</span></div>`).join('');
-  document.getElementById('rgt').innerHTML = RG_P.map(([b, c]) => { const pts = RG_S.map(([a, t]) => passo(b, a, t)), key = p => p ? p.nome + '|' + p.ch.map(x => x[1]).join() : '';
-    let h = `<div class="rgn">${logo(b)}${esc(b)}</div><div class="rgt">`;
-    for (let i = 0; i < n;){ const p = pts[i]; let j = i; while (j + 1 < n && key(pts[j + 1]) === key(p)) j++;
-      h += p ? `<div class="sg ${b === 'XP' ? 'xp' : ''} ${i === j ? 'n1' : ''}" style="grid-column:${i + 1}/${j + 2};--c:var(--${c})"><b>${esc(curto(p.nome))}</b><div class="bs">${p.ch.map(([k, tx]) => `<span><i ${k === 'neg' ? 'style="background:var(--neg)"' : `class="${k}"`}></i>${esc(tx)}</span>`).join('')}</div>${extra(b, p.nome, i === j) && !(i === j && p.ch.length > 2) ? `<p>${extra(b, p.nome, i === j)}</p>` : ''}</div>` : `<div style="grid-column:${i + 1}/${j + 2}"></div>`; i = j + 1; }
-    return h + `</div>`; }).join('');
+  const n = RG_T.length - 1; document.getElementById('rg').style.setProperty('--st', n);
+  document.getElementById('rgx').innerHTML = RG_T.slice(0, n).map((a, i) => `<div><b>${a ? mil(a) : 'R$ 0'}</b>${i === n - 1 ? `<b class="end">${mil(RG_T[n])}</b>` : ''}</div>`).join('');
+  document.getElementById('rgt').innerHTML = RG_P.map(([b, c, tr]) => `<div class="rgn">${logo(b)}${esc(b)}</div><div class="rgt">` + tr.map(([de, ate, nome, ch, tx]) =>
+    `<div class="sg ${b === 'XP' ? 'xp' : ''} ${ate - de === 1 ? 'n1' : ''}" style="grid-column:${de + 1}/${ate + 1};--c:var(--${c})"><b>${esc(nome)}</b>${ch.length ? `<div class="bs">${ch.map(([k, t]) => `<span><i ${k === 'neg' ? 'style="background:var(--neg)"' : `class="${k}"`}></i>${esc(t)}</span>`).join('')}</div>` : ''}<p>${tx}</p></div>`).join('') + `</div>`).join('');
 }
-const PAGES = [['regua', 'Como a proposta de cada player evolui com o patrimônio', 'Uma régua só: para cada faixa de patrimônio, um gasto mensal típico no cartão. Em cada trecho, o melhor cartão que o cliente consegue ter em cada player, o que ele entrega e o que o diferencia.'],
+regua();
+const PAGES = [['regua', 'Como a proposta de cada player evolui com o patrimônio', 'O cartão que o cliente tem em cada player só pelo que investe, sem pagar mensalidade. O que depende de gasto no cartão está descrito em cada faixa.'],
   ['matriz', 'Benchmark Digital', 'Quanto cada instituição entrega por mês ao cliente de até R$ 100 mil investidos, por patrimônio e gasto no cartão. Em cada célula, o ranking dos players escolhidos.']];
 let PG = Math.max(0, PAGES.findIndex(x => x[0] === location.hash.slice(1)));
 function page(n){
