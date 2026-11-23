@@ -132,6 +132,8 @@ html.pg1 .mxw,html.pg1 .panel,html.pg1 #foot{display:none} html:not(.pg1) #cmpv,
 .sg .tg{display:flex;flex-wrap:wrap;gap:4px 6px} .sg .tg span{font-size:11.5px;color:var(--muted);background:color-mix(in srgb,var(--surface) 70%,transparent);border-radius:999px;padding:2px 9px;white-space:nowrap}
 #foot1{grid-column:1/-1;font-size:12.5px;color:var(--muted);margin:0}
 .rg{--pOt:#6B7280}
+.nav #tgPanel{width:auto;border-radius:999px;padding:0 14px;font-size:13px;font-weight:600} html.pg1 #tgPanel{display:none}
+html.nopanel .panel{display:none} html.slide.nopanel .wrap{grid-template-columns:minmax(0,1fr)} html.slide .nav #tgPanel{width:auto;font-size:15px;padding:0 18px}
 .nav #rgBtn{width:auto;border-radius:999px;padding:0 14px;font-size:13px;font-weight:600} html:not(.pg1) #rgBtn,html:not(.pg1) #rgp{display:none}
 #rgp{position:fixed;z-index:40;right:16px;top:64px;width:min(380px,calc(100vw - 32px));max-height:calc(100vh - 80px);overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 18px 50px color-mix(in srgb,var(--ink) 22%,transparent)}
 #rgp h2{font:700 15px/1.2 var(--display);margin:0 0 10px;display:flex;justify-content:space-between;align-items:center} #rgp h2 button{font:600 12.5px var(--text);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
@@ -156,7 +158,7 @@ html.slide .nav button{width:40px;height:40px;font-size:20px} html.slide .nav sp
   <header>
     <div><h1 id="h1">Benchmark Digital</h1>
     <p class="lede" id="lede"></p></div>
-    <div class="nav"><button id="rgBtn" aria-controls="rgp">Players</button><button data-go="-1" aria-label="Página anterior">‹</button><span id="pgn"></span><button data-go="1" aria-label="Próxima página">›</button></div>
+    <div class="nav"><button id="rgBtn" aria-controls="rgp">Players</button><button id="tgPanel">Ocultar filtros</button><button data-go="-1" aria-label="Página anterior">‹</button><span id="pgn"></span><button data-go="1" aria-label="Próxima página">›</button></div>
   </header>
   <section id="cmpv" aria-label="O que cada player oferece"><div class="rg" id="rg"><div class="yl">Patrimônio investido</div><div class="rgx" id="rgx"></div><div id="rgt" style="display:contents"></div></div></section>
   <p id="foot1">Faixas cortadas só pelo patrimônio investido: cada uma começa no valor em que o cartão passa a estar disponível ou isento. No Itaú, o cartão de entrada aparece mesmo com custo. XP One com a régua de Investback simulada. Regras conforme o Comparativo econômico das propostas de valor, 13/10/2026.</p>
@@ -203,7 +205,7 @@ html.slide .nav button{width:40px;height:40px;font-size:20px} html.slide .nav sp
 let D = null;
 const LOGOS = /*__LOGOS__*/{};
 const SIX = ['XP', 'PicPay', 'Nubank', 'BTG Pactual', 'C6 Bank', 'Itaú'];
-const DEF = { cash: true, yld: true, lounge: false, other: false, cost: true, isento: true, players: SIX.slice(), aucs: [10000, 30000, 50000, 75000], tpvs: [1000, 2500, 5000, 7500], top: 5 };
+const DEF = { cash: true, yld: true, lounge: false, other: false, cost: true, isento: true, players: SIX.slice(), aucs: [10000, 30000, 50000, 75000], tpvs: [1000, 2500, 5000, 7500], top: 5, panel: true };
 let S = JSON.parse(JSON.stringify(DEF));
 try { const saved = JSON.parse(localStorage.getItem('bench-digital-v5') || 'null'); if (saved && Array.isArray(saved.players) && Array.isArray(saved.aucs) && Array.isArray(saved.tpvs)) S = { ...DEF, ...saved }; } catch (e) {}
 const save = () => { try { localStorage.setItem('bench-digital-v5', JSON.stringify(S)); } catch (e) {} };
@@ -241,6 +243,7 @@ function fit(nRows){
   mx.style.setProperty('--lh', lh + 'px'); mx.style.setProperty('--fs', fs + 'px');
 }
 function render(){
+  document.documentElement.classList.toggle('nopanel', S.panel === false); document.getElementById('tgPanel').textContent = S.panel === false ? 'Mostrar filtros' : 'Ocultar filtros';
   const aucs = D.auc.filter(a => S.aucs.includes(a)), tpvs = D.tpv.filter(t => S.tpvs.includes(t));
   document.getElementById('mx').style.setProperty('--n', Math.max(1, tpvs.length));
   let h = `<div class="ax">Investido</div>` + tpvs.map(t => `<div class="ch">${mil(t)} no cartão</div>`).join('');
@@ -313,6 +316,7 @@ document.addEventListener('click', e => {
   if (!e.target.closest('#pop')) hidePop();
   const b = e.target.closest('button'); if (!b) return;
   if (b.dataset.go){ go(+b.dataset.go); return; }
+  if (b.id === 'tgPanel'){ S.panel = S.panel === false; save(); if (D) render(); return; }
   if (b.id === 'rgBtn' || b.id === 'rgClose'){ const d = document.getElementById('rgp'); d.hidden = b.id === 'rgClose' ? true : !d.hidden; return; }
   if (b.dataset.rg || b.dataset.rgset){ const x = b.dataset.rg; S.rgp = b.dataset.rgset ? (b.dataset.rgset === 'all' ? RG_P.map(q => q[0]) : RG_5.slice()) : S.rgp.includes(x) ? S.rgp.filter(q => q !== x) : [...S.rgp, x]; save(); regua(); return; }
   if (b.dataset.player){ const p = b.dataset.player; S.players = S.players.includes(p) ? S.players.filter(x => x !== p) : [...S.players, p]; }
