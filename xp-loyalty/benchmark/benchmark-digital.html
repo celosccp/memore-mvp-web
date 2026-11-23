@@ -8,12 +8,8 @@
   --xp:#FFC709; --xp-ink:#17150E; --xp-band:#FFF1B8; --k1:#8792A4; --k2:#1F9D62; --k3:#4F6FE0; --k4:#9A5BD0; --neg:#C2412D;
   --display:'Space Grotesk','Inter',Arial,sans-serif; --text:'Inter',Arial,sans-serif;
 }
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --bg:#0F0F11; --surface:#1A1A1E; --line:#2C2C31; --ink:#F4F2EA; --muted:#A3A198; --soft:#232327;
-  --xp:#FFC709; --xp-ink:#17150E; --xp-band:#3D3620; --k1:#A9B2C2; --k2:#7BE3A8; --k3:#8FA8FF; --k4:#C9A0FF; --neg:#FF8A7A; color-scheme:dark } }
-:root[data-theme="dark"]{
-  --bg:#0F0F11; --surface:#1A1A1E; --line:#2C2C31; --ink:#F4F2EA; --muted:#A3A198; --soft:#232327;
-  --xp:#FFC709; --xp-ink:#17150E; --xp-band:#3D3620; --k1:#A9B2C2; --k2:#7BE3A8; --k3:#8FA8FF; --k4:#C9A0FF; --neg:#FF8A7A; color-scheme:dark }
+/* tema único: sempre claro */
+:root{color-scheme:light}
 *{box-sizing:border-box} [hidden]{display:none!important}
 body{background:var(--bg);color:var(--ink);font:15px/1.45 var(--text);padding-block:28px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
@@ -113,8 +109,6 @@ html.slide .panel .note{font-size:11.5px;line-height:1.38}
 html.pg1 .mxw,html.pg1 .panel,html.pg1 #foot{display:none} html:not(.pg1) #cmpv,html:not(.pg1) #foot1{display:none}
 #cmpv{grid-column:1/-1;min-width:0;overflow-x:auto}
 .rg{--pXP:var(--ink);--pNu:#820AD1;--pIt:#EC7000;--pPp:#11A85F;--pBt:#1B3F8F;display:grid;grid-template-columns:64px minmax(0,1fr);min-width:980px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px 14px 14px;row-gap:6px}
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .rg{--pNu:#B56BFF;--pIt:#FF9A3D;--pPp:#3DDC8C;--pBt:#7FA0F0} }
-:root[data-theme="dark"] .rg{--pNu:#B56BFF;--pIt:#FF9A3D;--pPp:#3DDC8C;--pBt:#7FA0F0}
 .rg .yl{font:700 11.5px/1.25 var(--display);align-self:start;padding:2px 8px 0 0}
 .rgx{position:relative;height:50px}
 .rgx .tk{position:absolute;top:0;transform:translateX(-50%);font:700 16px/1 var(--display);white-space:nowrap} .rgx .tk.f{transform:none} .rgx .tk.l{transform:translateX(-100%)}
@@ -161,8 +155,6 @@ html.slide #foot1{grid-row:3;font-size:14px}
 html.slide .nav button{width:40px;height:40px;font-size:20px} html.slide .nav span{font-size:16px}
 /* ===== Vidro fosco sobre um fundo com brilho, e eixos desenhados na matriz ===== */
 :root{--glass:color-mix(in srgb,var(--surface) 52%,transparent);--edge:color-mix(in srgb,#FFFFFF 70%,transparent);--glow-a:rgba(255,199,9,.46);--glow-b:rgba(255,150,90,.20);--glow-c:rgba(120,155,255,.24)}
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){--edge:color-mix(in srgb,#FFFFFF 10%,transparent);--glow-a:rgba(255,199,9,.20);--glow-b:rgba(255,150,90,.10);--glow-c:rgba(120,155,255,.16)} }
-:root[data-theme="dark"]{--edge:color-mix(in srgb,#FFFFFF 10%,transparent);--glow-a:rgba(255,199,9,.20);--glow-b:rgba(255,150,90,.10);--glow-c:rgba(120,155,255,.16)}
 body{background:radial-gradient(58% 55% at 90% 6%,var(--glow-a),transparent 70%),radial-gradient(42% 42% at 58% 46%,var(--glow-b),transparent 70%),radial-gradient(55% 60% at 4% 96%,var(--glow-c),transparent 70%),var(--bg);background-attachment:fixed}
 .cell,.panel,.rg{background:var(--glass);-webkit-backdrop-filter:blur(20px) saturate(1.5);backdrop-filter:blur(20px) saturate(1.5);border:1px solid var(--edge);box-shadow:0 12px 34px color-mix(in srgb,var(--ink) 9%,transparent),inset 0 1px 0 var(--edge)}
 .cell{border-radius:16px;transition:transform .18s ease,box-shadow .18s ease}
