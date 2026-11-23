@@ -1,0 +1,155 @@
+<title>Benchmark Digital</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: matriz de patrimônio × gasto no cartão à esquerda (3/4); painel de controles fixo à direita (1/4). */
+:root{
+  --bg:#F5F3EB; --surface:#FFFEFA; --line:#E2DFD3; --ink:#17150E; --muted:#6B6960; --soft:#EDEADF;
+  --xp:#FFC709; --xp-ink:#17150E; --xp-band:#FFF1B8; --k1:#C99700; --k2:#1F9D62; --k3:#4F6FE0; --neg:#C2412D;
+  --display:'Space Grotesk','Inter',Arial,sans-serif; --text:'Inter',Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0F0F11; --surface:#1A1A1E; --line:#2C2C31; --ink:#F4F2EA; --muted:#A3A198; --soft:#232327;
+  --xp:#FFC709; --xp-ink:#17150E; --xp-band:#3D3620; --k1:#FFC709; --k2:#7BE3A8; --k3:#8FA8FF; --neg:#FF8A7A; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0F0F11; --surface:#1A1A1E; --line:#2C2C31; --ink:#F4F2EA; --muted:#A3A198; --soft:#232327;
+  --xp:#FFC709; --xp-ink:#17150E; --xp-band:#3D3620; --k1:#FFC709; --k2:#7BE3A8; --k3:#8FA8FF; --neg:#FF8A7A; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.45 var(--text);padding-block:28px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.wrap{max-width:1500px;margin:0 auto;display:grid;grid-template-columns:minmax(0,3fr) minmax(250px,1fr);gap:24px;align-items:start}
+header{grid-column:1/-1}
+h1{font:700 clamp(24px,3vw,34px)/1.1 var(--display);letter-spacing:-.02em;margin:0 0 6px;text-wrap:balance}
+.lede{color:var(--muted);margin:0;max-width:70ch}
+
+/* matriz */
+.mxw{min-width:0;overflow-x:auto}
+.mx{display:grid;grid-template-columns:96px repeat(4,minmax(190px,1fr));gap:8px;min-width:900px}
+.ax{font-size:12.5px;color:var(--muted);align-self:end;padding-bottom:4px}
+.ch{font:700 15px/1.2 var(--display);padding:0 12px 4px;align-self:end}
+.rh{display:flex;flex-direction:column;justify-content:center}
+.rh b{font:700 18px/1.15 var(--display)} .rh span{font-size:12.5px;color:var(--muted)}
+.cell{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px}
+.r{display:grid;grid-template-columns:26px 22px minmax(0,1fr) auto;align-items:center;column-gap:7px;padding:3px 6px;border-radius:7px;font-size:14px}
+.r .rk{color:var(--muted);font-variant-numeric:tabular-nums;font-size:12.5px}
+.r img,.r .ph{width:20px;height:20px;border-radius:5px;object-fit:contain;background:#F4F2EA}
+.r .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r .vl{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.r .vl.neg{color:var(--neg)}
+.r .bar{grid-column:3/-1;display:flex;gap:1px;height:3px;margin-top:2px;border-radius:2px;overflow:hidden}
+.r .bar i{display:block;height:100%} .k1{background:var(--k1)} .k2{background:var(--k2)} .k3{background:var(--k3)}
+.r.xp{background:var(--xp-band);font-weight:700} .r.xp .rk{color:var(--ink)}
+.empty{color:var(--muted);font-size:13px;padding:10px 6px}
+
+/* painel */
+.panel{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:18px;max-height:calc(100vh - 24px);overflow:auto}
+.panel h2{font:700 12px/1.2 var(--text);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.panel h2 span{font-weight:500;letter-spacing:0;text-transform:none}
+.mini{display:flex;gap:6px;margin-bottom:8px}
+.mini button{font-size:12.5px;font-weight:600;border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;border:1px solid var(--line);border-radius:999px;padding:4px 10px 4px 5px;color:var(--muted);background:var(--bg)}
+.chip img{width:18px;height:18px;border-radius:5px;background:#F4F2EA;opacity:.55}
+.chip.on{color:var(--ink);border-color:var(--ink);background:var(--surface)} .chip.on img{opacity:1}
+.chip.txt{padding:4px 11px}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--soft);border-radius:999px;padding:3px;margin-bottom:10px}
+.seg button{font-size:13px;font-weight:600;border-radius:999px;padding:7px 6px;color:var(--muted)}
+.seg button.on{background:var(--xp);color:var(--xp-ink)}
+.tg{display:flex;align-items:center;gap:9px;padding:5px 0;font-size:14px}
+.tg input{width:17px;height:17px;accent-color:var(--ink);flex:none}
+.tg i{width:9px;height:9px;border-radius:50%;flex:none}
+.note{font-size:12.5px;color:var(--muted);margin:0}
+.foot{grid-column:1/-1;font-size:12.5px;color:var(--muted);max-width:110ch;margin:0}
+@media (max-width:900px){ .wrap{grid-template-columns:minmax(0,1fr)} .panel{position:static;max-height:none;order:-1} header{order:-2} }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Benchmark Digital</h1>
+    <p class="lede">Quanto cada instituição entrega por mês ao cliente de até R$ 100 mil investidos, por patrimônio e gasto no cartão. Em cada célula, o ranking dos players escolhidos.</p>
+  </header>
+  <div class="mxw"><div class="mx" id="mx"></div></div>
+  <aside class="panel" aria-label="Controles do benchmark">
+    <section>
+      <h2>O que entra na conta</h2>
+      <div class="seg"><button id="pFin" data-preset="fin">Financeiro direto</button><button id="pAll" data-preset="all">Tudo</button></div>
+      <label class="tg"><input type="checkbox" id="cCash" data-k="cash"><i class="k1"></i>Cashback, Investback e pontos</label>
+      <label class="tg"><input type="checkbox" id="cYld" data-k="yld"><i class="k2"></i>Caixinha acima de 100% do CDI</label>
+      <label class="tg"><input type="checkbox" id="cServ" data-k="serv"><i class="k3"></i>Serviços (salas VIP, assinaturas)</label>
+      <label class="tg"><input type="checkbox" id="cCost" data-k="cost"><i style="background:var(--neg)"></i>Descontar a mensalidade</label>
+    </section>
+    <section>
+      <h2>Players <span id="nP"></span></h2>
+      <div class="mini"><button data-players="six">Os 6 principais</button><button data-players="all">Todos</button><button data-players="none">Limpar</button></div>
+      <div class="chips" id="players"></div>
+    </section>
+    <section>
+      <h2>Patrimônio investido</h2>
+      <div class="chips" id="aucs"></div>
+    </section>
+    <p class="note" id="rule"></p>
+  </aside>
+  <p class="foot" id="foot"></p>
+</div>
+
+<script>
+const D = /*__DATA__*/null;
+const SIX = ['XP', 'PicPay', 'Nubank', 'BTG Pactual', 'C6 Bank', 'Itaú'];
+const DEF = { cash: true, yld: true, serv: false, cost: true, players: SIX.slice(), aucs: [10000, 30000, 75000] };
+let S = JSON.parse(JSON.stringify(DEF));
+try { const saved = JSON.parse(localStorage.getItem('bench-digital') || 'null'); if (saved && Array.isArray(saved.players) && Array.isArray(saved.aucs)) S = { ...DEF, ...saved }; } catch (e) {}
+const save = () => { try { localStorage.setItem('bench-digital', JSON.stringify(S)); } catch (e) {} };
+const brl = v => (v < 0 ? '− ' : '') + 'R$ ' + Math.abs(Math.round(v)).toLocaleString('pt-BR');
+const mil = v => 'R$ ' + (v / 1000).toLocaleString('pt-BR') + ' mil';
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+// entrada: [modalidade, dinheiro de volta, tipo, rendimento extra, % do CDI, serviços, mensalidade]
+const val = e => (S.cash ? e[1] : 0) + (S.yld ? e[3] : 0) + (S.serv ? e[5] : 0) - (S.cost ? e[6] : 0);
+function rows(a, t){
+  const list = [];
+  D.pts[a + '|' + t].forEach((cands, i) => {
+    const banco = D.inst[i]; if (!cands || !S.players.includes(banco)) return;
+    const e = cands.slice().sort((x, y) => val(y) - val(x))[0];   // a melhor modalidade da instituição para o que está marcado
+    list.push({ banco, nome: D.prod[e[0]], v: val(e), cash: S.cash ? e[1] : 0, yld: S.yld ? e[3] : 0, serv: S.serv ? e[5] : 0, cdi: e[4] });
+  });
+  list.sort((x, y) => y.v - x.v || (x.banco === 'XP' ? -1 : y.banco === 'XP' ? 1 : 0));
+  list.forEach(r => r.rk = 1 + list.filter(o => o.v > r.v).length);
+  return list;
+}
+const logo = b => D.logos[b] ? `<img src="${D.logos[b]}" alt="">` : '<span class="ph"></span>';
+function render(){
+  const aucs = D.auc.filter(a => S.aucs.includes(a));
+  let h = `<div class="ax">Investido</div>` + D.tpv.map(t => `<div class="ch">${mil(t)} no cartão</div>`).join('');
+  for (const a of aucs){
+    h += `<div class="rh"><b>${mil(a)}</b><span>investidos</span></div>`;
+    for (const t of D.tpv){
+      const rs = rows(a, t), top = Math.max(1, ...rs.map(r => r.cash + r.yld + r.serv));
+      h += `<div class="cell">` + (rs.length ? rs.map(r => `<div class="r ${r.banco === 'XP' ? 'xp' : ''}" title="${esc(r.nome)}${r.yld && r.cdi ? ' · caixinha a ' + r.cdi + '% do CDI' : ''}">
+          <span class="rk">${r.rk}º</span>${logo(r.banco)}<span class="nm">${esc(r.banco)}</span><span class="vl ${r.v < 0 ? 'neg' : ''}">${brl(r.v)}</span>
+          <span class="bar" style="width:${Math.max(0, (r.cash + r.yld + r.serv) / top * 100)}%">${r.cash > 0 ? `<i class="k1" style="flex:${r.cash}"></i>` : ''}${r.yld > 0 ? `<i class="k2" style="flex:${r.yld}"></i>` : ''}${r.serv > 0 ? `<i class="k3" style="flex:${r.serv}"></i>` : ''}</span></div>`).join('') : `<div class="empty">Nenhum player selecionado.</div>`) + `</div>`;
+    }
+  }
+  if (!aucs.length) h += `<div class="empty" style="grid-column:1/-1">Escolha pelo menos uma faixa de patrimônio no painel.</div>`;
+  document.getElementById('mx').innerHTML = h;
+  document.getElementById('players').innerHTML = D.inst.map(b => `<button class="chip ${S.players.includes(b) ? 'on' : ''}" data-player="${esc(b)}" aria-pressed="${S.players.includes(b)}">${logo(b)}${esc(b)}</button>`).join('');
+  document.getElementById('aucs').innerHTML = D.auc.map(a => `<button class="chip txt ${S.aucs.includes(a) ? 'on' : ''}" data-auc="${a}" aria-pressed="${S.aucs.includes(a)}">${mil(a)}</button>`).join('');
+  document.getElementById('nP').textContent = S.players.length + ' de ' + D.inst.length;
+  for (const [id, k] of [['cCash', 'cash'], ['cYld', 'yld'], ['cServ', 'serv'], ['cCost', 'cost']]) document.getElementById(id).checked = S[k];
+  const fin = S.cash && S.yld && !S.serv && S.cost, all = S.cash && S.yld && S.serv && S.cost;
+  document.getElementById('pFin').classList.toggle('on', fin); document.getElementById('pAll').classList.toggle('on', all);
+  const partes = [S.cash && 'cashback e pontos', S.yld && 'rendimento da caixinha acima de 100% do CDI', S.serv && 'serviços pelo preço equivalente'].filter(Boolean);
+  document.getElementById('rule').textContent = 'A barra sob cada nome mostra de onde vem o valor. Passe o mouse numa linha para ver o cartão considerado.';
+  document.getElementById('foot').textContent = `Valores em R$ por mês: ${partes.length ? partes.join(', ') : 'nada selecionado'}${S.cost ? ', menos a mensalidade' : ', sem descontar mensalidade'}. A melhor modalidade de cada instituição para o perfil e para o que está marcado. Caixinha sobre até R$ 10 mil. XP One com Investback de 0,8% a partir de R$ 2.500 de gasto e 1% a partir de R$ 5.000; XP Infinite com 1%. Itaú considera o pacote Uniclass. Empates recebem a mesma posição. Fonte: Comparativo econômico das propostas de valor, pesquisa de ${D.date.split('-').reverse().join('/')}.`;
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.player){ const p = b.dataset.player; S.players = S.players.includes(p) ? S.players.filter(x => x !== p) : [...S.players, p]; }
+  else if (b.dataset.auc){ const a = +b.dataset.auc; S.aucs = S.aucs.includes(a) ? S.aucs.filter(x => x !== a) : [...S.aucs, a]; }
+  else if (b.dataset.players){ S.players = b.dataset.players === 'six' ? SIX.slice() : b.dataset.players === 'all' ? D.inst.slice() : []; }
+  else if (b.dataset.preset){ Object.assign(S, { cash: true, yld: true, cost: true, serv: b.dataset.preset === 'all' }); }
+  else return;
+  save(); render();
+});
+document.addEventListener('change', e => { const k = e.target.dataset && e.target.dataset.k; if (!k) return; S[k] = e.target.checked; save(); render(); });
+render();
+</script>
