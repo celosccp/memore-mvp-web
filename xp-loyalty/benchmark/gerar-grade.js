@@ -25,7 +25,10 @@ const { chromium } = require('playwright'); const fs = require('fs');
       const yld = sum('yield'), lounge = sum('lounge'), top = it.filter(i => i.b.category === 'yield').sort((a, c) => c.amount - a.amount)[0];
       const cb = sum('cashback'), pt = sum('points');
       return [pid(q), Math.round(q.direct - yld), cb >= pt && cb > 0 ? 1 : pt > 0 ? 2 : 0, Math.round(yld), top && top.b.value > 100 ? Math.round(top.b.value) : 0, Math.round(lounge), Math.round(q.services - lounge), Math.round(q.cost.value),
-        it.map(i => [dict(itn, itx, i.b.name), i.b.category in CAT ? CAT[i.b.category] : 5, Math.round(i.amount * 100) / 100, typeof i.b.value === 'number' ? i.b.value : 0, Math.round(i.points || 0)]),
+        // item: [nome, categoria, R$ por mês, taxa, pontos no mês, pontua por dólar (1) ou por real (0), alternativa não somada (1)]
+        [...it.map(i => [i, 0]), ...q.items.filter(i => i.selected === false && i.excludedValue > 0).map(i => [i, 1])].map(([i, alt]) => {
+          const cat = i.b.category in CAT ? CAT[i.b.category] : 5, pts = alt && cat === 1 ? Math.round((parseFloat(String(i.formula || '').replace(/\./g, '').replace(',', '.')) || 0)) : Math.round(i.points || 0);
+          return [dict(itn, itx, i.b.name), cat, Math.round((alt ? i.excludedValue : i.amount) * 100) / 100, cat <= 1 && typeof i.rate === 'number' ? i.rate : typeof i.b.value === 'number' ? i.b.value : 0, pts, i.b.per === 'USD' ? 1 : 0, alt]; }),
         dict(cds, cdx, q.cost.detail || ''), situ(q)];
     };
     const AUC = [5000, 10000, 15000, 30000, 50000, 75000, 100000], TPV = [500, 1000, 1500, 2000, 2500, 3000, 4000, 5000, 6000, 7500, 10000];
@@ -50,7 +53,7 @@ const { chromium } = require('playwright'); const fs = require('fs');
   fs.writeFileSync('sim/grid5.json', JSON.stringify(out));
   const n = Object.values(out.pts).flat().filter(Boolean).map(x => x.length);
   console.log('pontos', Object.keys(out.pts).length, 'bytes', fs.statSync('sim/grid5.json').size, 'candidatos por instituição: média', (n.reduce((a, c) => a + c, 0) / n.length).toFixed(2), 'máx', Math.max(...n));
-  for (const bk of ['Nubank', 'Itaú', 'Inter', 'Revolut Brasil', 'BTG Pactual']) for (const k of ['10000|1000', '50000|5000']) console.log(k, bk, (out.pts[k][out.inst.indexOf(bk)] || []).map(x => out.prod[x[0]].slice(0, 24) + ' sit' + x[10] + ' mens ' + x[7]).join(' | '));
+  for (const k of ['30000|5000', '10000|5000']) console.log(k, 'XP', out.pts[k][out.inst.indexOf('XP')].map(x => out.prod[x[0]] + ' ' + JSON.stringify(x[8].map(i => [out.itn[i[0]], ...i.slice(1)]))).join(' || '));
   console.log('milheiro', out.mile, 'modalidades', out.prod.length);
   await b.close();
 })();
