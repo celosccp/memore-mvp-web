@@ -162,7 +162,7 @@ html.slide .sg .tg span{font-size:13.5px;padding:2px 11px}
 html.slide #foot1{grid-row:3;font-size:14px}
 html.slide .nav button{width:40px;height:40px;font-size:20px} html.slide .nav span{font-size:16px}
 /* ===== Vidro fosco sobre um fundo com brilho, e eixos desenhados na matriz ===== */
-:root{--glass:color-mix(in srgb,var(--surface) 52%,transparent);--edge:color-mix(in srgb,#FFFFFF 70%,transparent);--glow-a:rgba(255,199,9,.46);--glow-b:rgba(255,150,90,.20);--glow-c:rgba(120,155,255,.24)}
+:root{--glass:color-mix(in srgb,var(--surface) 52%,transparent);--edge:color-mix(in srgb,#FFFFFF 70%,transparent);--glow-a:rgba(255,199,9,.16);--glow-b:rgba(255,150,90,.05);--glow-c:rgba(120,155,255,.09)}
 body{background:radial-gradient(58% 55% at 90% 6%,var(--glow-a),transparent 70%),radial-gradient(42% 42% at 58% 46%,var(--glow-b),transparent 70%),radial-gradient(55% 60% at 4% 96%,var(--glow-c),transparent 70%),var(--bg);background-attachment:fixed}
 .cell,.panel,.rg{background:var(--glass);-webkit-backdrop-filter:blur(20px) saturate(1.5);backdrop-filter:blur(20px) saturate(1.5);border:1px solid var(--edge);box-shadow:0 12px 34px color-mix(in srgb,var(--ink) 9%,transparent),inset 0 1px 0 var(--edge)}
 .cell{border-radius:16px;transition:transform .18s ease,box-shadow .18s ease}
