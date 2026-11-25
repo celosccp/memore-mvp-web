@@ -12,8 +12,8 @@
 html{color-scheme:light}body{margin:0}img{max-width:100%}
 /* Layout: matriz de patrimônio × gasto no cartão à esquerda (3/4); painel de controles fixo à direita (1/4). */
 :root{
-  --bg:#F5F3EB; --surface:#FFFEFA; --line:#E2DFD3; --ink:#17150E; --muted:#6B6960; --soft:#EDEADF;
-  --xp:#FFC709; --xp-ink:#17150E; --xp-band:#FFF1B8; --k1:#8792A4; --k2:#1F9D62; --k3:#4F6FE0; --k4:#9A5BD0; --neg:#C2412D;
+  --bg:#F1F1F1; --surface:#FFFFFF; --line:#DCDCDC; --ink:#1A1A1A; --muted:#595959; --soft:#E6E6E6;
+  --xp:#FFC709; --xp-ink:#1A1A1A; --xp-band:#FFF1B8; --k1:#A6A6A6; --k2:#80641B; --k3:#595959; --k4:#1A1A1A; --neg:#C2412D;
   --display:'Space Grotesk','Inter',Arial,sans-serif; --text:'Inter',Arial,sans-serif;
 }
 /* tema único: sempre claro */
@@ -37,7 +37,7 @@ h1{font:700 clamp(24px,3vw,34px)/1.1 var(--display);letter-spacing:-.02em;margin
 .cell{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px}
 .r{display:grid;grid-template-columns:26px 22px minmax(0,1fr) auto;align-items:center;column-gap:7px;padding:3px 6px;border-radius:7px;font-size:14px}
 .r .rk{color:var(--muted);font-variant-numeric:tabular-nums;font-size:12.5px}
-.r img,.r .ph{width:20px;height:20px;border-radius:5px;object-fit:contain;background:#F4F2EA}
+.r img,.r .ph{width:20px;height:20px;border-radius:5px;object-fit:contain;background:#FFFFFF}
 .r .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .r .vl{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
 .r .vl.neg{color:var(--neg)}
@@ -50,7 +50,7 @@ h1{font:700 clamp(24px,3vw,34px)/1.1 var(--display);letter-spacing:-.02em;margin
   background:color-mix(in srgb,var(--surface) 58%,transparent);-webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5);
   border:1px solid color-mix(in srgb,var(--ink) 14%,transparent);box-shadow:0 18px 50px color-mix(in srgb,var(--ink) 22%,transparent);font-size:13px;pointer-events:none}
 #pop .ph{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:9px;align-items:center;padding-bottom:10px;border-bottom:1px solid color-mix(in srgb,var(--ink) 12%,transparent)}
-#pop .ph img,#pop .ph .ph{width:28px;height:28px;border-radius:7px;background:#F4F2EA;object-fit:contain}
+#pop .ph img,#pop .ph .ph{width:28px;height:28px;border-radius:7px;background:#FFFFFF;object-fit:contain}
 #pop .ph b{display:block;font:700 15px/1.2 var(--display)} #pop .ph span{display:block;color:var(--muted);font-size:12.5px}
 #pop .ph strong{font:700 18px/1 var(--display);white-space:nowrap} #pop .ph strong small{font:500 11px var(--text);color:var(--muted);margin-left:2px}
 #pop .neg{color:var(--neg)}
@@ -75,7 +75,7 @@ h1{font:700 clamp(24px,3vw,34px)/1.1 var(--display);letter-spacing:-.02em;margin
 .mini button{font-size:12.5px;font-weight:600;border:1px solid var(--line);border-radius:999px;padding:3px 10px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;border:1px solid var(--line);border-radius:999px;padding:4px 10px 4px 5px;color:var(--muted);background:var(--bg)}
-.chip img{width:18px;height:18px;border-radius:5px;background:#F4F2EA;opacity:.55}
+.chip img{width:18px;height:18px;border-radius:5px;background:#FFFFFF;opacity:.55}
 .chip.on{color:var(--ink);border-color:var(--ink);background:var(--surface)} .chip.on img{opacity:1}
 .chip.txt{padding:4px 11px}
 .seg{display:grid;grid-template-columns:1fr 1fr;background:var(--soft);border-radius:999px;padding:3px;margin-bottom:10px}
@@ -122,7 +122,7 @@ html.pg1 .mxw,html.pg1 .panel,html.pg1 #foot{display:none} html:not(.pg1) #cmpv,
 .rgx .tk{position:absolute;top:0;transform:translateX(-50%);font:700 16px/1 var(--display);white-space:nowrap} .rgx .tk.f{transform:none} .rgx .tk.l{transform:translateX(-100%)}
 .rgx .bar{position:absolute;left:0;right:0;bottom:7px;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--xp-band),var(--xp))}
 .rgx .dot{position:absolute;bottom:3px;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:var(--surface);border:3px solid var(--ink);box-sizing:border-box} .rgx .dot.f{margin-left:0} .rgx .dot.l{margin-left:-16px}
-.rgn{display:flex;align-items:center;gap:8px;font:700 14px/1.2 var(--display);min-width:0} .rgn img,.rgn .ph{width:40px;height:40px;border-radius:10px;background:#F4F2EA;object-fit:contain;flex:none}
+.rgn{display:flex;align-items:center;gap:8px;font:700 14px/1.2 var(--display);min-width:0} .rgn img,.rgn .ph{width:40px;height:40px;border-radius:10px;background:#FFFFFF;object-fit:contain;flex:none}
 .rgt{display:grid;grid-template-columns:var(--cols,repeat(6,minmax(0,1fr)));column-gap:4px}
 .sg{background:color-mix(in srgb,var(--c) 15%,var(--surface));border-radius:10px;padding:10px 12px;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:6px;overflow:hidden}
 .sg.xp{background:var(--xp-band)}
@@ -162,7 +162,7 @@ html.slide .sg .tg span{font-size:13.5px;padding:2px 11px}
 html.slide #foot1{grid-row:3;font-size:14px}
 html.slide .nav button{width:40px;height:40px;font-size:20px} html.slide .nav span{font-size:16px}
 /* ===== Vidro fosco sobre um fundo com brilho, e eixos desenhados na matriz ===== */
-:root{--glass:color-mix(in srgb,var(--surface) 52%,transparent);--edge:color-mix(in srgb,#FFFFFF 70%,transparent);--glow-a:rgba(255,199,9,.16);--glow-b:rgba(255,150,90,.05);--glow-c:rgba(120,155,255,.09)}
+:root{--glass:color-mix(in srgb,var(--surface) 52%,transparent);--edge:color-mix(in srgb,#FFFFFF 70%,transparent);--glow-a:rgba(255,199,9,.12);--glow-b:rgba(166,166,166,.10);--glow-c:rgba(89,89,89,.10)}
 body{background:radial-gradient(58% 55% at 90% 6%,var(--glow-a),transparent 70%),radial-gradient(42% 42% at 58% 46%,var(--glow-b),transparent 70%),radial-gradient(55% 60% at 4% 96%,var(--glow-c),transparent 70%),var(--bg);background-attachment:fixed}
 .cell,.panel,.rg{background:var(--glass);-webkit-backdrop-filter:blur(20px) saturate(1.5);backdrop-filter:blur(20px) saturate(1.5);border:1px solid var(--edge);box-shadow:0 12px 34px color-mix(in srgb,var(--ink) 9%,transparent),inset 0 1px 0 var(--edge)}
 .cell{border-radius:16px;transition:transform .18s ease,box-shadow .18s ease}
