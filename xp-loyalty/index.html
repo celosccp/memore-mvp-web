@@ -764,6 +764,8 @@ body.cmpopen #panelToggle{display:none}
 #cmp .gap{color:#1A1A1A;background:#FFFFFF;border:1px solid #E2E2E2} #cmp .gap b{color:#1A1A1A;background:#FFF1B8;border-radius:4px;padding:0 3px}
 #cmp .src{color:#737373}
 @media (min-width:1024px){ body.cmin #cmp{display:none} body.cmin #cmpToggle{display:block} }
+@media (min-width:1280px){ #cmp{width:clamp(380px,31vw,520px)} #cmp h1{font-size:19px} #cmp .ch p{font-size:13.5px} #cmp .cr b{font-size:15.5px} #cmp .cr span{font-size:12.5px} #cmp .cr .v{font-size:17px} #cmp .cr .tg em{font-size:11.5px} #cmp .cr .lgo{width:30px;height:30px}
+  #cmp .cr{grid-template-columns:26px 30px minmax(0,1fr) auto;column-gap:10px;padding:12px 14px} #cmp .cr.xp{grid-template-columns:30px minmax(0,1fr) auto} #cmp .cr .sb{height:8px} #cmp .gap{font-size:14px} }
 </style>
 </head>
 <body>
@@ -862,7 +864,8 @@ function jornadaEntry(mode){
 }
 function renderCmp(){
   const el = document.getElementById('cmp'); if (!el) return;
-  const mode = S.cmpMode || 'all', off = S.cmpOff || (S.cmpOff = {}), { tpv, list } = cmpEntries(mode);
+  if (!S.cmpOff){ S.cmpOff = {}; CMP.inst.forEach(b => { if (!['XP', 'Nubank', 'BTG Pactual', 'Itaú', 'PicPay'].includes(b)) S.cmpOff[b] = true; }); }   // de partida: só os quatro principais
+  const mode = S.cmpMode || 'all', off = S.cmpOff, { tpv, list } = cmpEntries(mode);
   const xp = list.find(r => r.banco === 'XP'), bancos = CMP.inst.filter(b => b !== 'XP'), ligados = bancos.filter(b => !off[b]);
   const riv = list.filter(r => r.banco !== 'XP' && !off[r.banco]).sort((x, y) => y.v - x.v).slice(0, 10), jx = jornadaEntry(mode);
   const top = Math.max(1, jx.bruto, xp ? xp.bruto : 0, ...riv.map(r => r.bruto));
