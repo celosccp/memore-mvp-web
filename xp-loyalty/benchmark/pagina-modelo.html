@@ -185,7 +185,6 @@ html.slide .cell{padding:8px 10px}
   <aside class="panel" aria-label="Controles do benchmark">
     <section>
       <h2>O que entra na conta</h2>
-      <div class="seg"><button id="pFin" data-preset="fin">Financeiro direto</button><button id="pAll" data-preset="all">Tudo</button></div>
       <label class="tg"><input type="checkbox" id="cCash" data-k="cash"><i class="k1"></i>Cashback, Investback e pontos</label>
       <label class="tg"><input type="checkbox" id="cYld" data-k="yld"><i class="k2"></i>Caixinha acima de 100% do CDI</label>
       <label class="tg"><input type="checkbox" id="cLounge" data-k="lounge"><i class="k3"></i>Salas VIP</label>
@@ -202,7 +201,7 @@ html.slide .cell{padding:8px 10px}
     </section>
     <section>
       <h2>Players <span id="nP"></span></h2>
-      <div class="mini"><button data-players="six">Os 6 principais</button><button data-players="all">Todos</button><button data-players="none">Limpar</button></div>
+      <div class="mini"><button data-players="all">Todos</button><button data-players="none">Limpar</button></div>
       <div class="chips" id="players"></div>
     </section>
     <section>
@@ -288,8 +287,6 @@ function render(){
   document.getElementById('nP').textContent = S.players.length + ' de ' + D.inst.length;
   for (const [id, k] of [['cCash', 'cash'], ['cYld', 'yld'], ['cLounge', 'lounge'], ['cOther', 'other'], ['cCost', 'cost'], ['cIsento', 'isento']]) document.getElementById(id).checked = S[k];
   document.getElementById('tTop').classList.toggle('on', !!S.top); document.getElementById('tAll').classList.toggle('on', !S.top);
-  const fin = S.cash && S.yld && !S.lounge && !S.other && S.cost, all = S.cash && S.yld && S.lounge && S.other && S.cost;
-  document.getElementById('pFin').classList.toggle('on', fin); document.getElementById('pAll').classList.toggle('on', all);
   const partes = [S.cash && 'cashback e pontos', S.yld && 'rendimento da caixinha acima de 100% do CDI', S.lounge && 'salas VIP pelo preço do acesso', S.other && 'assinaturas e outros serviços pelo preço equivalente'].filter(Boolean);
   document.getElementById('foot').textContent = `Valores em R$ por mês. A barra ao lado de cada logo mostra de onde vem o valor; passe o mouse ou toque num player para ver a conta. Fonte: Comparativo econômico das propostas de valor, ${D.date.split('-').reverse().join('/')}.`;
   document.getElementById('rule').textContent = `Com a isenção ligada, cartão que tem regra de isenção só entra se o perfil a atinge; sem regra, entra com a mensalidade na conta. Premissas: caixinha sobre até R$ 10 mil; sala VIP a US$ ${D.loungeUsd} por acesso; ponto a ${brl(D.mile)} o milheiro; XP One com Investback de 0,8% a partir de R$ 2.500 e 1% a partir de R$ 5.000.`;
