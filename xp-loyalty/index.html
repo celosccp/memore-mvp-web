@@ -794,7 +794,7 @@ const P = {
   infPts: 10,            // Infinite por XPoints (cenário B)
   corr: [20, 40, 60],    // Corretagem zero: 3 / 6 / 10 ordens por mês, todas com XPoints
   cofBase: 100,          // Cofre XP sem XPoints
-  cofre: [15, 25, 35],   // Cofre XP Turbo 110/115/125, até R$ 5 mil guardados
+  cofre: [15, 25, 35],   // Cofre XP Turbo 110/115/125, até R$ 10 mil guardados
   ibOne: [10, 20],       // Investback One: sem Investback de partida; 0,8% ou 1,0% com XPoints
   ibInf: [25, 45],       // Investback Infinite 1,2 / 1,5 (1,0% já incluído)
   cartaoPor: 500, cartaoMax: 20,
@@ -1316,7 +1316,7 @@ function shelf(){
 }
 
 const FAMINFO = {
-  cofrinho: () => [`Vale para até R$ 5 mil guardados no Cofre XP.`, `Sem XPoints, o Cofre XP rende ${P.cofBase}% do CDI. Com XPoints, rende mais.`],
+  cofrinho: () => [`Vale para até R$ 10 mil guardados no Cofre XP.`, `Sem XPoints, o Cofre XP rende ${P.cofBase}% do CDI. Com XPoints, rende mais.`],
   investback: () => { const c = activeCard(); return [c === 'one' ? `No XP One, o Investback é ativado com XPoints. A taxa escolhida vale para todas as compras.` : `A taxa escolhida é o total do cartão, não um extra. Ex.: 1,2% substitui o 1% de hoje.`, `Vale para as compras no ${cardName(c)}.`, `O valor volta como investimento.`]; },
   salavip: () => [salaBase(activeCard()) ? `O número escolhido é o total do ano, já contando os ${salaBase(activeCard())} acessos do seu cartão.` : `O número escolhido é o total de acessos no ano.`, `Os acessos valem enquanto o benefício estiver em uso.`],
   corretagem: () => [`O número escolhido é quantas ordens por mês saem sem corretagem.`, P.corrCob + '.', `Vale enquanto o benefício estiver ativo.`],
@@ -1600,7 +1600,7 @@ const HIPOTESES = [
   ['Saldo', 'O medidor mostra os XPoints do cliente contra o total possível (48 na régua ilustrativa): em uso, disponíveis e a conquistar. O total é a soma dos tetos de todos os desafios e muda com a calibração.'],
   ['Saldo', 'XPoints travados: ficam em uso enquanto o benefício está ativo e voltam ao desativar. Uma opção ativa por família.'],
   ['Saldo', 'Na troca dentro da família, os XPoints da opção atual são liberados e os da nova entram em uso, de uma vez só.'],
-  ['Prateleira', 'Cofre XP Turbo 110/115/125% do CDI por 15/25/35 XPoints, para até R$ 5 mil guardados. Sem XPoints, o Cofre XP rende 100% do CDI, já incluído.'],
+  ['Prateleira', 'Cofre XP Turbo 110/115/125% do CDI por 15/25/35 XPoints, para até R$ 10 mil guardados. Sem XPoints, o Cofre XP rende 100% do CDI, já incluído.'],
   ['Prateleira', 'Investback turbinado é a taxa total do cartão. One: 0,8% ou 1,0% por 10 ou 20 XPoints. Infinite: 1,2% ou 1,5% por 25 ou 45.'],
   ['Prateleira', 'Corretagem zero em três faixas, todas com XPoints: 3, 6 ou 10 ordens por mês por 20, 40 ou 60 XPoints. Nenhuma ordem é incluída.'],
   ['Prateleira', 'Na aba Usar, cada benefício é uma régua: o cliente toca no ponto que quer e vai direto para a confirmação. Investback e Salas VIP ficam dentro do card do cartão.'],
