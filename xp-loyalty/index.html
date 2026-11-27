@@ -796,7 +796,7 @@ const P = {
   cofBase: 100,          // Cofre XP sem XPoints
   cofre: [15, 25, 35],   // Cofre XP Turbo 110/115/125, até R$ 5 mil guardados
   ibOne: [10, 20],       // Investback One: sem Investback de partida; 0,8% ou 1,0% com XPoints
-  ibInf: [30, 60],       // Investback Infinite 1,2 / 1,5 (1,0% já incluído)
+  ibInf: [25, 45],       // Investback Infinite 1,2 / 1,5 (1,0% já incluído)
   cartaoPor: 500, cartaoMax: 20,
   aucBloco: 3500, aucMax: 15,   // patrimônio conta desde o primeiro real
   salFaixas: [[0, 3], [5000, 5], [10000, 5]],  // salário portado: [piso exclusivo em R$, XPoints]
@@ -1587,7 +1587,7 @@ function renderPhone(){
 
 const HIPOTESES = [
   ['Pacotes', 'Dois pacotes, XP One e XP Infinite, sem nomes de nível ou segmento. Na tela, a palavra é sempre "cartão": o do cliente aparece como "Incluído · não usa XPoints", com a razão (cliente XP Digital, ou R$ 30 mil ou mais investidos).'],
-  ['Pacotes', 'Investback: o One parte sem Investback e chega a 0,8% ou 1,0% por 10 ou 20 XPoints. O Infinite já começa com 1,0% incluído e chega a 1,2% ou 1,5% por 30 ou 60 XPoints.'],
+  ['Pacotes', 'Investback: o One parte sem Investback e chega a 0,8% ou 1,0% por 10 ou 20 XPoints. O Infinite já começa com 1,0% incluído e chega a 1,2% ou 1,5% por 25 ou 45 XPoints.'],
   ['Pacotes', 'Quem tem o XP One vê o Infinite ao lado, em carrossel. Quem já tem o Infinite vê só o Infinite. Quem está longe do corte (abaixo de 60%) não vê barra de "faltam R$": só a regra, sem cobrança.'],
   ['Sala VIP', 'Pela planilha, sala VIP vem de XPoints: 1, 2 ou 4 acessos por ano por 15, 25 ou 40 XPoints, nos dois cartões (6 acessos por 60 está desligado). O painel mantém o modo alternativo em que o Infinite já inclui 4 acessos e chega a 6 por 60 XPoints.'],
   ['Sala VIP', 'Como no Investback, o número escolhido é o total de acessos do ano, não um extra.'],
@@ -1601,7 +1601,7 @@ const HIPOTESES = [
   ['Saldo', 'XPoints travados: ficam em uso enquanto o benefício está ativo e voltam ao desativar. Uma opção ativa por família.'],
   ['Saldo', 'Na troca dentro da família, os XPoints da opção atual são liberados e os da nova entram em uso, de uma vez só.'],
   ['Prateleira', 'Cofre XP Turbo 110/115/125% do CDI por 15/25/35 XPoints, para até R$ 5 mil guardados. Sem XPoints, o Cofre XP rende 100% do CDI, já incluído.'],
-  ['Prateleira', 'Investback turbinado é a taxa total do cartão. One: 0,8% ou 1,0% por 10 ou 20 XPoints. Infinite: 1,2% ou 1,5% por 30 ou 60.'],
+  ['Prateleira', 'Investback turbinado é a taxa total do cartão. One: 0,8% ou 1,0% por 10 ou 20 XPoints. Infinite: 1,2% ou 1,5% por 25 ou 45.'],
   ['Prateleira', 'Corretagem zero em três faixas, todas com XPoints: 3, 6 ou 10 ordens por mês por 20, 40 ou 60 XPoints. Nenhuma ordem é incluída.'],
   ['Prateleira', 'Na aba Usar, cada benefício é uma régua: o cliente toca no ponto que quer e vai direto para a confirmação. Investback e Salas VIP ficam dentro do card do cartão.'],
   ['Sala VIP', 'No One, a régua vai de sem acesso a 2 ou 4 acessos por ano (30 ou 45 XPoints).'],
