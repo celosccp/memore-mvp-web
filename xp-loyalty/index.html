@@ -792,11 +792,11 @@ body.cmpopen #panelToggle{display:none}
 const P = {
   corte: 30000,          // corte patrimonial do Infinite
   infPts: 10,            // Infinite por XPoints (cenário B)
-  corr: [20, 30, 45],    // Corretagem zero: 3 / 6 / 10 ordens por mês, todas com XPoints
+  corr: [20, 40, 60],    // Corretagem zero: 3 / 6 / 10 ordens por mês, todas com XPoints
   cofBase: 100,          // Cofre XP sem XPoints
-  cofre: [15, 20, 25],   // Cofre XP Turbo 110/115/125
-  ibOne: [10],           // Investback One: sem Investback de partida; 1,0% com XPoints
-  ibInf: [15, 25],       // Investback Infinite 1,2 / 1,5 (1,0% já incluído)
+  cofre: [15, 25, 35],   // Cofre XP Turbo 110/115/125, até R$ 5 mil guardados
+  ibOne: [10, 20],       // Investback One: sem Investback de partida; 0,8% ou 1,0% com XPoints
+  ibInf: [30, 60],       // Investback Infinite 1,2 / 1,5 (1,0% já incluído)
   cartaoPor: 500, cartaoMax: 20,
   aucBloco: 3500, aucMax: 15,   // patrimônio conta desde o primeiro real
   salFaixas: [[0, 3], [5000, 5], [10000, 5]],  // salário portado: [piso exclusivo em R$, XPoints]
@@ -858,7 +858,7 @@ function jornadaEntry(mode){
   const mes = Math.pow(1 + CMPX.cdi / 100, 1 / 12) - 1;
   const yld = Math.round(Math.min(S.auc, CMPX.saldoMax) * mes * Math.max(0, taxa - 100) / 100 * (1 - CMPX.tax / 100));
   const cash = Math.round(ib.valor), serv = mode === 'fin' ? 0 : Math.round(ordens * CMPX.ordem + acessos * CMPX.loungeUsd * CMPX.usd / 12);
-  const partes = [ordens ? `${ordens} ordens sem corretagem` : '', acessos ? `${acessos} acessos a salas VIP` : ''].filter(Boolean).join(' e ');
+  const partes = [ordens ? `${ordens} ordens sem corretagem` : '', acessos ? `${acessos} ${acessos === 1 ? 'acesso' : 'acessos'} a salas VIP` : ''].filter(Boolean).join(' e ');
   return { banco: 'XP', nome: `${card === 'infinite' ? 'XP Infinite' : 'XP One'} · como está no app`, cash, kind: 1, yld, cdi: taxa > 100 ? taxa : 0, serv, cost: 0, bruto: cash + yld + serv, v: cash + yld + serv,
     tpv: S.gasto, lab: { cash: 'Investback', yld: 'Cofre XP', serv: partes ? partes.charAt(0).toUpperCase() + partes.slice(1) : 'Serviços' }, vazio: 'Nenhum benefício ativo. Ative no app para ver o valor subir.' };
 }
@@ -931,17 +931,17 @@ const gainOf = b => isBlk(b) ? 1 : b.fx ? P.salFaixas.find(f => f[1] > 0)[1] : b
 const visibleBeh = () => BEH.filter(b => !b.off && (!b.optional || S.segcc) && (!b.soon || S.pfm));
 const total = () => visibleBeh().reduce((s,b) => s + behPts(b), 0);
 
-const IB = { one: () => [ {id:'o10', label:'1,0% de Investback', rate:1.0, price:P.ibOne[0]} ],
+const IB = { one: () => [ {id:'o08', label:'0,8% de Investback', rate:0.8, price:P.ibOne[0]}, {id:'o10', label:'1,0% de Investback', rate:1.0, price:P.ibOne[1]} ],
              infinite: () => [ {id:'i12', label:'1,2% de Investback', rate:1.2, price:P.ibInf[0]}, {id:'i15', label:'1,5% de Investback', rate:1.5, price:P.ibInf[1]} ] };
 // Sala VIP: incluída no Infinite (mínimo de largada) ou só por XPoints. O número da opção é o total de acessos por ano.
 const salaBase = card => card === 'infinite' && S.salaMode === 'incluida' ? P.salaIncl : 0;
-const SVALL = { one: [['sv_o2', 2, 30], ['sv_o4', 4, 45]], infinite_incluida: [['sv_i6', 6, 60]], infinite_fichas: [['sv_f2', 2, 30], ['sv_f4', 4, 45]] };
-const svOpts = key => SVALL[key].map(([id, n, price]) => ({ id, n, price, label: `${n} acessos por ano` }));
+const SVALL = { one: [['sv_o1', 1, 15], ['sv_o2', 2, 25], ['sv_o4', 4, 40]], infinite_incluida: [['sv_i6', 6, 60]], infinite_fichas: [['sv_f1', 1, 15], ['sv_f2', 2, 25], ['sv_f4', 4, 40]] };
+const svOpts = key => SVALL[key].map(([id, n, price]) => ({ id, n, price, label: `${n} ${n === 1 ? 'acesso' : 'acessos'} por ano` }));
 const SV = card => svOpts(card === 'one' ? 'one' : 'infinite_' + S.salaMode);
 function salaNow(card, mine){
   const a = mine && S.active.salavip, base = salaBase(card), opts = SV(card), max = opts[opts.length - 1].n;
   const n = a && a.status === 'active' ? optOf('salavip', a.opt).n : base;
-  return { n, base, max, main: n ? `${n} acessos por ano` : `Até ${max} acessos por ano`, up: n >= max ? '' : n ? `até ${max} com XPoints` : 'com XPoints' };
+  return { n, base, max, main: n ? `${n} ${n === 1 ? 'acesso' : 'acessos'} por ano` : `Até ${max} acessos por ano`, up: n >= max ? '' : n ? `até ${max} com XPoints` : 'com XPoints' };
 }
 function families(card = activeCard()){
   return [
@@ -1181,7 +1181,7 @@ function pkCard(k){
     ${foot}
     <div class="pcs">
       ${col('Investback', ibA ? pct(ib.rate) : k === 'one' ? nil : '1%', '', ibA && ib.rate >= ibMax ? 'com XPoints' : `até ${pct(ibMax)} com XPoints`, 'investback', ibA && ib.rate >= ibMax)}
-      ${col('Salas VIP', sl.n ? `${sl.n} acessos/ano` : nil, '', sl.n ? sl.up : `até ${sl.max} acessos/ano com XPoints`, 'salavip', sl.n >= sl.max)}
+      ${col('Salas VIP', sl.n ? `${sl.n} ${sl.n === 1 ? 'acesso' : 'acessos'}/ano` : nil, '', sl.n ? sl.up : `até ${sl.max} acessos/ano com XPoints`, 'salavip', sl.n >= sl.max)}
     </div>
     <span class="pkl">Ver todos os benefícios do cartão ›</span></button>`;
 }
@@ -1253,15 +1253,15 @@ function pacote(){
     ${accHead('cmp', 'Comparar os dois cartões')}
     <div class="cmp" ${isOpen('cmp') ? '' : 'hidden'}>
       <div></div><div ${cmpCur('one')}>XP One</div><div ${cmpCur('infinite')}>XP Infinite</div>
-      <div>Investback</div><div ${cmpCur('one')}>Até 1,1%<br><span class="xs mut">com XPoints</span></div><div ${cmpCur('infinite')}>1%<br><span class="xs mut">já incluído</span></div>
-      <div>Investback com XPoints</div><div ${cmpCur('one')}>1,0%</div><div ${cmpCur('infinite')}>1,2% ou 1,5%</div>
+      <div>Investback</div><div ${cmpCur('one')}>Até 1,0%<br><span class="xs mut">com XPoints</span></div><div ${cmpCur('infinite')}>1%<br><span class="xs mut">já incluído</span></div>
+      <div>Investback com XPoints</div><div ${cmpCur('one')}>0,8% ou 1,0%</div><div ${cmpCur('infinite')}>1,2% ou 1,5%</div>
       <div>Salas VIP</div><div ${cmpCur('one')}>${salaNow('one').main}<br><span class="xs mut">${salaNow('one').up}</span></div><div ${cmpCur('infinite')}>${salaNow('infinite').main}<br><span class="xs mut">${salaNow('infinite').up}</span></div>
       <div>Como ter</div><div ${cmpCur('one')}>Cartão de entrada</div><div ${cmpCur('infinite')}>${brl(P.corte)} investidos${S.scen === 'B' ? ` ou ${pt(P.infPts)}` : ''}</div>
     </div>`}`;
 }
 
 // régua: uma linha com os pontos da escala; tocar num ponto leva à confirmação
-const rgShort = (f, o) => f.id === 'salavip' ? `${o.n} acessos` : f.id === 'corretagem' ? `${o.n} ordens` : o.label.split(' ')[0];
+const rgShort = (f, o) => f.id === 'salavip' ? `${o.n} ${o.n === 1 ? 'acesso' : 'acessos'}` : f.id === 'corretagem' ? `${o.n} ordens` : o.label.split(' ')[0];
 function rgBase(f, card){   // o que o cliente já tem sem usar XPoints
   return f.id === 'investback' ? (baseRate(card) ? pct(baseRate(card)).replace(',0', '') : null)
     : f.id === 'salavip' ? (salaBase(card) ? `${salaBase(card)} acessos` : null)
@@ -1316,7 +1316,7 @@ function shelf(){
 }
 
 const FAMINFO = {
-  cofrinho: () => [`Vale para o dinheiro guardado no Cofre XP.`, `Sem XPoints, o Cofre XP rende ${P.cofBase}% do CDI. Com XPoints, rende mais.`],
+  cofrinho: () => [`Vale para até R$ 5 mil guardados no Cofre XP.`, `Sem XPoints, o Cofre XP rende ${P.cofBase}% do CDI. Com XPoints, rende mais.`],
   investback: () => { const c = activeCard(); return [c === 'one' ? `No XP One, o Investback é ativado com XPoints. A taxa escolhida vale para todas as compras.` : `A taxa escolhida é o total do cartão, não um extra. Ex.: 1,2% substitui o 1% de hoje.`, `Vale para as compras no ${cardName(c)}.`, `O valor volta como investimento.`]; },
   salavip: () => [salaBase(activeCard()) ? `O número escolhido é o total do ano, já contando os ${salaBase(activeCard())} acessos do seu cartão.` : `O número escolhido é o total de acessos no ano.`, `Os acessos valem enquanto o benefício estiver em uso.`],
   corretagem: () => [`O número escolhido é quantas ordens por mês saem sem corretagem.`, P.corrCob + '.', `Vale enquanto o benefício estiver ativo.`],
@@ -1587,9 +1587,9 @@ function renderPhone(){
 
 const HIPOTESES = [
   ['Pacotes', 'Dois pacotes, XP One e XP Infinite, sem nomes de nível ou segmento. Na tela, a palavra é sempre "cartão": o do cliente aparece como "Incluído · não usa XPoints", com a razão (cliente XP Digital, ou R$ 30 mil ou mais investidos).'],
-  ['Pacotes', 'Investback: o One parte sem Investback e chega a 1,0% por 10 XPoints. O Infinite já começa com 1,0% incluído e chega a 1,2% ou 1,5% por 15 ou 25 XPoints.'],
+  ['Pacotes', 'Investback: o One parte sem Investback e chega a 0,8% ou 1,0% por 10 ou 20 XPoints. O Infinite já começa com 1,0% incluído e chega a 1,2% ou 1,5% por 30 ou 60 XPoints.'],
   ['Pacotes', 'Quem tem o XP One vê o Infinite ao lado, em carrossel. Quem já tem o Infinite vê só o Infinite. Quem está longe do corte (abaixo de 60%) não vê barra de "faltam R$": só a regra, sem cobrança.'],
-  ['Sala VIP', 'Pela planilha, sala VIP vem de XPoints: 2 ou 4 acessos por ano por 30 ou 45 XPoints, nos dois cartões (6 acessos por 60 está desligado). O painel mantém o modo alternativo em que o Infinite já inclui 4 acessos e chega a 6 por 60 XPoints.'],
+  ['Sala VIP', 'Pela planilha, sala VIP vem de XPoints: 1, 2 ou 4 acessos por ano por 15, 25 ou 40 XPoints, nos dois cartões (6 acessos por 60 está desligado). O painel mantém o modo alternativo em que o Infinite já inclui 4 acessos e chega a 6 por 60 XPoints.'],
   ['Sala VIP', 'Como no Investback, o número escolhido é o total de acessos do ano, não um extra.'],
   ['Pacotes', 'O cartão mostra o que já vale e, logo abaixo, até onde dá para chegar com XPoints (ex.: Investback 1%, até 1,5% com XPoints).'],
   ['Pacotes', 'Abaixo do corte, o Infinite aparece bloqueado no carrossel, com o que falta para desbloquear.'],
@@ -1600,9 +1600,9 @@ const HIPOTESES = [
   ['Saldo', 'O medidor mostra os XPoints do cliente contra o total possível (48 na régua ilustrativa): em uso, disponíveis e a conquistar. O total é a soma dos tetos de todos os desafios e muda com a calibração.'],
   ['Saldo', 'XPoints travados: ficam em uso enquanto o benefício está ativo e voltam ao desativar. Uma opção ativa por família.'],
   ['Saldo', 'Na troca dentro da família, os XPoints da opção atual são liberados e os da nova entram em uso, de uma vez só.'],
-  ['Prateleira', 'Cofre XP Turbo 110/115/125% do CDI por 15/20/25 XPoints. Sem XPoints, o Cofre XP rende 100% do CDI, já incluído.'],
-  ['Prateleira', 'Investback turbinado é a taxa total do cartão. One: 1,0% por 10 XPoints. Infinite: 1,2% ou 1,5% por 15 ou 25.'],
-  ['Prateleira', 'Corretagem zero em três faixas, todas com XPoints: 3, 6 ou 10 ordens por mês por 20, 30 ou 45 XPoints. Nenhuma ordem é incluída.'],
+  ['Prateleira', 'Cofre XP Turbo 110/115/125% do CDI por 15/25/35 XPoints, para até R$ 5 mil guardados. Sem XPoints, o Cofre XP rende 100% do CDI, já incluído.'],
+  ['Prateleira', 'Investback turbinado é a taxa total do cartão. One: 0,8% ou 1,0% por 10 ou 20 XPoints. Infinite: 1,2% ou 1,5% por 30 ou 60.'],
+  ['Prateleira', 'Corretagem zero em três faixas, todas com XPoints: 3, 6 ou 10 ordens por mês por 20, 40 ou 60 XPoints. Nenhuma ordem é incluída.'],
   ['Prateleira', 'Na aba Usar, cada benefício é uma régua: o cliente toca no ponto que quer e vai direto para a confirmação. Investback e Salas VIP ficam dentro do card do cartão.'],
   ['Sala VIP', 'No One, a régua vai de sem acesso a 2 ou 4 acessos por ano (30 ou 45 XPoints).'],
   ['Prateleira', 'Investback turbinado pertence ao cartão. Se o cartão muda, a opção é encerrada e os XPoints voltam ao saldo.'],
@@ -1678,7 +1678,7 @@ function renderPanel(){
       <label class="fld">Corte patrimonial (R$) <input type="number" data-p="corte" step="1000" value="${P.corte}"></label>
       <label class="fld">Corretagem 3 / 6 / 10 ordens <span><input type="number" data-p="corr.0" value="${P.corr[0]}" style="width:42px"> <input type="number" data-p="corr.1" value="${P.corr[1]}" style="width:42px"> <input type="number" data-p="corr.2" value="${P.corr[2]}" style="width:42px"></span></label>
       <label class="fld">Cofre XP 110 / 115 / 125 <span><input type="number" data-p="cofre.0" value="${P.cofre[0]}" style="width:46px"> <input type="number" data-p="cofre.1" value="${P.cofre[1]}" style="width:46px"> <input type="number" data-p="cofre.2" value="${P.cofre[2]}" style="width:46px"></span></label>
-      <label class="fld">Investback One 1,0% <input type="number" data-p="ibOne.0" value="${P.ibOne[0]}"></label>
+      <label class="fld">Investback One 0,8 / 1,0 <span><input type="number" data-p="ibOne.0" value="${P.ibOne[0]}" style="width:46px"> <input type="number" data-p="ibOne.1" value="${P.ibOne[1]}" style="width:46px"></span></label>
       <label class="fld">Investback Infinite 1,2 / 1,5 <span><input type="number" data-p="ibInf.0" value="${P.ibInf[0]}" style="width:46px"> <input type="number" data-p="ibInf.1" value="${P.ibInf[1]}" style="width:46px"></span></label>
       <label class="fld">Acessos incluídos no Infinite <input type="number" data-p="salaIncl" value="${P.salaIncl}"></label>
       <label class="fld txt">Cobertura da corretagem zero <input type="text" data-p="corrCob" value="${P.corrCob}"></label>
